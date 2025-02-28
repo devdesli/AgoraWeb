@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Boxicons for images -->
+    <link rel="stylesheet" href="login.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="ra (1).png" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="Login.py">
+    <title>Zara AI</title>
+</head>
+<body>
+<div class="video-background">
+    <video autoplay muted loop>
+        <source src="1046-142621379_small.mp4" type="video/mp4">
+    </video>
+</div>
+<div class="wrapper">
+        <form class="login_box" action="../zara/chat.html">
+
+        <div class="login-header">
+            <span>Login</span>
+        </div>
+        <div class="input_box">
+            <i class="bx bx-user icon"></i>
+            <input type="text" id="user" class="input_field" required>
+            <label for="user" class="label">Username</label>
+        </div>
+
+        <div class="input_box">
+            <i class="bx bx-hide icon" id="togglePassword"></i>
+            <input type="password" id="password" name="password" class="input_field" required>
+            <label for="password" class="label">Password</label>
+        </div>
+
+        <div class="remember-forgot">
+            <div class="remember-me">
+                <input type="checkbox" id="remember">
+                <label for="remember">Remember Me</label>
+            </div>  
+            <div class="forgot">
+                <a href="ForgotPassword.html">Forgot Password?</a>
+            </div>
+        </div>
+        <div class="input_box">
+            <input type="submit" class="input-submit" value="Login">
+        </div>
+        <div class="register">
+            <span>Don't have an account yet? <a href="Register.html">Register</a></span>
+        </div>
+    </form>
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            // Toggle the type attribute
+            const type = password.type === 'password' ? 'text' : 'password';
+            password.type = type;
+
+            // Toggle the icon
+            this.classList.toggle('bx-hide');
+            this.classList.toggle('bx-show');
+        });
+    </script>
+</div>
+</body>
+</html>
