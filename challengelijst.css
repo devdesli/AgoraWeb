@@ -1,3 +1,23 @@
-input [type="checkbox"] {
-    
+h1 {
+    text-align: center;
+}
+
+h3 {
+    top: 80px;
+}
+.position-fixed {
+    position: fixed;
+}
+
+select {
+    top: 125px;
+}
+
+.module-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between text and button */
 }
