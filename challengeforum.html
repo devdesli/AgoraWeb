@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="challengeforum.css">
+<head>
+
+
+</head>
+
+
+<body>
+
+<textarea required placeholder="Vul jouwn volledige naam in"></textarea>
+<textarea required placeholder="Vul de naam van jouwn challenge in"></textarea>
+<textarea required placeholder="Informatie over jouwn challenge"></textarea>
+
+
+<label for="options">Kies een categorie:</label>
+
+
+<select class="categorie" name="categorie" id="categorie" onchange="checkSelection()">
+    <option value="placeholder" selected disabled>Kies een optie</option>
+  <option class="categorie" name="categorie" value="option1"></option>
+  <option class="categorie" name="categorie" value="option2">Scheikunde</option>
+  <option class="categorie" name="categorie" value="option3">Biologie</option>
+  <option class="categorie" name="categorie" value="option3">Scheikunde</option>
+  <option class="categorie" name="categorie" value="option4"></option>
+  <option class="categorie" name="categorie" value="option5"></option>
+  <option class="categorie" name="categorie" value="option6"></option>
+  <option class="categorie" name="categorie" value="option7"></option>
+  <option class="categorie" name="categorie" value="option8"></option>
+  <option class="categorie" name="categorie" value="option9"></option>
+  <option class="categorie" name="categorie" value="option10"></option>
+  <option class="categorie" name="categorie" value="option11"></option>
+  <option class="categorie" name="categorie" value="option12"></option>
+  <option class="categorie" name="categorie" value="option13"></option>
+  <option class="categorie" name="categorie" value="option14"></option>
+  <option class="categorie" name="categorie" value="option15"></option>
+  <option class="categorie" name="categorie" value="option16"></option>
+  <option class="categorie" name="categorie" value="option17"></option>
+  <option class="categorie" name="categorie" value="option18"></option>
+  <option class="categorie" name="categorie" value="option19"></option>
+  <option class="categorie" name="categorie" value="option20"></option>
+  <option class="categorie" name="categorie" value="option21"></option>
+  <option class="categorie" name="categorie" value="option22"></option>
+  <option class="categorie" name="categorie" value="option23"></option>
+  <option class="categorie" name="categorie" value="option24"></option>
+  <option class="categorie" name="categorie" value="option25"></option>
+  <input class="categorie"type="text" placeholder="Of iets anders namelijk....">
+</select>
+
+
+<button type="submit">Plaats challenge</button>
+
+
+
+<script>
+    function checkSelection() {
+        var selectedValue = document.getElementById("categorie").value;
+        if (selectedValue === "placeholder") {
+            alert("Selecteer een geldige optie.");
+        } else {
+            console.log("Geselecteerde optie: " + selectedValue);
+        }
+    }
+
+    // Optionally, you can call checkSelection() on page load if needed
+    window.onload = function() {
+        checkSelection();
+    };
+</script>
+</body>
+
+</html>
