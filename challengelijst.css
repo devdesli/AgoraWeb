@@ -28,10 +28,15 @@ select {
     padding: 0;
     cursor: pointer;
     display: inline-flex;
-    font-size: 30px;
+}
+
+.module-button a {
+    color: black;
+    text-decoration: none;
+    font-size: unset;
 }
 
 .module-button i {
-    color: black;
+    font-size: 30px;
 }
 
