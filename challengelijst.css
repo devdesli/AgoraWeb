@@ -22,6 +22,9 @@ select {
     gap: 10px; /* Space between text and button */
 }
 
+.filters {
+    right: 5px;
+}
 .module-button {
     background: none;
     border: none;
