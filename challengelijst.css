@@ -25,3 +25,16 @@ select {
 .filters {
     right: 5px;
 }
+.module-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 30px;
+}
+
+.module-button i {
+    color: black;
+}
+
