@@ -1,7 +1,3 @@
-body {
-    overscroll-behavior-y: none;
-    background-color: #afaeae;
-}
 
 .logo {
     width: 150px;
@@ -11,7 +7,6 @@ body {
 
 .top-color {
     width: 100%;
-    margin-bottom: 0%;
     padding-bottom: 10px;
     background-color:  #22194d;
 }
@@ -39,7 +34,7 @@ h3 {
     color: white;
 }
 .filters {
-    right: 25px;
+    margin-right: 25px;
 }
 
 .forum-button {
