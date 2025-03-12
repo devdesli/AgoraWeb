@@ -21,3 +21,7 @@ select {
     align-items: center;
     gap: 10px; /* Space between text and button */
 }
+
+.filters {
+    right: 5px;
+}
