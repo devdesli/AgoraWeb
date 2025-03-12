@@ -1,3 +1,19 @@
 h1 {
     text-align: center;
 }
+body {
+    overscroll-behavior-y: none;
+    background-color: #afaeae;
+}
+
+.logo {
+    width: 150px;
+    height: 75px;
+}
+
+.topcolor {
+    background-color:  #22194d;
+    width: 100%;
+    margin-bottom: 0%;
+    padding-bottom: 10px;
+}
