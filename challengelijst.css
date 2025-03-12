@@ -21,3 +21,17 @@ select {
     align-items: center;
     gap: 10px; /* Space between text and button */
 }
+
+.module-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 30px;
+}
+
+.module-button i {
+    color: black;
+}
+
