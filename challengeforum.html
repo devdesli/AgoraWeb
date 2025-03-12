@@ -13,9 +13,7 @@
 <textarea required placeholder="Vul de naam van jouwn challenge in"></textarea>
 <textarea required placeholder="Informatie over jouwn challenge"></textarea>
 
-
 <label for="options">Kies een categorie:</label>
-
 
 <select class="categorie" name="categorie" id="categorie">
     <option value="placeholder" selected disabled>Kies een optie</option>
@@ -42,24 +40,6 @@
 
 
 <button type="submit">Plaats challenge</button>
-
-
-
-<script>
-    function checkSelection() {
-        var selectedValue = document.getElementById("categorie").value;
-        if (selectedValue === "placeholder") {
-            alert("Selecteer een geldige optie.");
-        } else {
-            console.log("Geselecteerde optie: " + selectedValue);
-        }
-    }
-
-    // Optionally, you can call checkSelection() on page load if needed
-    window.onload = function() {
-        checkSelection();
-    };
-</script>
 </body>
 
 </html>
