@@ -5,17 +5,12 @@ h1 {
     
 }
 body {
-    overscroll-behavior-y: none;
     background-color: #afaeae;
 }
 
 .logo {
     width: 150px;
     height: 75px;
-}
-
-.posistion-fixed {
-    position: fixed;
 }
 
 .top-color {
@@ -26,3 +21,6 @@ body {
     padding-top: 10px;
 }
 
+.categorie {
+    border-color: #d42b87;
+}
