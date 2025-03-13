@@ -17,47 +17,53 @@
         </div>
 
         <h1>Welkom plaats hier je challenge op het forum</h1>
+
     </div>
 
 <div class="forum">
 
-<h3>naam</h3>
 <textarea required placeholder="Vul jouw volledige naam in"></textarea>
-<h3>titel</h3>
 <textarea required placeholder="Vul de titel van jouw challenge in"></textarea>
-<h3>wat doe je tijdens deze challenge</h3>
+
+<h3>Informatie over jouw challenge</h3>
 <textarea required placeholder="Informatie over jouw challenge"></textarea>
-<h3>hoofd- en deelvragen</h3>
+<h3>Hoofd- en Deelvragen</h3>
 <textarea required placeholder="vul hier jou hoofdvraag in"></textarea>
 <textarea required placeholder="vul hier jouw deelvragen in"></textarea>
 <br>
+
 <label for="options"><h3>Kies een bijbehorende filter</h3></label>
+
   <select class="categorie" name="categorie" id="categorie">
-  <option value="placeholder" selected disabled>Kies een optie</option>
-  <option class="categorie" name="categorie" value="option1">Aardreikskunde</option>
-  <option class="categorie" name="categorie" value="option2">Scheikunde</option>
-  <option class="categorie" name="categorie" value="option3">Biologie</option>
-  <option class="categorie" name="categorie" value="option3">informatica</option>
-  <option class="categorie" name="categorie" value="option4">Economie</option>
-  <option class="categorie" name="categorie" value="option5">Natuurkunde</option>
-  <option class="categorie" name="categorie" value="option6">Maatschapijleer</option>
-  <option class="categorie" name="categorie" value="option7">lichamelijke opvoeding</option>
-  <option class="categorie" name="categorie" value="option8">Kunst en Cultuur</option>
-  <option class="categorie" name="categorie" value="option9">Wiskunde</option>  
-  <option class="categorie" name="categorie" value="option10">Geschiedenis</option>
-  <option class="categorie" name="categorie" value="option11">engels</option>
-  <option class="categorie" name="categorie" value="option12">nederlands</option>
-  <option class="categorie" name="categorie" value="option13">frans</option>
-  <option class="categorie" name="categorie" value="option14">duits</option>
-  <option class="categorie" name="categorie" value="option15">handvaardigheid</option>
-  <option class="categorie" name="categorie" value="option16">muziek</option>
-  <option class="categorie" name="categorie" value="option17">informatica</option>
-  <input class="categorie"type="text" placeholder="Of iets anders namelijk....">
+
+    <option value="placeholder" selected disabled>Kies een optie</option>
+    <option class="categorie" name="categorie" value="option1">Aardreikskunde</option>
+    <option class="categorie" name="categorie" value="option3">Biologie</option>
+    <option class="categorie" name="categorie" value="option3">informatica</option>
+    <option class="categorie" name="categorie" value="option4">Economie</option>
+    <option class="categorie" name="categorie" value="option5">Natuurkunde</option>
+    <option class="categorie" name="categorie" value="option6">Maatschapijleer</option>
+    <option class="categorie" name="categorie" value="option7">lichamelijke opvoeding</option>
+    <option class="categorie" name="categorie" value="option8">Kunst en Cultuur</option>
+    <option class="categorie" name="categorie" value="option9">Wiskunde</option>  
+    <option class="categorie" name="categorie" value="option10">Geschiedenis</option>
+    <option class="categorie" name="categorie" value="option11">Engels</option>
+    <option class="categorie" name="categorie" value="option12">Nederlands</option>
+    <option class="categorie" name="categorie" value="option13">frans</option>
+    <option class="categorie" name="categorie" value="option14">Duits</option>
+    <option class="categorie" name="categorie" value="option15">Handvaardigheid</option>
+    <option class="categorie" name="categorie" value="option16">Muziek</option>
+    <option class="categorie" name="categorie" value="option17">Informatica</option>
+    <option class="categorie" name="categorie" value="option18">Scheikunde</option>
+    <option class="categorie" name="cateogrie" vlaue="option19">Overig</option>
   </select>
   <br>
-  <button type="submit">Plaats challenge</button>
   <form id="uploadForm" enctype="multipart/form-data">
     <input type="file" id="fileInput" name="file">
+  </form>
+  <button type="submit">Plaats challenge</button>
+
+    
 </form>
 
 <script>
@@ -84,7 +90,6 @@ document.getElementById("uploadForm").addEventListener("submit", async function 
 });
 </script>
 
-  <button type="submit">Plaats challenge</button>
 </form>
 <!-- <script> script voor xss toevoegen. </script>!-->
 
