@@ -60,3 +60,34 @@ h3 {
     color: #d42b87;
     font-size: 50px;
 }
+
+.like-button {
+    border-color: #d42b87;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    width: 500px; /* Adjust width */
+    height: 200px; /* Adjust height */
+    background-color: #22194d; /* Dark purple background */
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.author {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.card:last-child {
+    width: 400px;
+    height: 150px;
+}

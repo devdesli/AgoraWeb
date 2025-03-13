@@ -5,6 +5,7 @@
 <head>
     <link rel="stylesheet" href="uploadtoforum.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
 </head>
 
 <body>
@@ -20,7 +21,19 @@
 
     </div>
 
-    <div class="forum">
+<div class="forum">
+
+<textarea class="textarea" required placeholder="Vul jouw volledige naam in"></textarea>
+<textarea class="textarea" required placeholder="Vul de titel van jouw challenge in"></textarea>
+
+<h3>Informatie over jouw challenge</h3>
+<textarea class="textarea" required placeholder="Informatie over jouw challenge"></textarea>
+<h3>Hoofd- en Deelvragen</h3>
+<textarea class="textarea" required placeholder="vul hier jou hoofdvraag in"></textarea>
+<textarea class="textarea" required placeholder="vul hier jouw deelvragen in"></textarea>
+<br>
+
+<label for="options"><h3>Kies een bijbehorende filter</h3></label>
 
     <h3>Naam</h3>
     <textarea required placeholder="Vul jouw volledige naam in"></textarea>
@@ -59,10 +72,10 @@
     <option class="categorie" name="cateogrie" vlaue="option19">Overig</option>
   </select>
   <br>
-  <form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" id="fileInput" name="file">
+  <form class="button" id="uploadForm" enctype="multipart/form-data">
+    <input class="button" type="file" id="fileInput" name="file">
   </form>
-  <button type="submit">Plaats challenge</button>
+  <button class="button" type="submit">Plaats challenge</button>
 
     
 </form>
@@ -92,13 +105,21 @@ document.getElementById("uploadForm").addEventListener("submit", async function 
 </script>
 
 </form>
-<!-- <script> script voor xss toevoegen. </script>!-->
+<!-- <script> script voor het forum uploaden toevoegen. </script>!-->
 
 </div>
 
 <div class="posts">
-    
-</div>
+    <div class="like-button">
+        <button id="like-button"><i class='bx bx-like'></i></button> 
+    </div>
+<script>
+document.getElementById('like-button').addEventListener('click', function() {
+    const icon = this.querySelector('i'); // Select the <i> inside the button
+    icon.classList.toggle('bx-like');
+    icon.classList.toggle('bxs-like');
+});
+</script>
 
 </body>
 
