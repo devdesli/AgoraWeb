@@ -29,3 +29,15 @@ body {
 .categorie {
     border-color: #d42b87;
 }
+
+.textarea {
+    text-decoration: none;
+    border-color: #d42b87
+}
+
+.button {
+    border-color: #d42b87;
+}
+
+.like-button {
+}
