@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <link rel="stylesheet" href="challengeforum.css">
+    <link rel="stylesheet" href="uploadtoforum.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="top-color position-fixed">
+        
         <div class="logo">
            <a href="home.html">
             <img class="logo" src="logo.png">
@@ -16,22 +19,19 @@
         <h1>Welkom plaats hier je challenge op het forum</h1>
     </div>
 
-    <div class="forum">
-
-
+<div class="forum">
 
 <textarea required placeholder="Vul jouwn volledige naam in"></textarea>
 <textarea required placeholder="Vul de naam van jouwn challenge in"></textarea>
 <textarea required placeholder="Informatie over jouwn challenge"></textarea>
 
 <label for="options">Kies een categorie:</label>
-
-<select class="categorie" name="categorie" id="categorie">
+  <select class="categorie" name="categorie" id="categorie">
   <option value="placeholder" selected disabled>Kies een optie</option>
   <option class="categorie" name="categorie" value="option1">Aardreikskunde</option>
   <option class="categorie" name="categorie" value="option2">Scheikunde</option>
   <option class="categorie" name="categorie" value="option3">Biologie</option>
-  <option class="categorie" name="categorie" value="option3">Scheikunde</option>
+  <option class="categorie" name="categorie" value="option3">informatica</option>
   <option class="categorie" name="categorie" value="option4">Economie</option>
   <option class="categorie" name="categorie" value="option5">Natuurkunde</option>
   <option class="categorie" name="categorie" value="option6">Maatschapijleer</option>
@@ -47,12 +47,15 @@
   <option class="categorie" name="categorie" value="option16">muziek</option>
   <option class="categorie" name="categorie" value="option17">informatica</option>
   <input class="categorie"type="text" placeholder="Of iets anders namelijk....">
-</select>
+  </select>
+  
+  <button type="submit">Plaats challenge</button>
 
-
-<button type="submit">Plaats challenge</button>
 </div>
 
+<div class="posts">
+    <p>test</p>
+</div>
 
 </body>
 
