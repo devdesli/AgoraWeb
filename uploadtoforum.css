@@ -1,3 +1,4 @@
+
 h1 {
     margin-top: 0%;
     text-align: center;
@@ -5,7 +6,6 @@ h1 {
     
 }
 body {
-    overscroll-behavior-y: none;
     background-color: #afaeae;
 }
 
@@ -40,5 +40,5 @@ body {
 }
 
 .like-button {
-    
+    border-color: #d42b87;
 }

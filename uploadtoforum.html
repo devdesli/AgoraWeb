@@ -98,10 +98,15 @@ document.getElementById("uploadForm").addEventListener("submit", async function 
 
 <div class="posts">
     <div class="like-button">
-        <button><i class='bx bx-like'></i></button> 
-        <button><i class='bx bxs-like'></i></button> 
+        <button id="like-button"><i class='bx bx-like'></i></button> 
     </div>
-</div>
+<script>
+document.getElementById('like-button').addEventListener('click', function() {
+    const icon = this.querySelector('i'); // Select the <i> inside the button
+    icon.classList.toggle('bx-like');
+    icon.classList.toggle('bxs-like');
+});
+</script>
 
 </body>
 
