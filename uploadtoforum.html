@@ -21,11 +21,17 @@
 
 <div class="forum">
 
-<textarea required placeholder="Vul jouwn volledige naam in"></textarea>
-<textarea required placeholder="Vul de naam van jouwn challenge in"></textarea>
-<textarea required placeholder="Informatie over jouwn challenge"></textarea>
-
-<label for="options">Kies een categorie:</label>
+<h3>naam</h3>
+<textarea required placeholder="Vul jouw volledige naam in"></textarea>
+<h3>titel</h3>
+<textarea required placeholder="Vul de titel van jouw challenge in"></textarea>
+<h3>wat doe je tijdens deze challenge</h3>
+<textarea required placeholder="Informatie over jouw challenge"></textarea>
+<h3>hoofd- en deelvragen</h3>
+<textarea required placeholder="vul hier jou hoofdvraag in"></textarea>
+<textarea required placeholder="vul hier jouw deelvragen in"></textarea>
+<br>
+<label for="options"><h3>Kies een bijbehorende filter</h3></label>
   <select class="categorie" name="categorie" id="categorie">
   <option value="placeholder" selected disabled>Kies een optie</option>
   <option class="categorie" name="categorie" value="option1">Aardreikskunde</option>
@@ -48,7 +54,7 @@
   <option class="categorie" name="categorie" value="option17">informatica</option>
   <input class="categorie"type="text" placeholder="Of iets anders namelijk....">
   </select>
-  
+  <br>
   <button type="submit">Plaats challenge</button>
 
   <script>
