@@ -14,9 +14,12 @@ body {
     height: 75px;
 }
 
-.topcolor {
+.posistion-fixed {
+    position: fixed;
+}
+
+.top-color {
     height: 25%;
     width: 100%;
     background-color:  #22194d;
-    padding-bottom: 10px;
 }
