@@ -20,9 +20,8 @@ body {
 
 h1 {
     margin-top: 0%;
-    text-align: top;
+    text-align: center;
     color: white;
-
 }
 
 .position-fixed {
@@ -40,9 +39,6 @@ h1 {
 
 h3 {
     color: white;
-}
-.filters {
-    margin-right: 25px;
 }
 
 .forum-button {
@@ -83,7 +79,7 @@ h3 {
     padding:20px;
     display: flex;
     justify-content: space-between;
-    margin-top: 250px;
+    margin-top: 335px;
     border-radius: 10px;
     box-shadow: #4F4F4F 0 0 50px 10px;
 }
@@ -103,5 +99,16 @@ h3 {
     text-align: right;
     padding-right: 20px;
 }
+
+.display-flex {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gap {
+    gap: 115px;
+}
+
 
 
