@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" href="forum.css"/>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="forum.js"></script>
 </head>
 
 <body>
@@ -19,9 +20,6 @@
         <div class="module-container">
             <a href="uploadtoforum.html" class="module-button"><p class="module-tekst">Challenge toevoegen</p>
             <i class="bx bx-plus-circle module-button"></i></a>
-        </div>
-        <div class="contact">
-            <p>Heb je een vraag of een tip stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
         </div>
     </div>
 
@@ -52,11 +50,14 @@
 
     <div class="posts">
         <div class="container">
-            <button class="card">
-                    
+            <div id="challengesContainer"></div>
+
+            <div class="card">
+
                 <h2 class="title">TITLE</h2>
-                <p class="tekst">dit is willekeurige tekst over een challenge etc <br> 
-                dit is een test met de fonts.</p>
+
+                <p class="challenge-info">dit is willekeurige tekst over een challenge etc</p>
+
                 <div class="questions content">
                     <p>dit zijn moeilijke leervragen.<br>
                     wat is dit<br>
@@ -69,20 +70,16 @@
                 <div class="like-button">
                     <button id="like-button"><i class='bx bx-like'></i></button> 
                 </div>
-                
-                <script>
-                    document.getElementById('like-button').addEventListener('click', function() {
-                        const icon = this.querySelector('i'); // Select the <i> inside the button
-                        icon.classList.toggle('bx-like');
-                        icon.classList.toggle('bxs-like');
-                    });
-                </script>
-                
-            </button>
+
+                <button class="extra-info" id="extra-info">
+                    <a href="info.html" aria-placeholder="extra-info"></a>
+                </button>
+            </div>
         
         </div>
-
     </div>
-    
+    <div class="contact">
+        <p>Heb je een vraag of een tip stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+    </div>
 </body>
 </html>
