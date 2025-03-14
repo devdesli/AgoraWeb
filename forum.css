@@ -64,6 +64,8 @@ h3 {
 
 .like-button {
     border-color: #d42b87;
+    right: 5px;
+    bottom: 5px;
 }
 
 .container {
@@ -89,4 +91,3 @@ h3 {
     font-size: 14px;
     opacity: 0.8;
 }
-
