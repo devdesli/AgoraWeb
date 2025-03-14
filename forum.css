@@ -93,5 +93,7 @@ h3 {
 }
 
 .card-button {
-    background: #4F4F4F;
+    margin-top: 250px;
+    border-color: #afaeae;
+    background: #afaeae;
 }
