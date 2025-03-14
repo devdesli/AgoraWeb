@@ -93,6 +93,8 @@ h3 {
 }
 
 .card-button {
+    width: 445px; /* Adjust width */
+    height: 150px; /* Adjust height */
     margin-top: 250px;
     border-color: #afaeae;
     background: #afaeae;
