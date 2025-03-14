@@ -102,20 +102,20 @@
                             <p class="author">door iemand</p>
                         </div>
                     </div>
-                </button>
-        
+                    </button>
 
 
-        <div class="like-button">
-        <button id="like-button"><i class='bx bx-like'></i></button> 
+            <div class="like-button">
+                <button id="like-button"><i class='bx bx-like'></i></button> 
+            </div>
+        <script>
+            const icon = this.querySelector('i'); // Select the <i> inside the button
+            icon.classList.toggle('bx-like');
+            icon.classList.toggle('bxs-like');
+            document.getElementById('like-button').addEventListener('click', function() {
+        });
+        </script>
     </div>
-    <script>
-    document.getElementById('like-button').addEventListener('click', function() {
-        const icon = this.querySelector('i'); // Select the <i> inside the button
-        icon.classList.toggle('bx-like');
-        icon.classList.toggle('bxs-like');
-    });
-    </script>
     
 </body>
 </html>
