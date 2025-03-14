@@ -92,10 +92,11 @@ h3 {
     opacity: 0.8;
 }
 
+.content {
+    color: white;
+}
+
 .card-button {
-    width: 445px; /* Adjust width */
-    height: 150px; /* Adjust height */
-    margin-top: 250px;
-    border-color: #afaeae;
-    background: #afaeae;
+    border: none;
+    background-color: #4F4F4F;
 }

@@ -52,42 +52,26 @@
     <div class="posts">
         <div class="container">
             
-            <button class="card-button">
-                <div class="card">
-                    <div class="content">
-                        <h1>TITLE</h1>
-                        <p>dit is willekeurige tekst over een challenge etc <br> 
-                        dit is een test met de fonts.</p>
+            <button class="card-button card">
+                    <h1 class="title">TITLE</h1>
+                    <p class="tekst">dit is willekeurige tekst over een challenge etc <br> 
+                    dit is een test met de fonts.</p>
                     </div>
-                    <div class="questions">
+                    <div class="questions content">
                         <p>dit zijn moeilijke leervragen.<br>
                         wat is dit<br>
                         hoe werkt het<br>
                         idk idc</p>
-                        <p class="author">door iemand</p>
                     </div>
-                </div>
-            </button>
 
-                <div class="content">
-                    <h1>TITLE</h1>
-                    <p>dit is willekeurige tekst over een challenge etc <br> 
-                    dit is een test met de fonts.</p>
-                </div>
-                
-                <div class="questions">
-                    <p>dit zijn moeilijke leervragen.<br>
-                    wat is dit<br>
-                    hoe werkt het<br>
-                    idk idc</p>
                     <p class="author">door iemand</p>
-                </div>
-                <div class="like-button">
-                        <button id="like-button"><i class='bx bx-like'></i></button> 
-                </div>
 
-            </div>
+                    <div class="like-button">
+                        <button id="like-button"><i class='bx bx-like'></i></button> 
+                    </div>
             </button>
+        
+        </div>
         <script>
             const icon = this.querySelector('i'); // Select the <i> inside the button
             icon.classList.toggle('bx-like');
