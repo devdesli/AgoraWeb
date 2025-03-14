@@ -64,8 +64,6 @@ h3 {
 
 .like-button {
     border-color: #d42b87;
-    right: 5px;
-    bottom: 5px;
 }
 
 .container {
@@ -75,7 +73,7 @@ h3 {
 
 .card {
     width: 445px; /* Adjust width */
-    height: 150px; /* Adjust height */
+    height: 200px; /* Adjust height */
     background-color: #4F4F4F; /* Dark purple background */
     color: white;
     padding:20px;
@@ -83,7 +81,7 @@ h3 {
     justify-content: space-between;
     margin-top: 250px;
     border-radius: 10px;
-    box-shadow: #4F4F4F 0 0 40px 0;
+    box-shadow: #4F4F4F 0 0 50px 10px;
 }
 
 .author {
@@ -94,9 +92,4 @@ h3 {
 
 .content {
     color: white;
-}
-
-.card-button {
-    border: none;
-    background-color: #4F4F4F;
 }
