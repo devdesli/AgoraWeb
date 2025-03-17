@@ -25,13 +25,13 @@
 
     <form id="challengeForm">  <!-- Add form ID -->
         <h3>Naam</h3>
-        <textarea id="name" required placeholder="Vul jouw volledige naam in"></textarea>
+        <textarea rows="1" class="rij-1" id="name" required placeholder="Vul jouw volledige naam in"></textarea>
 
         <h3>Titel</h3>
-        <textarea id="title" required placeholder="Vul de titel van jouw challenge in"></textarea>
+        <textarea rows="1" class="rij-1" id="title" required placeholder="Vul de titel van jouw challenge in"></textarea>
 
         <h3>Hoofd- en deelvragen</h3>
-        <textarea id="mainQuestion" required placeholder="Vul hier jouw hoofdvraag in"></textarea>
+        <textarea rows="1" class="rij-1" id="mainQuestion" required placeholder="Vul hier jouw hoofdvraag in"></textarea>
         <textarea id="subQuestions" required placeholder="Vul hier jouw deelvragen in"></textarea>
 
         <h3>Wat doe je tijdens deze challenge</h3>
@@ -42,7 +42,7 @@
   
     <label for="options"><h3>Kies een bijbehorende filter</h3></label>
 
-  <select required class="categorie" name="categorie" id="categorie">
+  <select required name="categorie" id="categorie">
     <option value="placeholder" selected disabled>Kies een optie</option>
     <option class="categorie" name="categorie" value="aardijkskunde">Aardrijkskunde</option>
     <option class="categorie" name="categorie" value="Biologie">Biologie</option>
@@ -65,8 +65,68 @@
     <option class="categorie" name="cateogrie" vlaue="Overig">Overig</option>
   </select>
   <br>
-  <form class="button" id="uploadForm" enctype="multipart/form-data">
-    <input class="button" type="file" id="fileInput" name="file" />
+  
+  <h3>Voeg een bestand toe</h3> 
+  <input class="button" type="file" id="fileInput" name="file" />
+
+    <script>
+      document.getElementById("fileInput").addEventListener("change", function(event) {
+        const file = event.target.files[0]; 
+        const previewContainer = document.getElementById("previewContainer");
+        previewContainer.innerHTML = ""; // Leegmaken als er al een bestand stond
+        
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            let fileType = file.type;
+            let previewElement;
+    
+            if (fileType.startsWith("image/")) {
+              // 🖼️ Toon afbeelding
+              previewElement = document.createElement("img");
+              previewElement.src = e.target.result;
+              previewElement.style.maxWidth = "300px";
+            } else if (fileType === "application/pdf") {
+              // 📄 Toon PDF als embed
+              previewElement = document.createElement("embed");
+              previewElement.src = e.target.result;
+              previewElement.type = "application/pdf";
+              previewElement.style.width = "100%";
+              previewElement.style.height = "400px";
+            } else {
+              // 📂 Toon downloadbare link voor andere bestanden
+              previewElement = document.createElement("a");
+              previewElement.href = e.target.result;
+              previewElement.download = file.name;
+              previewElement.textContent = "Download " + file.name;
+            }
+    
+            previewContainer.appendChild(previewElement);
+          };
+    
+          reader.readAsDataURL(file); // Leest bestand als Data URL
+        }
+      });
+    </script>
+    
+    <h3>Voeg een plaatje toe</h3>
+    <input type="file" accept="image/*" id="imageInput">
+<img id="preview" style="max-width: 300px; display: none;">
+
+<script>
+  document.getElementById("imageInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.getElementById("preview");
+        img.src = e.target.result;
+        img.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
   
     <input type="submit" id="post-button" value="plaats challenge"/>
 
