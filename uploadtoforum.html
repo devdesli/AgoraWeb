@@ -42,7 +42,7 @@
   
     <label for="options"><h3>Kies een bijbehorende filter</h3></label>
 
-  <select class="categorie" name="categorie" id="categorie">
+  <select required class="categorie" name="categorie" id="categorie">
     <option value="placeholder" selected disabled>Kies een optie</option>
     <option class="categorie" name="categorie" value="option1">Aardreikskunde</option>
     <option class="categorie" name="categorie" value="option3">Biologie</option>
@@ -66,11 +66,13 @@
   </select>
   <br>
   <form class="button" id="uploadForm" enctype="multipart/form-data">
-    <input class="button" type="file" id="fileInput" name="file">
+    <input class="button" type="file" id="fileInput" name="file" />
+  
+    <input type="submit" id="post-button" value="plaats challenge"/>
+
   </form>
 
-  <button type="submit" id="post-button">Plaats challenge</button>
-  </form>
+
 
 <div id="challengesContainer"></div>
     
