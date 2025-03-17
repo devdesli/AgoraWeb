@@ -27,7 +27,8 @@ body {
 
 textarea {
     text-decoration: none;
-    border-color: #d42b87
+    border-color: #d42b87;
+    resize: none;
 }
 
 .forum {
@@ -37,3 +38,4 @@ textarea {
 .rij-1 {
     width: 250px;
 }
+
