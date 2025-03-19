@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p><strong>Beschrijving:</strong> ${description}</p>
                 <p><strong>Eindproduct:</strong> ${endProduct}</p>
                 <p><strong>Categorie:</strong> ${category}</p>
-                <button class="like-button"><i class='bx bx-like'></i></button>
             `;
 
             // Voeg de nieuwe post toe aan de container
@@ -87,4 +86,21 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
     });
+});
+
+
+fetch('/add_challenge', { // The "address" of the Flask route
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json' // Tell the server we're sending JSON
+    },
+    body: JSON.stringify(challengeData) // The "package" with our data
+})
+.then(response => response.json()) // Handle the response from Flask
+.then(data => {
+    console.log('Success:', data);
+    // Do something with the response
+})
+.catch((error) => {
+    console.error('Error:', error);
 });
