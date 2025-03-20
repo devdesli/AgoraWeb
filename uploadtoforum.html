@@ -24,25 +24,31 @@
 <div class="forum">
 
     <form id="challengeForm">  <!-- Add form ID -->
+      <div class="rij-1">
         <h3>Naam</h3>
-        <textarea rows="1" class="rij-1" id="name" required placeholder="Vul jouw volledige naam in"></textarea>
+        <textarea rows="1" class="rows-1" id="name" required placeholder="Vul jouw volledige naam in"></textarea>
 
         <h3>Titel</h3>
-        <textarea rows="1" class="rij-1" id="title" required placeholder="Vul de titel van jouw challenge in"></textarea>
-
+        <textarea rows="1" class="rows-1" id="title" required placeholder="Vul de titel van jouw challenge in"></textarea>
+      </div>
+      <div class="rij-2">  
         <h3>Hoofd- en deelvragen</h3>
-        <textarea rows="1" class="rij-1" id="mainQuestion" required placeholder="Vul hier jouw hoofdvraag in"></textarea>
+        <textarea rows="1" class="rows-1" id="mainQuestion" required placeholder="Vul hier jouw hoofdvraag in"></textarea>
+        <br>
         <textarea id="subQuestions" required placeholder="Vul hier jouw deelvragen in"></textarea>
 
         <h3>Wat doe je tijdens deze challenge</h3>
         <textarea id="description" required placeholder="Informatie over jouw challenge"></textarea>
-
+      </div>
+      <div class="rij-3">
         <h3>Eindproduct</h3>
         <textarea id="endProduct" required placeholder="Wat was jouw eindproduct"></textarea>
-  
-    <label for="options"><h3>Kies een bijbehorende filter</h3></label>
-
-  <select required name="categorie" id="categorie">
+        <h3>Voeg een bestand toe</h3> 
+        <input class="button" type="file" id="fileInput" name="file" />
+      </div>  
+      <div class="rij-4">
+      <label for="options"><h3>Kies een bijbehorende filter</h3></label>
+      <select required name="categorie" id="categorie">
     <option value="placeholder" selected disabled>Kies een optie</option>
     <option class="categorie" name="categorie" value="aardijkskunde">Aardrijkskunde</option>
     <option class="categorie" name="categorie" value="Biologie">Biologie</option>
@@ -66,8 +72,7 @@
   </select>
   <br>
   
-  <h3>Voeg een bestand toe</h3> 
-  <input class="button" type="file" id="fileInput" name="file" />
+  
 
     <script>
       document.getElementById("fileInput").addEventListener("change", function(event) {
@@ -109,7 +114,7 @@
       });
     </script>
     
-    <h3>Voeg een plaatje toe</h3>
+    <h3>Voeg een passend plaatje toe</h3>
     <input type="file" accept="image/*" id="imageInput">
 <img id="preview" style="max-width: 300px; display: none;">
 
@@ -129,7 +134,7 @@
 </script>
   
     <input type="submit" id="post-button" value="plaats challenge"/>
-
+</div>
   </form>
 
 
@@ -139,6 +144,7 @@
 <!-- <script> script voor het forum uploaden toevoegen. </script>!-->
 
 </div>
+<hr>
 </body>
 
 </html>

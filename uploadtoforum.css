@@ -16,26 +16,48 @@ body {
 }
 
 .top-color {
-    height: 20%;
+    position: absolute;
     width: 100%;
     background-color:  #22194d;
-    padding-bottom: 10px;
+    left: 0px;
+    top: 0px;
     padding-top: 10px;
+    padding-left: 5px;
+    height: 150px;
+    padding-bottom: 15px;
 }
-
-
 
 textarea {
     text-decoration: none;
-    border-color: #d42b87;
     resize: none;
+    width: 250px;
 }
 
 .forum {
     font-size: 12.5px;
 }
 
+
 .rij-1 {
-    width: 250px;
+    margin-top: 215px;
+    margin-left: 175px;
 }
 
+.rij-2 {
+    margin-left: 465px;
+    margin-top: -143px;
+}
+
+.rij-3 {
+    margin-left: 740px;
+    margin-top: -198px;
+}
+
+.rij-4 {
+    margin-left: 1015px;
+    margin-top: -155px;
+}
+
+hr {
+    margin-top: 100px;
+}
