@@ -42,14 +42,31 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-    // Event delegation voor like-knoppen zodat het werkt voor nieuwe en bestaande posts
-    document.addEventListener("click", function (event) {
-        if (event.target.closest(".like-button")) {
-            let icon = event.target.closest(".like-button").querySelector("i");
-            icon.classList.toggle("bx-like");
-            icon.classList.toggle("bxs-like");
+document.addEventListener("click", function (event) {
+    // Check if the click is on the like button
+    if (event.target.closest(".like-button")) {
+        let icon = event.target.closest(".like-button").querySelector("i");
+        let likeCountElement = document.getElementById("likeCount");
+
+        // Toggle the icon classes
+        icon.classList.toggle("bx-like");
+        icon.classList.toggle("bxs-like");
+
+        // Get the current like count
+        let likeCount = parseInt(likeCountElement.textContent);
+
+        // Update the like count based on the icon state
+        if (icon.classList.contains("bxs-like")) {
+            likeCount++; // Increment when it's "liked"
+        } else {
+            likeCount--; // Decrement when it's "unliked"
         }
-    });
+
+        // Update the displayed like count
+        likeCountElement.textContent = likeCount;
+    }
+});
+
 
 document.getElementById("uploadForm").addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -104,3 +121,4 @@ fetch('/add_challenge', { // The "address" of the Flask route
 .catch((error) => {
     console.error('Error:', error);
 });
+
