@@ -40,24 +40,35 @@ textarea {
 
 .rij-1 {
     margin-top: 215px;
-    margin-left: 175px;
+    margin-left: 200px;
 }
 
 .rij-2 {
-    margin-left: 465px;
+    margin-left: 480px;
     margin-top: -143px;
 }
 
 .rij-3 {
-    margin-left: 740px;
+    margin-left: 765px;
     margin-top: -198px;
 }
 
 .rij-4 {
-    margin-left: 1015px;
+    margin-left: 1040px;
     margin-top: -155px;
 }
 
 hr {
     margin-top: 100px;
+    margin-left: -10px;
+    margin-right: -10px;
 }
+
+.submit {
+    width: 1540px;
+    margin-left: -10px;
+    font-size: 200px;
+    height: 275px;
+}
+
+
