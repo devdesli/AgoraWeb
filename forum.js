@@ -99,9 +99,8 @@ document
   });
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Event delegation for like buttons
   document.addEventListener("click", function (event) {
-    let likeButton = event.target.closest(".like-button button"); // Selecteer de like-knop
+    let likeButton = event.target.closest(".like-button button");
     if (likeButton) {
       let icon = likeButton.querySelector("i");
       if (icon) {
