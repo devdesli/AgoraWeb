@@ -1,1 +1,0 @@
-This is our remake for the Agora school website. 
