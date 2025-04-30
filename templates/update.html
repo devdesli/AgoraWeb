@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/uploadtoforum.css') }}">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+<script src="{{ url_for('static', filename='js/forum.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="top-color">
+  <button class="forum-button"><a href="/forum" target="_blank">Ga terug naar het forum</a></button>
+  <div class="logo">
+    <a href="https://liemersagora.beezer.com/" target="_blank">
+      <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo" />
+    </a>
+  </div>
+  <h1>Update je challenge</h1>
+</div>
+
+<div class="forum">
+  <form action="{{ url_for('update', id=todo.id) }}" method="POST" enctype="multipart/form-data">
+    <!-- Naam -->
+    <label><h3 class="authorText author">Naam</h3></label>
+    <textarea class="author" rows="1" name="name" required maxlength="20">{{ todo.name }}</textarea>
+
+    <!-- Titel -->
+    <label><h3 class="title titleText">Titel</h3></label>
+    <textarea class="title" rows="2" name="title" required maxlength="30">{{ todo.title }}</textarea>
+
+    <!-- Hoofdvraag -->
+    <label class="mainquestion mainquestionText"><h3>Hoofdvraag</h3></label>
+    <textarea class="mainquestion" rows="1" name="mainQuestion" required maxlength="60">{{ todo.mainQuestion }}</textarea>
+
+    <!-- Deelvragen -->
+    <label class="subquestions subquestionsText"><h3>Deelvragen</h3></label>
+    <textarea class="subquestions" rows="5" name="subQuestions" required maxlength="150">{{ todo.subQuestions }}</textarea>
+
+    <!-- Beschrijving -->
+    <label class="challengeinfo challengeinfoText"><h3>Informatie</h3></label>
+    <textarea class="challengeinfo" rows="3" name="description" required maxlength="100">{{ todo.description }}</textarea>
+
+    <!-- Eindproduct -->
+    <label class="endproduct endproductText"><h3>Eindproduct</h3></label>
+    <textarea class="endproduct" rows="5" name="endProduct" required>{{ todo.endProduct }}</textarea>
+
+    <!-- Categorie -->
+    <label class="filtersText filters" for="categorie"><h3>Kies een bijbehorende filter</h3></label>
+    <select class="filters" name="categorie" required>
+      <option disabled hidden></option>
+      {% for option in [
+        "Aardrijkskunde", "Biologie", "Informatica", "Economie", "Natuurkunde", "Maatschapijleer",
+        "Lichamelijke opvoeding", "Kunst en Cultuur", "Wiskunde", "Geschiedenis", "Engels",
+        "Nederlands", "Frans", "Duits", "Handvaardigheid", "Muziek", "Scheikunde", "Overig"
+      ] %}
+        <option value="{{ option }}" {% if todo.categorie == option %}selected{% endif %}>{{ option }}</option>
+      {% endfor %}
+    </select>
+    <br />
+
+    <h3 class="imageinput imageinputText">Voeg een passend plaatje toe</h3>
+    <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
+    <img class="image" id="preview" style="max-width: 300px; display: none;" />
+
+    <script>
+      document.getElementById("imageInput").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+
+    <h3 class="imageinput imageinputText">Voeg een bestand of foto toe</h3>
+
+    <!-- Display existing image if it exists -->
+    {% if todo.image %}
+      <img class="image" src="{{ url_for('static', filename='uploads/' + todo.image) }}" style="max-width: 300px;" />
+    {% endif %}
+    
+    <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
+    <img class="image" id="preview" style="max-width: 300px; display: none;" />
+    
+    <script>
+      document.getElementById("imageInput").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+    
+  </form>
+
+    <form action="/forum" methods="POST" enctype="multipart/form-data">
+        <button class="submit" type="submit">Update challenge</button>
+    </form>
+
+</div>
+{% endblock %}

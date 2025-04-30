@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{url_for('static', filename='css/home.css') }}">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="{{url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+  <button>
+    <a href="uploadtoforum">post een challenge of het forum</a>
+  </button>
+  <button>
+    <a href="forum">bekijk challenges op het forum</a>
+  </button>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/card.css') }}">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/forum.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="top-color position-fixed">
+    <div class="contact">
+        <p>Heb je een vraag of een tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+    </div>
+    <div class="logo">
+       <a href="https://liemersagora.beezer.com/" target="_blank">
+        <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo"></a>
+    </div>
+
+    <h1>Agora challenge inspiratielijst</h1>
+
+    <div class="module-container">
+        <a href="uploadtoforum" class="module-button"><p class="module-tekst">Challenge toevoegen</p>
+        <i class="bx bx-plus-circle module-button"></i></a>
+    </div>
+
+    <div class="filter-text">  
+        <h3>Filters</h3>
+        <h3>Sorteren</h3>
+    </div>   
+    <form class="filters" action="/forum" method="GET">
+        <select name="vakfilter" class="filter1" onchange="this.form.submit()">
+          <option value="">Geen filter</option>
+          <option value="Aardrijkskunde" {% if request.args.get('vakfilter') == 'Aardrijkskunde' %}selected{% endif %}>Aardrijkskunde</option>
+          <option value="Biologie" {% if request.args.get('vakfilter') == 'Biologie' %}selected{% endif %}>Biologie</option>
+          <option value="Informatica" {% if request.args.get('vakfilter') == 'Informatica' %}selected{% endif %}>Informatica</option>
+          <option value="Economie" {% if request.args.get('vakfilter') == 'Economie' %}selected{% endif %}>Economie</option>
+          <option value="Natuurkunde" {% if request.args.get('vakfilter') == 'Natuurkunde' %}selected{% endif %}>Natuurkunde</option>
+          <option value="Maatschappijleer" {% if request.args.get('vakfilter') == 'Maatschappijleer' %}selected{% endif %}>Maatschappijleer</option>
+          <option value="Lichamelijke opvoeding" {% if request.args.get('vakfilter') == 'Lichamelijke opvoeding' %}selected{% endif %}>Lichamelijke opvoeding</option>
+          <option value="Kunst en Cultuur" {% if request.args.get('vakfilter') == 'Kunst en Cultuur' %}selected{% endif %}>Kunst en Cultuur</option>
+          <option value="Wiskunde" {% if request.args.get('vakfilter') == 'Wiskunde' %}selected{% endif %}>Wiskunde</option>
+          <option value="Geschiedenis" {% if request.args.get('vakfilter') == 'Geschiedenis' %}selected{% endif %}>Geschiedenis</option>
+          <option value="Engels" {% if request.args.get('vakfilter') == 'Engels' %}selected{% endif %}>Engels</option>
+          <option value="Nederlands" {% if request.args.get('vakfilter') == 'Nederlands' %}selected{% endif %}>Nederlands</option>
+          <option value="Frans" {% if request.args.get('vakfilter') == 'Frans' %}selected{% endif %}>Frans</option>
+          <option value="Duits" {% if request.args.get('vakfilter') == 'Duits' %}selected{% endif %}>Duits</option>
+          <option value="Handvaardigheid" {% if request.args.get('vakfilter') == 'Handvaardigheid' %}selected{% endif %}>Handvaardigheid</option>
+          <option value="Muziek" {% if request.args.get('vakfilter') == 'Muziek' %}selected{% endif %}>Muziek</option>
+          <option value="Scheikunde" {% if request.args.get('vakfilter') == 'Scheikunde' %}selected{% endif %}>Scheikunde</option>
+          <option value="Overig" {% if request.args.get('vakfilter') == 'Overig' %}selected{% endif %}>Overig</option>
+        </select>
+      
+        <select name="sortfilter" class="filter2" onchange="this.form.submit()">
+          <option value="No filter" {% if request.args.get('sortfilter') == 'No filter' %}selected{% endif %}>Nergens op gesorteerd</option>
+          <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
+          <option value="newest" {% if request.args.get('sortfilter') == 'newest' %}selected{% endif %}>Nieuwste challenge</option>
+          <option value="oldest" {% if request.args.get('sortfilter') == 'oldest' %}selected{% endif %}>Oudste challenge</option>
+        </select>
+      </form>
+      
+</div>
+
+<div class="container">
+    {% for task in tasks %}
+        {% include 'components/card.html' %}
+    {% else %}
+        <p>Er zijn nog geen challenges geplaatst.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

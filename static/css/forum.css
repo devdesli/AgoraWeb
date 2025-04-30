@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #afaeae;
+}
+
+.logo {
+    width: 150px;
+    height: 75px;
+    cursor: pointer;
+}
+
+.top-color {
+    text-shadow: rebeccapurple 0 0 20px;
+    position: absolute;
+    width: 100%;
+    background-color:  #22194d;
+    left: 0px;
+    top: 0px;
+    padding-top: 10px;
+    padding-left: 5px;
+    height: 150px;
+    z-index: 1000;
+}
+
+.filter-text {
+    position: absolute;
+    display: flex;
+    gap: 100px;
+    align-items: center;
+    top: 75px;
+    padding: none;
+}
+
+.filters {
+    position: relative;
+    top: -35px;
+}
+
+h1 {
+    margin-top: 0%;
+    text-align: center;
+    color: white;  
+}
+
+.position-fixed {
+    position: fixed;
+}
+
+.module-container {
+    right: 25px;
+    position: fixed;
+    top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between text and button */
+}
+
+h3 {
+    color: white;
+}
+
+.forum-button {
+    right: 5px;
+}
+
+.module-button {
+    background-color: #d42b87;
+    background: none;
+    border: none;
+    padding: none;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 15px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.module-button i {
+    color: #d42b87;
+    font-size: 50px;
+}
+
+.content {
+    color: white;
+}
+
+.contact {
+    position: absolute;
+    color: white;
+    top: 125px;
+    right: 25px;
+    z-index: 1000;
+}
+
+select {
+    cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+    h1 {
+        font-size: 2.75rem;
+    }
+}

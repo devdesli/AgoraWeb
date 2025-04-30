@@ -1,0 +1,101 @@
+<!--<link rel="stylesheet" href="{{ url_for('static', filename='js/card.js') }}"> !-->
+<div class="card card-glow">
+    <h2 class="title">{{ task.title }}</h2>
+    <p class="author"><strong>Naam:</strong> {{ task.name }}</p>
+    <p class="headquestion"><strong>Hoofdvraag:</strong><br> {{ task.main_question }}</p>
+    <p class="challenge-info"><strong>Beschrijving:</strong><br> {{ task.description }}</p>
+    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>
+
+    <form class="update-button" action="{{ url_for('update', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to update this task?');">
+        <button type="submit">Update</button>
+    </form>
+
+    <form action="{{ url_for('delete_task', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
+        <button class="delete-button" type="submit">Verwijder</button>
+    </form>
+
+    <label class="expand-label" for="name">Bekijk hele post :</label>
+    <form action="{{ url_for('challenge_view', id=task.id) }}">
+        <button name="expand-button" class="expand-button" type="submit">
+            <i class='bx bx-expand'></i>
+        </button>
+    </form>
+
+    <!-- Like Button for Task -->
+    {% set liked_tasks = session.get('liked_tasks', []) %}
+
+    <div class="like-button">
+        <span data-id="{{ task.id }}">
+            <form action="{{ url_for('toggle_like', id=task.id) }}" method="POST">
+                <button type="submit">
+                    <i class="bx {% if task.id in liked_tasks %}bxs-like{% else %}bx-like{% endif %}"></i>
+                </button>
+            </form>
+            <label for="like-count-{{ task.id }}" class="label-like-count">Likes:</label>
+            <span id="like-count-{{ task.id }}" class="like-count">{{ task.likes }}</span>
+        </span>
+    </div>
+
+</div>
+
+<style>
+p.title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+p.challenge-info {
+    max-width: 200px;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: visible;
+}
+</style>
+
+<script>document.addEventListener("click", function (event) {
+    const button = event.target.closest(".like-button");
+
+    if (button) {
+        const icon = button.querySelector("i");
+        const likeCountElement = button.querySelector(".like-count");
+        const todoId = button.getAttribute("data-id");
+
+        fetch(`/togglelike/${todoId}`, {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.likes !== undefined) {
+                // Update the like count
+                likeCountElement.textContent = data.likes;
+
+                // Toggle the icon class based on liked status
+                icon.classList.remove("bxs-like", "bx-like");
+                icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+            } else {
+                console.error("Error toggling like:", data);
+            }
+        })
+        .catch(err => console.error("Fetch error:", err));
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Event delegation for like buttons
+    document.addEventListener("click", function (event) {
+        let likeButton = event.target.closest(".like-button button"); // Selecteer de like-knop
+        if (likeButton) {
+            let icon = likeButton.querySelector("i");
+            if (icon) {
+                icon.classList.toggle("bx-like");
+                icon.classList.toggle("bxs-like");
+            }
+            return;
+        }
+    });
+});
+</script>
