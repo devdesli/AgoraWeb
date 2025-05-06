@@ -25,7 +25,7 @@ body {
 .filter-text {
     position: absolute;
     display: flex;
-    gap: 100px;
+    gap: 110px;
     align-items: center;
     top: 75px;
     padding: none;
@@ -36,8 +36,14 @@ body {
     top: -35px;
 }
 
+.filterselect {
+    border-radius: 20px;
+    height: 25px;
+    margin-top: 10px;
+}
+
 h1 {
-    margin-top: 0%;
+    margin-top: -20px;
     text-align: center;
     color: white;  
 }
@@ -52,7 +58,7 @@ h1 {
     top: 10px;
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between text and button */
+    gap: 10px; 
 }
 
 h3 {
@@ -88,7 +94,7 @@ h3 {
 .contact {
     position: absolute;
     color: white;
-    top: 125px;
+    top: 115px;
     right: 25px;
     z-index: 1000;
 }

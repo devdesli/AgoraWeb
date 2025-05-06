@@ -29,7 +29,7 @@
         <h3>Sorteren</h3>
     </div>   
     <form class="filters" action="/forum" method="GET">
-        <select name="vakfilter" class="filter1" onchange="this.form.submit()">
+        <select name="vakfilter" class="filterselect" onchange="this.form.submit()">
           <option value="">Geen filter</option>
           <option value="Aardrijkskunde" {% if request.args.get('vakfilter') == 'Aardrijkskunde' %}selected{% endif %}>Aardrijkskunde</option>
           <option value="Biologie" {% if request.args.get('vakfilter') == 'Biologie' %}selected{% endif %}>Biologie</option>
@@ -51,7 +51,7 @@
           <option value="Overig" {% if request.args.get('vakfilter') == 'Overig' %}selected{% endif %}>Overig</option>
         </select>
       
-        <select name="sortfilter" class="filter2" onchange="this.form.submit()">
+        <select name="sortfilter" class="filterselect" onchange="this.form.submit()">
           <option value="No filter" {% if request.args.get('sortfilter') == 'No filter' %}selected{% endif %}>Nergens op gesorteerd</option>
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
           <option value="newest" {% if request.args.get('sortfilter') == 'newest' %}selected{% endif %}>Nieuwste challenge</option>
