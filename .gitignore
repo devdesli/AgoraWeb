@@ -5,3 +5,4 @@ __pycache__/
 /var
 /instance
 /var/app-instance
+/migrations
