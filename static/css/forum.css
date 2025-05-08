@@ -40,6 +40,7 @@ body {
     border-radius: 20px;
     height: 25px;
     margin-top: 10px;
+    min-width: 160px;
 }
 
 h1 {

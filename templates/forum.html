@@ -52,10 +52,9 @@
         </select>
       
         <select name="sortfilter" class="filterselect" onchange="this.form.submit()">
-          <option value="No filter" {% if request.args.get('sortfilter') == 'No filter' %}selected{% endif %}>Nergens op gesorteerd</option>
-          <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
           <option value="newest" {% if request.args.get('sortfilter') == 'newest' %}selected{% endif %}>Nieuwste challenge</option>
           <option value="oldest" {% if request.args.get('sortfilter') == 'oldest' %}selected{% endif %}>Oudste challenge</option>
+          <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
         </select>
       </form>
       
