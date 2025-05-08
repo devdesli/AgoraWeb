@@ -5,7 +5,7 @@
     <p class="challenge-info"><strong>Beschrijving:</strong><br> {{ task.description }}</p>
     <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>
 
-    <form action="{{ url_for('update', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to update this task?');">
+    <form action="{{ url_for('update', id=task.id) }}" method="GET" onsubmit="return confirm('Are you sure you want to update this task?');">
         <button class="update-button" type="submit">Update</button>
     </form>
 
@@ -41,6 +41,26 @@
 
 <!-- JavaScript -->
 <script>
+function handleUpdate(event, form) {
+    event.preventDefault();
+    
+    const card = form.closest('.card');
+    const taskData = {
+        title: card.querySelector('.title').textContent,
+        name: card.querySelector('.author').textContent.replace('Door:', '').trim(),
+        main_question: card.querySelector('.headquestion').textContent.replace('Hoofdvraag:', '').trim(),
+        description: card.querySelector('.challenge-info').textContent.replace('Beschrijving:', '').trim(),
+        category: card.querySelector('.category').textContent.replace('Categorie:', '').trim()
+    };
+
+    // Store the data in sessionStorage
+    sessionStorage.setItem('updateTaskData', JSON.stringify(taskData));
+    
+    // Redirect to the update page
+    window.location.href = form.action;
+    return false;
+}
+
 function expandCard(button) {
     const card = button.closest('.card');
     const modal = document.getElementById('modal');

@@ -1,7 +1,7 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone 
-#from flask_migrate import Migrate
+from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, jsonify, session, url_for
 from models import db
@@ -26,6 +26,7 @@ app.secret_key = "supersecret"  # Needed for session handling
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)  # Bind SQLAlchemy to the app
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
 app.secret_key = 'something-very-secret'
 
 @app.route('/')
@@ -71,38 +72,50 @@ def toggle_like(id):
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    todo = Todo.query.get_or_404(id)
+    task = Todo.query.get_or_404(id)
     
     if request.method == 'POST':
         try:
             # Get form data
-            todo.name = request.form.get('name', '')
-            todo.title = request.form.get('title', '')
-            todo.mainQuestion = request.form.get('mainQuestion', '')
-            todo.subQuestions = request.form.get('subQuestions', '')
-            todo.description = request.form.get('description', '')
-            todo.endProduct = request.form.get('endProduct', '')
-            todo.categorie = request.form.get('categorie', '')
+            task.name = request.form.get('name', '')
+            task.title = request.form.get('title', '')
+            task.main_question = request.form.get('mainQuestion', '')
+            task.sub_questions = request.form.get('subQuestions', '')
+            task.description = request.form.get('description', '')
+            task.end_product = request.form.get('endProduct', '')
+            task.category = request.form.get('categorie', '')
 
-            # Check if a new image is uploaded
+            # Handle image upload
             image_file = request.files.get('image')
             if image_file and allowed_file(image_file.filename):
                 filename = secure_filename(image_file.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 image_file.save(filepath)
-                todo.image = filename  # Update the image filename in the database
+                
+                # Delete old image if it exists
+                if task.image:
+                    old_image_path = os.path.join(app.config['UPLOAD_FOLDER'], task.image)
+                    if os.path.exists(old_image_path):
+                        os.remove(old_image_path)
+                
+                task.image = filename
 
-            # Log the values being saved
-            print(f"Updated task: {todo.name}, {todo.title}, {todo.mainQuestion}, {todo.image}")
-            
-            db.session.commit()  # Commit changes to the database
-
-            return redirect(url_for('update', id=todo.id))  # Redirect back to the update page to show updated data
+            # Save changes to database
+            db.session.commit()
+            return redirect(url_for('forum'))
 
         except Exception as e:
+            db.session.rollback()
             return f"There was an issue updating the task: {str(e)}", 500
-    
-    return render_template('update.html', todo=todo)
+
+    # GET request - display the update form
+    return render_template('update.html', task=task, categories=[
+        "Aardrijkskunde", "Biologie", "Informatica", "Economie", 
+        "Natuurkunde", "Maatschapijleer", "Lichamelijke opvoeding", 
+        "Kunst en Cultuur", "Wiskunde", "Geschiedenis", "Engels",
+        "Nederlands", "Frans", "Duits", "Handvaardigheid", 
+        "Muziek", "Scheikunde", "Overig"
+    ])
 
 @app.route('/delete/<int:id>', methods=['POST'])
 def delete_task(id):
@@ -119,30 +132,26 @@ def delete_task(id):
 # route for forum page 
 @app.route('/forum', methods=['POST', 'GET'])
 def forum():
-    query = Todo.query  # begin de query hier al
-    sorteerop = None
-    vakfilter = None
-    tasks = load_tasks()
-
-    if request.method == 'GET':
-        sorteerop = request.args.get('sortfilter')
-        vakfilter = request.args.get('vakfilter')
-
-        # Filter op vak
-        if vakfilter:
-            query = query.filter_by(category=vakfilter)
-        
-        # Sorteer op keuze
-        if sorteerop == 'newest':
-            query = query.order_by(Todo.date_created.desc())
-        elif sorteerop == 'oldest':
-            query = query.order_by(Todo.date_created.asc())
-        elif sorteerop == 'likes':
-            query = query.order_by(Todo.likes.desc())
+    query = Todo.query
     
-    user_likes = session.get('likes', [])
-    todos = query.all()
+    # Get filter parameters
+    sortfilter = request.args.get('sortfilter', 'newest')  # Default to newest
+    vakfilter = request.args.get('vakfilter')
 
+    # Apply category filter if selected
+    if vakfilter:
+        query = query.filter_by(category=vakfilter)
+    
+    # Apply sorting
+    if sortfilter == 'newest':
+        query = query.order_by(Todo.date_created.desc())
+    elif sortfilter == 'oldest':
+        query = query.order_by(Todo.date_created.asc())
+    elif sortfilter == 'likes':
+        query = query.order_by(Todo.likes.desc())
+    
+    todos = query.all()
+    
     return render_template('forum.html', tasks=todos)
 
 

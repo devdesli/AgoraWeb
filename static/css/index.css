@@ -18,3 +18,43 @@ td {
 #content {
     width: 70%;
 }
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-color);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.forum-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.forum-button:hover {
+    transform: scale(1.05);
+    background-color: var(--accent-color);
+}
+
+.forum-button a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.forum-button:hover a {
+    color: var(--primary-color);
+}

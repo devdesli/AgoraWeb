@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% block head %}
+{{ super()}}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/forum.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/card.css') }}">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
