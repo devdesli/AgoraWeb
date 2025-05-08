@@ -2,7 +2,7 @@
 .like-button button {
     position: absolute;
     height: 20px;
-    width: 20px;
+    width: 27.5px;
     bottom: 50px;
     right: 75px;
 }
@@ -212,4 +212,16 @@ p.title {
     height: 400px;
     flex-direction: column;
     gap: 20px;
+}
+
+.headquestion-info {
+    position: absolute;
+    left: 75.5%;
+    top: 55px;
+}
+
+.headquestion {
+    position: absolute;
+    right: 21px;
+    top: 22.5px;
 }

@@ -7,8 +7,16 @@
 
 {% block body %}
 <div class="top-color">
-    <button class="forum-button"><a href="/forum">Ga terug naar het forum</a></button>
-    <h1>Update je challenge</h1>
+  <div class="contact">
+    <p>Heb je een vraag of een tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+  </div>
+  <button class="forum-button"><a href="/forum" class="forum-button-text">Ga terug naar het forum</a></button>
+  <div class="logo">
+    <a href="https://liemersagora.beezer.com/" target="_blank">
+      <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo" />
+    </a>
+  </div>
+  <h1>Update je challenge</h1>
 </div>
 
 <div class="forum">
@@ -58,6 +66,32 @@
         <h3>Upload nieuwe afbeelding</h3>
         <input type="file" name="image" accept="image/*">
 
+    <!-- Display existing image if it exists -->
+    {% if todo.image %}
+      <img class="image" src="{{ url_for('static', filename='uploads/' + todo.image) }}" style="max-width: 300px;" />
+    {% endif %}
+    
+    <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
+    <img class="image" id="preview" style="max-width: 300px; display: none;" />
+    
+    <script>
+      document.getElementById("imageInput").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+    
+  </form>
+
+    <form action="/forum" methods="POST" enctype="multipart/form-data">
         <button class="submit" type="submit">Update challenge</button>
     </form>
 </div>
