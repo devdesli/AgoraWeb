@@ -64,12 +64,6 @@
         {% endif %}
 
         <h3>Upload nieuwe afbeelding</h3>
-        <input type="file" name="image" accept="image/*">
-
-    <!-- Display existing image if it exists -->
-    {% if todo.image %}
-      <img class="image" src="{{ url_for('static', filename='uploads/' + todo.image) }}" style="max-width: 300px;" />
-    {% endif %}
     
     <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
     <img class="image" id="preview" style="max-width: 300px; display: none;" />
