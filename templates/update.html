@@ -20,73 +20,62 @@
 </div>
 
 <div class="forum">
-    <form action="{{ url_for('update', id=task.id) }}" method="POST" enctype="multipart/form-data">
-        <!-- Naam -->
-        <label><h3 class="authorText">Naam</h3></label>
-        <textarea name="name" required maxlength="20">{{ task.name }}</textarea>
-
-        <!-- Titel -->
-        <label><h3 class="titleText">Titel</h3></label>
-        <textarea name="title" required maxlength="30">{{ task.title }}</textarea>
-
-        <!-- Hoofdvraag -->
-        <label><h3>Hoofdvraag</h3></label>
-        <textarea name="mainQuestion" required maxlength="60">{{ task.main_question }}</textarea>
-
-        <!-- Deelvragen -->
-        <label><h3>Deelvragen</h3></label>
-        <textarea name="subQuestions" required maxlength="150">{{ task.sub_questions }}</textarea>
-
-        <!-- Beschrijving -->
-        <label><h3>Informatie</h3></label>
-        <textarea name="description" required maxlength="100">{{ task.description }}</textarea>
-
-        <!-- Eindproduct -->
-        <label><h3>Eindproduct</h3></label>
-        <textarea name="endProduct" required>{{ task.end_product }}</textarea>
-
-        <!-- Categorie -->
-        <label><h3>Categorie</h3></label>
-        <select name="categorie" required>
-            {% for category in categories %}
-                <option value="{{ category }}" {% if task.category == category %}selected{% endif %}>
-                    {{ category }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <!-- Image Upload -->
-        <h3>Huidige afbeelding</h3>
-        {% if task.image %}
-            <img src="{{ url_for('static', filename='uploads/' + task.image) }}" style="max-width: 300px;">
-        {% else %}
-            <p>Geen afbeelding</p>
-        {% endif %}
-
-        <h3>Upload nieuwe afbeelding</h3>
+  <form action="{{ url_for('update', id=task.id) }}" method="POST" enctype="multipart/form-data">
     
-    <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
-    <img class="image" id="preview" style="max-width: 300px; display: none;" />
-    
-    <script>
-      document.getElementById("imageInput").addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = document.getElementById("preview");
-            img.src = e.target.result;
-            img.style.display = "block";
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    </script>
-    
+    <label><h3>Naam</h3></label>
+    <textarea name="name" required maxlength="20">{{ task.name }}</textarea>
+
+    <label><h3>Titel</h3></label>
+    <textarea name="title" required maxlength="30">{{ task.title }}</textarea>
+
+    <label><h3>Hoofdvraag</h3></label>
+    <textarea name="mainQuestion" required maxlength="60">{{ task.main_question }}</textarea>
+
+    <label><h3>Deelvragen</h3></label>
+    <textarea name="subQuestions" required maxlength="150">{{ task.sub_questions }}</textarea>
+
+    <label><h3>Informatie</h3></label>
+    <textarea name="description" required maxlength="100">{{ task.description }}</textarea>
+
+    <label><h3>Eindproduct</h3></label>
+    <textarea name="endProduct" required>{{ task.end_product }}</textarea>
+
+    <label><h3>Categorie</h3></label>
+    <select name="categorie" required>
+      {% for category in categories %}
+        <option value="{{ category }}" {% if task.category == category %}selected{% endif %}>
+          {{ category }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label><h3>Huidige afbeelding</h3></label>
+    {% if task.image %}
+      <img src="{{ url_for('static', filename='uploads/' + task.image) }}" style="max-width: 300px;">
+    {% else %}
+      <p>Geen afbeelding</p>
+    {% endif %}
+
+    <label><h3>Upload nieuwe afbeelding</h3></label>
+    <input type="file" accept="image/*" id="imageInput" name="image">
+    <img id="preview" />
+
+    <button class="submit" type="submit">Update challenge</button>
   </form>
-
-    <form action="/forum" methods="POST" enctype="multipart/form-data">
-        <button class="submit" type="submit">Update challenge</button>
-    </form>
 </div>
+
+<script>
+  document.getElementById("imageInput").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.getElementById("preview");
+        img.src = e.target.result;
+        img.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
 {% endblock %}
