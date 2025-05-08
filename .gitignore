@@ -2,3 +2,6 @@
 challengeforum/
 __pycache__/
 /instance
+/var
+/instance
+/var/app-instance
