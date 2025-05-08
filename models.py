@@ -11,7 +11,7 @@ class Like(db.Model):
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    date_created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     # dingen die op de kaart staan 
     likes = db.Column(db.Integer, default=0)
     name = db.Column(db.String(100), nullable=False)
@@ -20,10 +20,11 @@ class Todo(db.Model):
     sub_questions = db.Column(db.String(500), nullable=False)
     description = db.Column(db.Text, nullable=False)
     end_product = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String(100), nullable=True)
     category = db.Column(db.String(50), nullable=False)
+    image = db.Column(db.String(100), nullable=True)
 
+    def __repr__(self):
+        return f'<Todo {self.id}>'
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +32,3 @@ class Image(db.Model):
 
     def __repr__(self):
         return f'<Image {self.filename}>'
-
-    def __repr__(self):
-        return f'<Todo {self.id}>'
