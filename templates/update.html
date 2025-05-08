@@ -8,7 +8,10 @@
 
 {% block body %}
 <div class="top-color">
-  <button class="forum-button"><a href="/forum" target="_blank">Ga terug naar het forum</a></button>
+  <div class="contact">
+    <p>Heb je een vraag of een tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+  </div>
+  <button class="forum-button"><a href="/forum" class="forum-button-text">Ga terug naar het forum</a></button>
   <div class="logo">
     <a href="https://liemersagora.beezer.com/" target="_blank">
       <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo" />
@@ -75,8 +78,6 @@
         }
       });
     </script>
-
-    <h3 class="imageinput imageinputText">Voeg een bestand of foto toe</h3>
 
     <!-- Display existing image if it exists -->
     {% if todo.image %}
