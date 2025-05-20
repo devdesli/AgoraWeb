@@ -5,4 +5,4 @@ setup
 
 to run
 
-scp -r c:\\Users\\desli\\Documents\\projects\\challengeforum desli@100.76.148.64:/home/desli/ca 
+scp -r c:\\Users\\desli\\Documents\\projects\\challengeforum desli@100.76.148.64:/home/desli/
