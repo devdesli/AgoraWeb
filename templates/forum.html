@@ -21,7 +21,7 @@
 
     <div class="module-container">
         <a href="uploadtoforum" class="module-button"><p class="module-tekst">Challenge toevoegen</p>
-        <i class="bx bx-plus-circle module-button"></i></a>
+       <i class='bx  bx-plus module-button'></i></a>
     </div>
 
     <div class="filter-text">  
@@ -57,9 +57,7 @@
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
         </select>
       </form>
-      
 </div>
-
 <div class="container">
     {% for task in tasks %}
         {% include 'components/card.html' %}
@@ -67,5 +65,4 @@
         <p>Er zijn nog geen challenges geplaatst.</p>
     {% endfor %}
 </div>
-
 {% endblock %}

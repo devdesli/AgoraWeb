@@ -22,12 +22,11 @@ def save_tasks(tasks):
 
 
 app = Flask(__name__)
-app.secret_key = "supersecret"  # Needed for session handling
+app.secret_key = "supersecret"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)  # Bind SQLAlchemy to the app
-migrate = Migrate(app, db)  # Initialize Flask-Migrate
-app.secret_key = 'something-very-secret'
+db.init_app(app)
+migrate = Migrate(app, db)
 
 @app.route('/')
 def home():
@@ -129,20 +128,16 @@ def delete_task(id):
     except Exception as e:
         return f"There was an issue deleting the task: {str(e)}", 500
 
-# route for forum page 
 @app.route('/forum', methods=['POST', 'GET'])
 def forum():
     query = Todo.query
     
-    # Get filter parameters
     sortfilter = request.args.get('sortfilter', 'newest')  # Default to newest
     vakfilter = request.args.get('vakfilter')
 
-    # Apply category filter if selected
     if vakfilter:
         query = query.filter_by(category=vakfilter)
     
-    # Apply sorting
     if sortfilter == 'newest':
         query = query.order_by(Todo.date_created.desc())
     elif sortfilter == 'oldest':
@@ -155,13 +150,11 @@ def forum():
     return render_template('forum.html', tasks=todos)
 
 
-# Specify the folder where the uploaded files will be stored
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Function to check if the file is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -174,7 +167,6 @@ def upload_image():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            # Create an Image object and save it to the database
             new_image = Image(filename=filename)
             db.session.add(new_image)
             db.session.commit()
@@ -194,7 +186,6 @@ def uploadtoforum():
         task_category = request.form.get('categorie')
         task_image = request.files.get('image')
 
-        # Check if task_name is None or empty
         if not task_name:
             return "Name field is required", 400
 
@@ -203,7 +194,6 @@ def uploadtoforum():
             image_filename = secure_filename(task_image.filename)
             task_image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
 
-        # Create new_task regardless of whether an image was uploaded
         new_task = Todo(
             title=task_title,
             name=task_name,
@@ -220,7 +210,6 @@ def uploadtoforum():
             db.session.add(new_task)
             db.session.commit()
 
-            # Re-fetch the updated list of todos and user likes
             todos = Todo.query.all()
             return redirect('/forum')
         except Exception as e:
@@ -233,4 +222,4 @@ def uploadtoforum():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
