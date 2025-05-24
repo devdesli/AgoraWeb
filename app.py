@@ -132,7 +132,7 @@ def delete_task(id):
 def forum():
     query = Todo.query
     
-    sortfilter = request.args.get('sortfilter', 'newest')  # Default to newest
+    sortfilter = request.args.get('sortfilter', 'newest')
     vakfilter = request.args.get('vakfilter')
 
     if vakfilter:
