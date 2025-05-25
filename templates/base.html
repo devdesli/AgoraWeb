@@ -22,6 +22,10 @@
   </head>
 
   <body>
-    {% block body %} {% endblock %}
+    {% block body %}
+    <!-- Add this near your navigation menu -->
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for('admin') }}" class="nav-link">Admin Panel</a>
+    {% endif %} {% endblock %}
   </body>
 </html>

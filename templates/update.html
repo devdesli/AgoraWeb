@@ -1,63 +1,101 @@
-{% extends 'base.html' %}
-
-{% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/update.css') }}">
-<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-{% endblock %}
-
-{% block body %}
+{% extends 'base.html' %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/update.css') }}"
+/>
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %}
 <div class="top-color">
   <div class="contact">
-    <p>Heb je een vraag of een tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+    <p>
+      Heb je een vraag of een tip? Stuur dan een mail naar:
+      <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a>
+      of vraag Karun of Rens
+    </p>
   </div>
-  <button class="forum-button"><a href="/forum" class="forum-button-text">Ga terug naar het forum</a></button>
+  <button class="forum-button">
+    <a href="/forum" class="forum-button-text">Ga terug naar het forum</a>
+  </button>
   <div class="logo">
     <a href="https://liemersagora.beezer.com/" target="_blank">
-      <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo" />
+      <img
+        class="logo"
+        src="{{ url_for('static', filename='pictures/logo.png') }}"
+        alt="Logo"
+      />
     </a>
   </div>
   <h1>Update je challenge</h1>
 </div>
 
 <div class="forum">
-  <form action="{{ url_for('update', id=task.id) }}" method="POST" enctype="multipart/form-data">
-    
-    <label><h3>Naam</h3></label>
-    <textarea name="name" required maxlength="20">{{ task.name }}</textarea>
-
+  <form
+    action="{{ url_for('update', id=task.id) }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
     <label><h3>Titel</h3></label>
     <textarea name="title" required maxlength="30">{{ task.title }}</textarea>
 
     <label><h3>Hoofdvraag</h3></label>
-    <textarea name="mainQuestion" required maxlength="60">{{ task.main_question }}</textarea>
+    <textarea name="mainQuestion" required maxlength="60">
+{{ task.main_question }}</textarea
+    >
 
     <label><h3>Deelvragen</h3></label>
-    <textarea name="subQuestions" required maxlength="150">{{ task.sub_questions }}</textarea>
+    <textarea name="subQuestions" required maxlength="150">
+{{ task.sub_questions }}</textarea
+    >
 
     <label><h3>Informatie</h3></label>
-    <textarea name="description" required maxlength="100">{{ task.description }}</textarea>
+    <textarea name="description" required maxlength="100">
+{{ task.description }}</textarea
+    >
 
     <label><h3>Eindproduct</h3></label>
     <textarea name="endProduct" required>{{ task.end_product }}</textarea>
 
-    <label><h3>Categorie</h3></label>
-    <select name="categorie" required>
-      {% for category in categories %}
-        <option value="{{ category }}" {% if task.category == category %}selected{% endif %}>
-          {{ category }}
-        </option>
-      {% endfor %}
+    <label class="filtersText filters" for="categorie"
+      ><h3>Kies een bijbehorende filter</h3></label
+    >
+    <select class="filters" name="categorie" required>
+      <option disabled selected hidden></option>
+      <option value="Aardrijkskunde">Aardrijkskunde</option>
+      <option value="Biologie">Biologie</option>
+      <option value="Informatica">Informatica</option>
+      <option value="Economie">Economie</option>
+      <option value="Natuurkunde">Natuurkunde</option>
+      <option value="Maatschapijleer">Maatschapijleer</option>
+      <option value="Lichamelijke opvoeding">lichamelijke opvoeding</option>
+      <option value="Kunst en Cultuur">Kunst en Cultuur</option>
+      <option value="Wiskunde">Wiskunde</option>
+      <option value="Geschiedenis">Geschiedenis</option>
+      <option value="Engels">Engels</option>
+      <option value="Spaans">Spaans</option>
+      <option value="Nederlands">Nederlands</option>
+      <option value="Frans">frans</option>
+      <option value="Duits">Duits</option>
+      <option value="Handvaardigheid">Handvaardigheid</option>
+      <option value="Muziek">Muziek</option>
+      <option value="Scheikunde">Scheikunde</option>
+      <option value="Overig">Overig</option>
     </select>
 
     <label><h3>Huidige afbeelding</h3></label>
     {% if task.image %}
-      <img src="{{ url_for('static', filename='uploads/' + task.image) }}" style="max-width: 300px;">
+    <img
+      src="{{ url_for('static', filename='uploads/' + task.image) }}"
+      style="max-width: 300px"
+    />
     {% else %}
-      <p>Geen afbeelding</p>
+    <p>Geen afbeelding</p>
     {% endif %}
 
     <label><h3>Upload nieuwe afbeelding</h3></label>
-    <input type="file" accept="image/*" id="imageInput" name="image">
+    <input type="file" accept="image/*" id="imageInput" name="image" />
     <img id="preview" />
 
     <button class="submit" type="submit">Update challenge</button>
@@ -65,17 +103,19 @@
 </div>
 
 <script>
-  document.getElementById("imageInput").addEventListener("change", function (event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const img = document.getElementById("preview");
-        img.src = e.target.result;
-        img.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+  document
+    .getElementById("imageInput")
+    .addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.getElementById("preview");
+          img.src = e.target.result;
+          img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 </script>
 {% endblock %}
