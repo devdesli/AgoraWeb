@@ -4,6 +4,10 @@
   margin: 0 auto;
 }
 
+h1 {
+  color: white;
+}
+
 .section {
   background: white;
   padding: 1.5rem;
