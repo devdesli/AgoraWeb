@@ -41,6 +41,7 @@
               >Approve</a
             >
             {% endif %}
+            <a href="{{ url_for('fullcard', id=challenge.id) }}">See challenge</a>
             <a
               href="{{ url_for('delete_challenge', id=challenge.id) }}"
               class="action-button delete-button"

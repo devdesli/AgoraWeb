@@ -1,60 +1,76 @@
 body {
-    text-align: center;
-    align-items: center;
-    position: absolute;
-    right: 40%;
-    background-color: aliceblue;
+  text-align: center;
+  align-items: center;
+  position: absolute;
+  right: 40%;
+  background-color: aliceblue;
+}
+
+.flash-message {
+  padding: 1rem;
+  margin: 1rem auto;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  max-width: 400px;
+  text-align: center;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
 }
 
 td {
-    text-align: center;
-    padding: 5px;
+  text-align: center;
+  padding: 5px;
 }
 
 .form {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 #content {
-    width: 70%;
+  width: 70%;
 }
 
 .container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--primary-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-color);
 }
 
 .button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .forum-button {
-    padding: 15px 30px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--secondary-color);
-    cursor: pointer;
-    transition: transform 0.3s ease;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
 .forum-button:hover {
-    transform: scale(1.05);
-    background-color: var(--accent-color);
+  transform: scale(1.05);
+  background-color: var(--accent-color);
 }
 
 .forum-button a {
-    text-decoration: none;
-    color: var(--text-color);
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-transform: capitalize;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: capitalize;
 }
 
 .forum-button:hover a {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }

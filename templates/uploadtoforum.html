@@ -10,10 +10,20 @@
 <script src="{{url_for('static', filename='js/forum.js') }}"></script>
 {% endblock %} {% block body %}
 <div class="top-color">
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <div class="flash-message">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %}
   <div class="contact">
-    <p>Heb je een vraag of een tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a> of vraag Karun of Rens</p>
+    <p>
+      Heb je een vraag of een tip? Stuur dan een mail naar:
+      <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a>
+      of vraag Karun of Rens
+    </p>
   </div>
-  <button class="forum-button"><a href="/forum" class="forum-button-text">Ga terug naar het forum</a></button>
+  <button class="forum-button">
+    <a href="/forum" class="forum-button-text">Ga terug naar het forum</a>
+  </button>
   <div class="logo">
     <a href="https://liemersagora.beezer.com/" target="_blank">
       <img
@@ -41,7 +51,9 @@
     ></textarea>
 
     <!-- Hoofdvraag -->
-    <label for="mainQuestion" class="mainquestion mainquestionText"><h3>Hoofdvraag</h3></label>
+    <label for="mainQuestion" class="mainquestion mainquestionText"
+      ><h3>Hoofdvraag</h3></label
+    >
     <textarea
       rows="1"
       class="mainquestion"
@@ -52,7 +64,9 @@
     ></textarea>
 
     <!-- Deelvragen -->
-    <label for="subQuestions" class="subquestions subquestionsText"><h3>Deelvragen</h3></label>
+    <label for="subQuestions" class="subquestions subquestionsText"
+      ><h3>Deelvragen</h3></label
+    >
     <textarea
       rows="5"
       class="subquestions"
@@ -63,7 +77,9 @@
     ></textarea>
 
     <!-- Beschrijving -->
-    <label for="description" class="challengeinfo challengeinfoText"><h3>Informatie</h3></label>
+    <label for="description" class="challengeinfo challengeinfoText"
+      ><h3>Informatie</h3></label
+    >
     <textarea
       rows="3"
       class="challengeinfo"
@@ -74,7 +90,9 @@
     ></textarea>
 
     <!-- Eindproduct -->
-    <label for="endProduct" class="endproduct endproductText"><h3>Eindproduct</h3></label>
+    <label for="endProduct" class="endproduct endproductText"
+      ><h3>Eindproduct</h3></label
+    >
     <textarea
       class="endproduct"
       rows="5"
@@ -84,7 +102,9 @@
     ></textarea>
 
     <!-- Categorie -->
-    <label class="filtersText filters" for="categorie"><h3>Kies een bijbehorende filter</h3></label>
+    <label class="filtersText filters" for="categorie"
+      ><h3>Kies een bijbehorende filter</h3></label
+    >
     <select class="filters" name="categorie" required>
       <option disabled selected hidden></option>
       <option value="Aardrijkskunde">Aardrijkskunde</option>
@@ -152,7 +172,13 @@
     </script>
 
     <h3 class="imageinput imageinputText">Voeg een passend plaatje toe</h3>
-    <input class="imageinput" type="file" accept="image/*" id="imageInput" name="image">
+    <input
+      class="imageinput"
+      type="file"
+      accept="image/*"
+      id="imageInput"
+      name="image"
+    />
     <img class="image" id="preview" style="max-width: 300px; display: none" />
 
     <script>
@@ -174,9 +200,6 @@
 
     <!-- inputs -->
     <button class="submit" type="submit">Upload naar forum</button>
-
-
   </form>
-
 </div>
 {% endblock %}

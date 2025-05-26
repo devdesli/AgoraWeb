@@ -9,6 +9,7 @@
     <strong>Beschrijving:</strong><br />
     {{ task.description }}
   </p>
+
   <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>
   <form
     action="{{ url_for('delete', id=task.id) }}"
@@ -19,17 +20,12 @@
   </form>
 
   <label class="expand-label">Bekijk hele post :</label>
-  <button class="expand-button" type="button" onclick="expandCard(this)">
+  <a href="{{ url_for('fullcard', id=task.id) }}" class="expand-button">
     <i class="bx bx-expand"></i>
-  </button>
+  </a>
 
   {% set liked_tasks = session.get('liked_tasks', []) %}
-  <div class="like-button">
-    <span data-id="{{ task.id }}">      <form action="{{ url_for('like', id=task.id) }}" method="POST">
-        <button type="submit">
-          <i
-            class="bx {% if task.id in liked_tasks %}bxs-like{% else %}bx-like{% endif %}"
-          ></i>
+  <div class="like-button">    <span data-id="{{ task.id }}">      <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
         </button>
       </form>
       <label class="label-like-count">Likes:</label>

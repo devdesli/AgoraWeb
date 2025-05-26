@@ -1,182 +1,288 @@
-.card {
-    position: relative;
-    padding: 20px;
-    width: 1450px;
-    height: auto;
-    min-height: 650px;
-    max-height: 1300px;
-    height: auto;
-    top: 17.5px;
-    left: 25px;
-    background-color: #4F4F4F;
-    color: white;
-    padding:20px;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(212, 43, 135, 0.6);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+:root {
+  --primary: #22194d;
+  --secondary: #4f4f4f;
+  --accent: #d42b87;
+  --success: #28a745;
+  --danger: #dc3545;
+  --text-light: #ffffff;
 }
 
-.card-glow {
-    box-shadow: 0 0 5px 2.5px #3810ff;
+.flash-message {
+  padding: 0.75rem;
+  margin: 1rem auto;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  z-index: 1001;
 }
 
-.card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 24px rgba(212, 43, 135, 0.9);
+.admin-controls {
+  background-color: var(--primary);
+  padding: 1rem;
+  color: var(--text-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-p {
-    font-size: 20px;
+.admin-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.like-button {
-    font-size: 30px;
+.admin-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.like-button button{
-    position: absolute;
-    height: 50px;
-    width: 50px;
-    bottom: 125px;
-    right: 125px;
+.admin-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-button {
-    cursor: pointer;
+.admin-button.approve-button {
+  background-color: var(--success);
 }
 
-.like-count {
-    position: absolute;
-    bottom: 125px;
-    right: 10px;
+.admin-button.approve-button:hover {
+  background-color: #218838;
 }
 
-.label-like-count {
-    position: absolute;
-    bottom: 125px;
-    right: 30px;
+.admin-button.delete-button {
+  background-color: var(--danger);
+}
+
+.admin-button.delete-button:hover {
+  background-color: #c82333;
+}
+
+.challenge-status {
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.status-badge.approved {
+  background-color: var(--success);
+}
+
+.status-badge.pending {
+  background-color: #ffc107;
+  color: #000;
 }
 
 .content {
-    color: white;
+  min-height: calc(100vh - 60px);
+  padding: 2rem;
+  background-color: #afaeae;
 }
 
-select {
-    cursor: pointer;
+.card {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--secondary);
+  color: var(--text-light);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(212, 43, 135, 0.6);
 }
 
-.endproduct {
-    position: relative;
-    display: block;
-    left: 300px;
-    top: 60px;
-    width: 60ch;
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-
-.challenge-info {
-    position: absolute;
-    left: 25px;
-    top: 75px;
-    margin-left: 5px;
-    margin-bottom: 10px;
-    max-width: 250px;
-    width: 50ch;
-    white-space: normal;
-    word-wrap: break-word; 
-}
-  
-.headquestion {
-    text-align: right;
-    position: absolute;
-    top: 0px;
-    right: 40px;
-    width: 35ch;
-    white-space: normal;
-    word-wrap: break-word; 
-}
-
-.sub-questions-text {
-    position: relative;
-    right: -225px;
-}
-
-.subQuestions {
-    position: absolute;
-    top: 100px;
-    right: 40px; 
-    width: 35ch;
-    white-space: normal;
-    word-wrap: break-word; 
-}
-
-.category {
-    position: absolute;
-    left: 25px;
-    bottom: 0px;
-    font-size: 50px;
-    
-}
-
-.author {
-    position: absolute;
-    bottom: 0px; 
-    right: 0px;
-    font-size: 50px;
+.card-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
 }
 
 .title {
-    position: absolute; 
-    left: 25px;
-    top: 0px;
-    font-size: 50px;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
 }
 
-.delete-button {
-    height: 30px;
-    width: 100px;
-    position: absolute;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    bottom: 25px;
-    right: 50px;
+.author {
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 
-.delete-button i {
-    font-size: 18px;
+.card-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
-.update-button {
-    height: 30px;
-    width: 100px;
-    position: absolute;
-    border: none;
-    cursor: pointer;
-    bottom: 25px;
-    right: 200px;
+.info-section {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 8px;
 }
 
-.update-button i {
-    font-size: 18px;
+.info-section h3 {
+  color: var(--accent);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
 
+.info-section p {
+  line-height: 1.6;
+  margin: 0;
+}
+
+.task-image {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.task-image img {
+  max-width: 100%;
+  max-height: 500px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.like-button:hover {
+  transform: scale(1.1);
 }
 
 .forum-button {
-    position: absolute;
-    bottom: 25px;
-    right: 350px;
-    height: 30px;
-    width: 150px;
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.2s;
 }
 
-.forum-button i {
-    font-size: 18px;
+.forum-button:hover {
+  background-color: #1a1440;
+}
 
+.category {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.bx-heart {
+  font-size: 24px;
+  transition: all 0.3s ease;
+}
+
+.bx-heart.liked {
+  color: #d42b87;
+  opacity: 1;
+}
+
+.bx-heart.unliked {
+  color: #ffffff;
+  opacity: 0.6;
+}
+
+.bx-heart.unliked:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .card-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .info-section {
+    padding: 1rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .admin-controls {
+    padding: 0.5rem;
+  }
+
+  .admin-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .challenge-status {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
 }

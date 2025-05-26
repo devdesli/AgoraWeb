@@ -39,17 +39,32 @@ def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
 
+@app.route('/fullcard/<int:id>', methods=['GET'])
+def fullcard(id):
+    task = Todo.query.get_or_404(id)
+    if not task.approved and not (current_user.is_authenticated and current_user.is_admin):
+        flash('This challenge is not approved yet')
+        return redirect(url_for('forum'))
+    
+    return render_template('fullcard.html', task=task)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        flash('You are already logged in.')
         return redirect(url_for('index'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
+        username_or_email = request.form.get('username')
         password = request.form.get('password')
-        print(f"Login attempt - Username: {username}")  # Debug log
+        print(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
         
-        user = User.query.filter_by(username=username).first()
+        # Try to find user by username or email
+        user = User.query.filter(
+            (User.username == username_or_email) | 
+            (User.email == username_or_email)
+        ).first()
+        
         if user:
             print(f"User found in database")  # Debug log
             if user.check_password(password):
@@ -59,16 +74,17 @@ def login():
                 return redirect(next_page or url_for('index'))
             else:
                 print(f"Password incorrect")  # Debug log
+                flash('Invalid password')
         else:
             print(f"User not found")  # Debug log
-            
-        flash('Invalid username or password')
+            flash('No account found with that username or email')
     
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
+        flash('You are already logged in.')
         return redirect(url_for('index'))
     
     if request.method == 'POST':
@@ -242,7 +258,10 @@ def like(id):
         todo.likes += 1
     
     db.session.commit()
-    return redirect('/forum')
+    
+    # Get the referer (previous page) or default to forum
+    next_page = request.referrer or url_for('forum')
+    return redirect(next_page)
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required

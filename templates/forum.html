@@ -9,6 +9,16 @@
 
 {% block body %}
 <div class="top-color position-fixed">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <h1>Agora challenge inspiratielijst</h1>
+
     <div class="contact">
         <p>Heb je een vraag of tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">admin@gmail.com</a></p>
     </div>
@@ -17,15 +27,13 @@
         <img class="logo" src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Logo"></a>
     </div>
 
-    <h1>Agora challenge inspiratielijst</h1>
-
     <div class="module-container">
         <a href="uploadtoforum" class="module-button">
             <p class="module-tekst">Challenge toevoegen</p>
         </a>
     </div>
-
-    <div class="filter-text">  
+    <div class="filter-container">
+        <div class="filter-text">  
         <h3>Filters</h3>
         <h3>Sorteren</h3>
     </div>
@@ -58,6 +66,8 @@
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
         </select>
       </form>
+    </div>
+    
 </div>
 <div class="container">
     {% for task in tasks %}
