@@ -1,4 +1,4 @@
-<div class="card card-glow">
+<div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id) }}')" style="cursor: pointer;">
   <h2 class="title">{{ task.title }}</h2>
   <p class="author"><strong>Door:</strong> {{ task.name }}</p>
   <p class="headquestion">
@@ -10,7 +10,10 @@
     {{ task.description }}
   </p>
 
-  <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>
+  <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  
+  {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
+  <div class="button-container">
+  <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>
   <form
     action="{{ url_for('delete', id=task.id) }}"
     method="POST"
@@ -18,28 +21,20 @@
   >
     <button class="delete-button" type="submit">Verwijder</button>
   </form>
-
-  <label class="expand-label">Bekijk hele post :</label>
-  <a href="{{ url_for('fullcard', id=task.id) }}" class="expand-button">
-    <i class="bx bx-expand"></i>
-  </a>
-
+  </div>
+{% endif %}
   {% set liked_tasks = session.get('liked_tasks', []) %}
-  <div class="like-button">    <span data-id="{{ task.id }}">      <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
+   <div class="like-button">    <span data-id="{{ task.id }}">      
+    <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
         </button>
       </form>
+      <div class="like-count-container">
       <label class="label-like-count">Likes:</label>
       <span class="like-count">{{ task.likes }}</span>
+      </div>
     </span>
-  </div>
-</div>
-
-<!-- Modal Elements -->
-<div id="overlay" class="overlay hidden" onclick="closeCard()"></div>
-<div id="modal" class="modal hidden">
-  <button type="button" class="close-modal" onclick="closeCard()">×</button>
-  <div id="modal-content"></div>
-</div>
+    </div>
+   </div>
 
 <!-- JavaScript -->
 <script>
@@ -74,26 +69,13 @@
     window.location.href = form.action;
     return false;
   }
-
-  function expandCard(button) {
-    const card = button.closest(".card");
-    const modal = document.getElementById("modal");
-    const overlay = document.getElementById("overlay");
-    const modalContent = document.getElementById("modal-content");
-
-    const clone = card.cloneNode(true);
-    const innerExpand = clone.querySelector(".expand-button");
-    if (innerExpand) innerExpand.remove();
-
-    modalContent.innerHTML = "";
-    modalContent.appendChild(clone);
-
-    modal.classList.remove("hidden");
-    overlay.classList.remove("hidden");
+  function handleCardClick(event, url) {
+  // Don't redirect if clicking on buttons or forms
+  if (event.target.closest('.button-container') || 
+      event.target.closest('.like-button') || 
+      event.target.closest('form')) {
+    return;
   }
-
-  function closeCard() {
-    document.getElementById("modal").classList.add("hidden");
-    document.getElementById("overlay").classList.add("hidden");
-  }
+  window.location.href = url;
+}
 </script>
