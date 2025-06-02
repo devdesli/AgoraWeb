@@ -1,6 +1,9 @@
 <div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id) }}')" style="cursor: pointer;">
   <h2 class="title">{{ task.title }}</h2>
-  <p class="author"><strong>Door:</strong> {{ task.name }}</p>
+  <div class="card-bottom">
+    <p class="author"><strong>Door:</strong> {{ task.name }}</p>
+    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  
+  </div>
   <p class="headquestion">
     <strong>Hoofdvraag:</strong><br />
     <div class="headquestion-info">{{ task.main_question }}</div>
@@ -9,8 +12,6 @@
     <strong>Beschrijving:</strong><br />
     {{ task.description }}
   </p>
-
-  <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  
   {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
   <div class="button-container">
   <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>

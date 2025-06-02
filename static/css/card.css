@@ -67,8 +67,8 @@ button {
   bottom: 60px;
   width: 90%;
   right: 5%;
-  height: 2px;
-  border-radius: 0, 5px;
+  height: 2.5px;
+  border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -197,7 +197,6 @@ p.title {
   top: 40px;
   width: 200px;
   height: 100px;
-
 }
 
 .headquestion {
@@ -230,7 +229,7 @@ p.title {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    top: 300px;
+    top: 27.5vh;
   }
   .top-color a {
     color: white;
@@ -241,6 +240,17 @@ p.title {
     min-height: 40vh;
     padding: 15px;
   }
+   
+  .card::before {
+  content: "";
+  position: absolute;
+  bottom: 80px;
+  width: 90%;
+  right: 5%;
+  height: 2.5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
 
   .title {
     font-size: 1.25rem;
@@ -265,7 +275,7 @@ p.title {
   }
 
   .category {
-    bottom: 10px;
+    bottom: 0px;
     font-size: 14px;
   }
 
@@ -279,7 +289,7 @@ p.title {
   }
 
   .like-button button {
-    bottom: 75px;
+    bottom: 100px;
     right: 25px;
   }
 
@@ -287,5 +297,50 @@ p.title {
   .label-like-count {
     bottom: 40px;
     font-size: 12px;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 2rem;
+    left: 1rem;
+  }
+
+  .card-bottom {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    margin-bottom: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 10px 10px 10px;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+  }
+
+  .category {
+    position: static;
+    font-size: 14px;
+    order: 1;
+    flex: 1 1 0;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .author {
+    position: static;
+    margin-bottom: 0;
+    font-size: 14px;
+    opacity: 0.8;
+    order: 2;
+    flex: 1 1 0;
+    text-align: right;
+    white-space: normal;
+    word-break: break-word;
   }
 }

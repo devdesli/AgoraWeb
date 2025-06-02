@@ -198,7 +198,7 @@ select {
     padding: 15px;
     flex-direction: column;
     min-height: auto;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .filter-container {
@@ -231,13 +231,14 @@ select {
   }
 
   .module-container {
-    position: relative;
+    position: static;
     width: 100%;
     justify-content: center;
     align-items: center;
-    order: 3;
-    margin-bottom: 0;
+    margin: 2rem 0 0 0;
     padding: 0;
+    order: unset;
+    display: flex;
   }
 
   h1 {
@@ -266,5 +267,11 @@ select {
     top: 0px;
     right: auto;
     order: 4;
+  }
+
+  .category {
+    position: relative;
+    font-size: 14px;
+    margin-top: 10px;
   }
 }

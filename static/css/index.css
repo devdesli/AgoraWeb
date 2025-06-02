@@ -1,9 +1,10 @@
 body {
-  text-align: center;
-  align-items: center;
-  position: absolute;
-  right: 40%;
-  background-color: aliceblue;
+  font-family: Arial, sans-serif;
+  background-color: #afaeae;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
 .flash-message {
@@ -35,42 +36,124 @@ td {
   width: 70%;
 }
 
-.container {
-  min-height: 100vh;
+.top-color {
+  text-shadow: rebeccapurple 0 0 20px;
+  position: fixed;
+  width: 100%;
+  background-color: #22194d;
+  left: 0;
+  top: 0;
+  padding: 10px 20px;
+  height: 150px;
+  z-index: 1000;
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: var(--primary-color);
+  justify-content: space-between;
+}
+
+.logo {
+  width: 150px;
+  height: 75px;
+  cursor: pointer;
+}
+
+.contact {
+  color: white;
+  position: absolute;
+  top: 120px;
+  right: 10px;
+}
+
+.main-content {
+  padding-top: 170px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.content-section {
+  background-color: #22194d;
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.content-section h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.content-section p {
+  line-height: 1.6;
+  margin-bottom: 15px;
 }
 
 .button-container {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
 }
 
 .forum-button {
-  padding: 15px 30px;
+  padding: 12px 24px;
   border: none;
   border-radius: 8px;
-  background-color: var(--secondary-color);
+  background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .forum-button:hover {
   transform: scale(1.05);
-  background-color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .forum-button a {
   text-decoration: none;
-  color: var(--text-color);
-  font-size: 1.1rem;
-  font-weight: bold;
-  text-transform: capitalize;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-.forum-button:hover a {
-  color: var(--primary-color);
+h1 {
+  color: white;
+  text-align: center;
+  margin-top: 0;
+}
+
+@media(max-width: 600px) {
+  .top-color {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .logo {
+    width: 120px;
+    height: 60px;
+  }
+
+  .contact {
+    position: static;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .main-content {
+    padding-top: 12rem;
+  }
+
+  .content-section {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
 }
