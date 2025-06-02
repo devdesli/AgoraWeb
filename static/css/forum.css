@@ -79,6 +79,7 @@ body {
 }
 
 h1 {
+  justify-content: center;
   text-align: center;
   color: white;
 }

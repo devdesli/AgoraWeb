@@ -55,6 +55,7 @@ td {
   width: 150px;
   height: 75px;
   cursor: pointer;
+  position: relative;
 }
 
 .contact {
