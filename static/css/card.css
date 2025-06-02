@@ -75,9 +75,9 @@ button {
 .card::after {
   content: "";
   position: absolute;
-  top: 60px;
-  width: 90%;
-  right: 5%;
+  top: 62.5px;
+  width: 95%;
+  right: 2.5%;
   height: 2.5px;
   border-radius: 5px;
   background-color: #2d2267;
@@ -151,7 +151,9 @@ select {
   left: 10px;
   top: 5px;
   font-size: 25px;
-  max-width: 250px;
+  max-width: 475px;
+  max-height: 100px;
+  overflow: hidden;
   white-space: normal;
   word-wrap: break-word;
 }
