@@ -7,3 +7,4 @@ __pycache__/
 /var/app-instance
 /migrations
 /instance
+static/uploads/
