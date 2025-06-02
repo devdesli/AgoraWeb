@@ -243,25 +243,54 @@ def upload():
 @app.route('/like/<int:id>', methods=['GET', 'POST'])
 @login_required
 def like(id):
-    todo = Todo.query.get_or_404(id)
-    existing_like = Like.query.filter_by(
-        todo_id=id,
-        user_id=current_user.id
-    ).first()
-    
-    if existing_like:
-        db.session.delete(existing_like)
-        todo.likes -= 1
-    else:
-        like = Like(todo_id=id, user_id=current_user.id)
-        db.session.add(like)
-        todo.likes += 1
-    
-    db.session.commit()
-    
-    # Get the referer (previous page) or default to forum
-    next_page = request.referrer or url_for('forum')
-    return redirect(next_page)
+    try:
+        todo = Todo.query.get_or_404(id)
+        existing_like = Like.query.filter_by(
+            todo_id=id,
+            user_id=current_user.id
+        ).first()
+        
+        liked = False
+        if existing_like:
+            db.session.delete(existing_like)
+            todo.likes = max(0, todo.likes - 1)  # Ensure likes don't go below 0
+        else:
+            like = Like(todo_id=id, user_id=current_user.id)
+            db.session.add(like)
+            todo.likes += 1
+            liked = True
+        
+        db.session.commit()
+
+        # Add task to liked_tasks session if liked, remove if unliked
+        liked_tasks = session.get('liked_tasks', [])
+        if liked and id not in liked_tasks:
+            liked_tasks.append(id)
+        elif not liked and id in liked_tasks:
+            liked_tasks.remove(id)
+        session['liked_tasks'] = liked_tasks
+        
+        # Return JSON response for AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'likes': todo.likes,
+                'liked': liked,
+                'success': True
+            })
+        
+        # For regular form submissions, redirect back
+        next_page = request.referrer or url_for('forum')
+        return redirect(next_page)
+        
+    except Exception as e:
+        db.session.rollback()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+        flash('Error processing like')
+        return redirect(url_for('forum'))
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
