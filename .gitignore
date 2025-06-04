@@ -8,3 +8,5 @@ __pycache__/
 /migrations
 /instance
 static/uploads/
+create_user.py
+make_admin.py
