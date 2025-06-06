@@ -1,226 +1,385 @@
-/* === Existing Styles === */
 .like-button button {
-    position: absolute;
-    height: 20px;
-    width: 27.5px;
-    bottom: 50px;
-    right: 75px;
+  font-size: 30px;
+  position: absolute;
+  bottom: 70px;
+  right: 5px;
+  cursor: pointer;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .like-count {
-    position: absolute;
-    bottom: 50px;
-    right: 10px;
+  color: white;
+  font-size: 15px;
 }
 
 .label-like-count {
-    position: absolute;
-    bottom: 50px;
-    right: 30px;
+  font-size: 15px;
+  color: white;
+}
+
+.like-count-container {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0px;
+  bottom: 40px;
+  right: 10px;
+  width: 80px;
 }
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 35px;
-    padding: 20px;
-    position: relative;
-    top: 175px;
-    text-shadow: rebeccapurple 0 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 20px;
+  position: relative;
+  top: 120px;
 }
 
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
+  bottom: 5px;
+  right: 200px;
+}
 .card {
-    position: relative;
-    width: 475px;
-    height: 220px; 
-    background-color: #383838;    
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(212, 43, 135, 0.6);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  width: 470px;
+  height: 37vh;
+  background-color: #22194d;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 12px;
+  transition: 0.2s ease;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  bottom: 60px;
+  width: 90%;
+  right: 5%;
+  height: 2.5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 62.5px;
+  width: 95%;
+  right: 2.5%;
+  height: 2.5px;
+  border-radius: 5px;
+  background-color: #2d2267;
 }
 
 .card-glow {
-    box-shadow: 0 0 5px 2.5px #3810ff;
 }
 
 .card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 24px var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: 0 1px 1px rgba(212, 43, 135, 0.6);
+}
+
+.info-container {
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  height: 50vh;
+  padding: 20px;
 }
 
 .author {
-    font-size: 17.5px;
-    opacity: 0.8;
-    position: absolute;
-    top: 30px; 
-    left: 10px;
+  font-size: 17.5px;
+  opacity: 0.8;
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  max-width: 300px;
+  word-wrap: break-word;
 }
 
 .content {
-    color: white;
+  color: white;
 }
 
 select {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .challenge-info {
-    position: absolute;
-    left: 10px;
-    top: 50px;
-    max-width: 250px;
-    word-wrap: break-word;
-    white-space: normal;
-    overflow: visible;
+  position: absolute;
+  left: 10px;
+  top: 50px;
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow: visible;
 }
 
 .headquestion {
-    text-align: right;
-    position: absolute;
-    right: 10px;
-    width: 25ch;
-    white-space: normal;
-    word-wrap: break-word;
+  position: absolute;
+  top: 50px;
+  width: 200px;
+  right: 108px;
+  justify-content: center;
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-align: right;
 }
 
 .category {
-    position: absolute;
-    left: 10px;
-    bottom: 20px;
+  position: absolute;
+  left: 10px;
+  bottom: 15px;
 }
 
 .title {
-    position: absolute; 
-    left: 10px;
-    top: -5px;
-    font-size: 35px;
-    width: 25ch;
-    white-space: normal;
-    word-wrap: break-word;
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  font-size: 25px;
+  max-width: 475px;
+  max-height: 100px;
+  overflow: hidden;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .delete-button {
-    position: absolute;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    bottom: 2.5px;
-    right: 10px;
-    border-radius: 10px;
+  position: relative;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  height: 20px;
+  width: 60px;
 }
 
 .delete-button i {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .expand-label {
-    position: absolute;
-    bottom: 0px;
-    left: 10px;
+  position: absolute;
+  bottom: 0px;
+  left: 10px;
 }
 
 .expand-button {
-    position: absolute;
-    bottom: 0px;
-    left: 150px;
-    width: 100px;
-    height: 20px;
-    background-color: white;
-    cursor: pointer;
-    border-radius: 10px;
+  position: absolute;
+  bottom: 0px;
+  left: 150px;
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 .update-button {
-    position: absolute;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-    bottom: 0px;
-    right: 80px;
-    border-radius: 10px;
+  position: relative;
+  background-color: white;
+  color: black;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  width: 60px;
+  height: 20px;
+  margin-bottom: 2.5px;
+  text-decoration: none;
 }
 
 .update-button i {
-    font-size: 18px;
-    height: 30px;
-    width: 100px;
+  font-size: 18px;
+  height: 30px;
+  width: 100px;
 }
 
 p.title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* === Modal and Overlay Styles === */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(6px);
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal {
-    position: relative;
-    background-color: #2c2c2c;
-    border-radius: 15px;
-    padding: 30px;
-    z-index: 101;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: auto;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-}
-
-.hidden {
-    display: none;
-}
-
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    color: white;
-    cursor: pointer;
-    background: none;
-    border: none;
-}
-
-#modal-content .card {
-    width: 800px;
-    height: 400px;
-    flex-direction: column;
-    gap: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headquestion-info {
-    position: absolute;
-    left: 75.5%;
-    top: 55px;
+  position: absolute;
+  right: 0px;
+  top: 70px;
+  width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  height: auto;
+  max-height: 100px;
+  overflow-y: auto;
 }
 
-.headquestion {
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 8rem;
+  }
+  .card {
+    width: 95%;
+  }
+  .module-container {
+    display: flex;
+    position: fixed;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 30vh;
+  }
+  .top-color a {
+    color: white;
+  }
+  .card {
+    width: 95%;
+    height: auto;
+    min-height: 40vh;
+    padding: 15px;
+  }
+
+  .card::before {
+    content: "";
     position: absolute;
-    right: 21px;
-    top: 22.5px;
+    bottom: 80px;
+    width: 90%;
+    right: 5%;
+    height: 2.5px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+  .challenge-info {
+    max-width: 150px;
+    top: 70px;
+    font-size: 14px;
+  }
+
+  .headquestion {
+    position: absolute;
+    width: 35%;
+    max-width: none;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    font-size: 14px;
+    right: 10px;
+    top: 70px;
+    text-align: right;
+    overflow-wrap: break-word;
+  }
+
+  .headquestion-info {
+    position: absolute;
+    right: 10px;
+    top: 87.5px;
+    width: 35%;
+    font-size: 14px;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .category {
+    bottom: 0px;
+    font-size: 14px;
+  }
+
+  .update-button,
+  .delete-button {
+    bottom: 10px;
+    width: auto;
+    height: auto;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .like-button button {
+    bottom: 100px;
+    right: 25px;
+  }
+
+  .like-count,
+  .label-like-count {
+    bottom: 40px;
+    font-size: 12px;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 2rem;
+    left: 1rem;
+  }
+
+  .card-bottom {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    margin-bottom: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0 10px 10px 10px;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+  }
+
+  .category {
+    position: static;
+    margin-bottom: -10px;
+    font-size: 14px;
+    order: 1;
+    flex: 1 1 0;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .author {
+    position: static;
+    margin-bottom: 0;
+    font-size: 14px;
+    opacity: 0.8;
+    order: 2;
+    flex: 1 1 0;
+    text-align: right;
+    white-space: normal;
+    word-break: break-word;
+  }
 }

@@ -3,12 +3,31 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, jsonify, session, url_for
-from models import db
-from models import db, Todo, Like, Image
-from flask import session
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import db, User, Todo, Like, Image
 import json
 import os
+
+app = Flask(__name__)
+app.secret_key = "supersecret"  # Change this to a secure secret key
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
+
+# Initialize extensions
+db.init_app(app)
+migrate = Migrate(app, db)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def load_tasks():
     if os.path.exists('tasks.json'):
@@ -20,129 +39,153 @@ def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
 
-
-app = Flask(__name__)
-app.secret_key = "supersecret"  # Needed for session handling
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)  # Bind SQLAlchemy to the app
-migrate = Migrate(app, db)  # Initialize Flask-Migrate
-app.secret_key = 'something-very-secret'
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-@app.route('/home')
-def home_redirect():
-    return redirect(url_for('index'))
-
-@app.route('/challenge/<int:id>', methods=['GET'])
-def challenge_view(id):
+@app.route('/fullcard/<int:id>', methods=['GET'])
+def fullcard(id):
     task = Todo.query.get_or_404(id)
-    try: 
-        return render_template('fullcard.html', tasks=[task])
-    except:
-        return "Error rendering template", 500
+    if not task.approved and not (current_user.is_authenticated and current_user.is_admin):
+        flash('This challenge is not approved yet')
+        return redirect(url_for('forum'))
+    
+    return render_template('fullcard.html', task=task)
 
-@app.route('/togglelike/<int:id>', methods=['POST'])
-def toggle_like(id):
-    todo = Todo.query.get_or_404(id)
-    liked_tasks = session.get('liked_tasks', [])
-
-    try:
-        if id in liked_tasks:
-            # Unlike
-            Like.query.filter_by(todo_id=id).delete()
-            todo.likes = max(0, todo.likes - 1)
-            liked_tasks.remove(id)
-        else:
-            # Like
-            new_like = Like(todo_id=id)
-            db.session.add(new_like)
-            todo.likes += 1
-            liked_tasks.append(id)
-
-        session['liked_tasks'] = liked_tasks
-        db.session.commit()
-
-        return redirect(request.referrer or url_for('forum'))
-    except Exception as e:
-        return f"Error: {str(e)}", 500
-
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
-def update(id):
-    task = Todo.query.get_or_404(id)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        flash('You are already logged in.')
+        return redirect(url_for('index'))
     
     if request.method == 'POST':
-        try:
-            # Get form data
-            task.name = request.form.get('name', '')
-            task.title = request.form.get('title', '')
-            task.main_question = request.form.get('mainQuestion', '')
-            task.sub_questions = request.form.get('subQuestions', '')
-            task.description = request.form.get('description', '')
-            task.end_product = request.form.get('endProduct', '')
-            task.category = request.form.get('categorie', '')
-
-            # Handle image upload
-            image_file = request.files.get('image')
-            if image_file and allowed_file(image_file.filename):
-                filename = secure_filename(image_file.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                image_file.save(filepath)
-                
-                # Delete old image if it exists
-                if task.image:
-                    old_image_path = os.path.join(app.config['UPLOAD_FOLDER'], task.image)
-                    if os.path.exists(old_image_path):
-                        os.remove(old_image_path)
-                
-                task.image = filename
-
-            # Save changes to database
-            db.session.commit()
-            return redirect(url_for('forum'))
-
-        except Exception as e:
-            db.session.rollback()
-            return f"There was an issue updating the task: {str(e)}", 500
-
-    # GET request - display the update form
-    return render_template('update.html', task=task, categories=[
-        "Aardrijkskunde", "Biologie", "Informatica", "Economie", 
-        "Natuurkunde", "Maatschapijleer", "Lichamelijke opvoeding", 
-        "Kunst en Cultuur", "Wiskunde", "Geschiedenis", "Engels",
-        "Nederlands", "Frans", "Duits", "Handvaardigheid", 
-        "Muziek", "Scheikunde", "Overig"
-    ])
-
-@app.route('/delete/<int:id>', methods=['POST'])
-def delete_task(id):
-    todo = Todo.query.get_or_404(id)
-    try:
-        # Also delete likes related to the task
-        Like.query.filter_by(todo_id=todo.id).delete()
-        db.session.delete(todo)
-        db.session.commit()
-        return redirect(url_for('forum'))
-    except Exception as e:
-        return f"There was an issue deleting the task: {str(e)}", 500
-
-# route for forum page 
-@app.route('/forum', methods=['POST', 'GET'])
-def forum():
-    query = Todo.query
+        username_or_email = request.form.get('username')
+        password = request.form.get('password')
+        print(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
+        
+        # Try to find user by username or email
+        user = User.query.filter(
+            (User.username == username_or_email) | 
+            (User.email == username_or_email)
+        ).first()
+        
+        if user:
+            print(f"User found in database")  # Debug log
+            if user.check_password(password):
+                print(f"Password correct, logging in")  # Debug log
+                login_user(user)
+                next_page = request.args.get('next')
+                return redirect(next_page or url_for('index'))
+            else:
+                print(f"Password incorrect")  # Debug log
+                flash('Invalid password')
+        else:
+            print(f"User not found")  # Debug log
+            flash('No account found with that username or email')
     
-    # Get filter parameters
-    sortfilter = request.args.get('sortfilter', 'newest')  # Default to newest
-    vakfilter = request.args.get('vakfilter')
+    return render_template('login.html')
 
-    # Apply category filter if selected
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        flash('You are already logged in.')
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if password != confirm_password:
+            flash('Passwords do not match')
+            return redirect(url_for('register'))
+        
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists')
+            return redirect(url_for('register'))
+        
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered')
+            return redirect(url_for('register'))
+        
+        user = User(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/admin')
+@login_required
+def admin():
+    if not current_user.is_authenticated:
+        flash('Please log in first.')
+        return redirect(url_for('login'))
+    
+    if not current_user.is_admin:
+        flash('You are not authorized to view this page.')
+        return redirect(url_for('index'))
+    
+    challenges = Todo.query.all()
+    users = User.query.all()
+    return render_template('admin.html', challenges=challenges, users=users)
+
+@app.route('/admin/approve_challenge/<int:id>')
+@login_required
+def approve_challenge(id):
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+    challenge = Todo.query.get_or_404(id)
+    challenge.approved = True
+    db.session.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete_challenge/<int:id>')
+@login_required
+def delete_challenge(id):
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+    challenge = Todo.query.get_or_404(id)
+    db.session.delete(challenge)
+    db.session.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete_user/<int:id>')
+@login_required
+def delete_user(id):
+    if not current_user.is_admin:
+        return redirect(url_for('index'))
+    user = User.query.get_or_404(id)
+    if user.is_admin:
+        flash('Cannot delete admin users')
+        return redirect(url_for('admin'))
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/forum')
+def forum():
+    vakfilter = request.args.get('vakfilter', '')
+    sortfilter = request.args.get('sortfilter', 'newest')
+    
+    # Only show approved challenges unless user is admin
+    query = Todo.query
+    if not (current_user.is_authenticated and current_user.is_admin):
+        query = query.filter_by(approved=True)
+    
     if vakfilter:
         query = query.filter_by(category=vakfilter)
     
-    # Apply sorting
     if sortfilter == 'newest':
         query = query.order_by(Todo.date_created.desc())
     elif sortfilter == 'oldest':
@@ -150,18 +193,184 @@ def forum():
     elif sortfilter == 'likes':
         query = query.order_by(Todo.likes.desc())
     
-    todos = query.all()
+    tasks = query.all()
+    return render_template('forum.html', tasks=tasks)
+
+@app.route('/uploadtoforum', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        main_question = request.form.get('mainQuestion')
+        sub_questions = request.form.get('subQuestions')
+        description = request.form.get('description')
+        end_product = request.form.get('endProduct')
+        category = request.form.get('categorie')
+        name = current_user.username
+        
+        image_filename = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                image_filename = filename
+
+        new_task = Todo(
+            title=title,
+            name=name,
+            main_question=main_question,
+            sub_questions=sub_questions,
+            description=description,
+            end_product=end_product,
+            category=category,
+            image=image_filename,
+            author_id=current_user.id,
+            approved=current_user.is_admin,
+            likes=0
+        )
+
+        try:
+            db.session.add(new_task)
+            db.session.commit()
+            return redirect('/forum')
+        except Exception as e:
+            print(f"Error adding challenge: {str(e)}")  # Add this for debugging
+            return 'There was an issue adding your challenge'
     
-    return render_template('forum.html', tasks=todos)
+    return render_template('uploadtoforum.html')
+
+@app.route('/like/<int:id>', methods=['GET', 'POST'])
+@login_required
+def like(id):
+    try:
+        todo = Todo.query.get_or_404(id)
+        existing_like = Like.query.filter_by(
+            todo_id=id,
+            user_id=current_user.id
+        ).first()
+        
+        liked = False
+        if existing_like:
+            db.session.delete(existing_like)
+            todo.likes = max(0, todo.likes - 1)  # Ensure likes don't go below 0
+        else:
+            like = Like(todo_id=id, user_id=current_user.id)
+            db.session.add(like)
+            todo.likes += 1
+            liked = True
+        
+        db.session.commit()
+
+        # Add task to liked_tasks session if liked, remove if unliked
+        liked_tasks = session.get('liked_tasks', [])
+        if liked and id not in liked_tasks:
+            liked_tasks.append(id)
+        elif not liked and id in liked_tasks:
+            liked_tasks.remove(id)
+        session['liked_tasks'] = liked_tasks
+        
+        # Return JSON response for AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'likes': todo.likes,
+                'liked': liked,
+                'success': True
+            })
+        
+        # For regular form submissions, redirect back
+        next_page = request.referrer or url_for('forum')
+        return redirect(next_page)
+        
+    except Exception as e:
+        db.session.rollback()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+        flash('Error processing like')
+        return redirect(url_for('forum'))
+
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+@login_required
+def update(id):
+    task = Todo.query.get_or_404(id)
+    
+    # Check authorization
+    if not (current_user.id == task.author_id or current_user.is_admin):
+        flash('You are not authorized to edit this challenge')
+        return redirect(url_for('forum'))
+
+    if request.method == 'GET':
+        return render_template('update.html', task=task)
+
+    if request.method == 'POST':
+        print(f"Updating task {id} by user {current_user.username}")  # Debug log
+        task.title = request.form.get('title')
+        task.main_question = request.form.get('mainQuestion')
+        task.sub_questions = request.form.get('subQuestions')
+        task.description = request.form.get('description')
+        task.end_product = request.form.get('endProduct')
+        task.category = request.form.get('categorie')
+        # Note: name is not updated as it should stay as the original author's username
+        
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                task.image = filename
+        
+        try:
+            db.session.commit()
+            flash('Challenge updated successfully')
+            return redirect(url_for('forum'))
+        except Exception as e:
+            print(f"Error updating challenge: {str(e)}")  # Debug logging
+            db.session.rollback()
+            flash('There was an issue updating your challenge')
+            return redirect(url_for('forum'))
+
+@app.route('/delete/<int:id>', methods=['POST'])
+@login_required
+def delete(id):
+    # Get the task or return 404
+    task_to_delete = Todo.query.get_or_404(id)
+    
+    # Check authorization
+    if not (current_user.id == task_to_delete.author_id or current_user.is_admin):
+        flash('You are not authorized to delete this challenge')
+        return redirect(url_for('forum'))
+    
+    try:
+        # Delete likes
+        Like.query.filter_by(todo_id=id).delete()
+        
+        # Delete images
+        Image.query.filter_by(todo_id=id).delete()
+        
+        # Delete the task
+        db.session.delete(task_to_delete)
+        
+        # Commit the transaction
+        db.session.commit()
+        
+        flash('Challenge deleted successfully')
+        return redirect(url_for('forum'))
+    except Exception as e:
+        print(f"Error deleting challenge {id}: {str(e)}")  # Debug logging
+        db.session.rollback()
+        flash('There was a problem deleting that challenge')
+        return redirect(url_for('forum'))
 
 
-# Specify the folder where the uploaded files will be stored
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Function to check if the file is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -174,7 +383,6 @@ def upload_image():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            # Create an Image object and save it to the database
             new_image = Image(filename=filename)
             db.session.add(new_image)
             db.session.commit()
@@ -182,55 +390,10 @@ def upload_image():
             return redirect('/uploadtoforum')
     return render_template('upload.html')
 
-@app.route('/uploadtoforum', methods=['POST', 'GET'])
-def uploadtoforum():
-    if request.method == 'POST':
-        task_name = request.form.get('name')
-        task_title = request.form.get('title')
-        task_main_question = request.form.get('mainQuestion')
-        task_sub_questions = request.form.get('subQuestions')
-        task_description = request.form.get('description')
-        task_end_product = request.form.get('endProduct')
-        task_category = request.form.get('categorie')
-        task_image = request.files.get('image')
-
-        # Check if task_name is None or empty
-        if not task_name:
-            return "Name field is required", 400
-
-        image_filename = None
-        if task_image and allowed_file(task_image.filename):
-            image_filename = secure_filename(task_image.filename)
-            task_image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
-
-        # Create new_task regardless of whether an image was uploaded
-        new_task = Todo(
-            title=task_title,
-            name=task_name,
-            main_question=task_main_question,
-            sub_questions=task_sub_questions,
-            description=task_description,
-            end_product=task_end_product,
-            category=task_category,
-            image=image_filename,
-            likes=0
-        )
-
-        try:
-            db.session.add(new_task)
-            db.session.commit()
-
-            # Re-fetch the updated list of todos and user likes
-            todos = Todo.query.all()
-            return redirect('/forum')
-        except Exception as e:
-            return f"There was an issue adding your task: {str(e)}"
-    else:
-        print("redirecting to upload to forum")
-        return render_template('uploadtoforum.html')
+# Removed duplicate route
 
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

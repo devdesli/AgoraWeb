@@ -1,85 +1,84 @@
-<div class="card card-glow">
-    <h2 class="title">{{ task.title }}</h2>
+<div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id) }}')" style="cursor: pointer;">
+  <h2 class="title">{{ task.title }}</h2>
+  <div class="card-bottom">
     <p class="author"><strong>Door:</strong> {{ task.name }}</p>
-    <p class="headquestion"><strong>Hoofdvraag:</strong><br><div class="headquestion-info">{{ task.main_question }}</div></p>
-    <p class="challenge-info"><strong>Beschrijving:</strong><br> {{ task.description }}</p>
-    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>
-
-    <form action="{{ url_for('update', id=task.id) }}" method="GET" onsubmit="return confirm('Are you sure you want to update this task?');">
-        <button class="update-button" type="submit">Update</button>
-    </form>
-
-    <form action="{{ url_for('delete_task', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this task?');">
-        <button class="delete-button" type="submit">Verwijder</button>
-    </form>
-
-    <label class="expand-label">Bekijk hele post :</label>
-    <button class="expand-button" type="button" onclick="expandCard(this)">
-        <i class='bx bx-expand'></i>
-    </button>
-
-    {% set liked_tasks = session.get('liked_tasks', []) %}
-    <div class="like-button">
-        <span data-id="{{ task.id }}">
-            <form action="{{ url_for('toggle_like', id=task.id) }}" method="POST">
-                <button type="submit">
-                    <i class="bx {% if task.id in liked_tasks %}bxs-like{% else %}bx-like{% endif %}"></i>
-                </button>
-            </form>
-            <label class="label-like-count">Likes:</label>
-            <span class="like-count">{{ task.likes }}</span>
-        </span>
+    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  
+  </div>
+  <div class="info-container">
+  <p class="headquestion">
+    <strong>Hoofdvraag:</strong><br />
+    <div class="headquestion-info">{{ task.main_question }}</div>
+  </p>
+  <p class="challenge-info">
+    <strong>Beschrijving:</strong><br />
+    {{ task.description }}
+  </p>
+  </div>
+  {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
+  <div class="button-container">
+  <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>
+  <form
+    action="{{ url_for('delete', id=task.id) }}"
+    method="POST"
+    onsubmit="return confirm('Are you sure you want to delete this task?');"
+  >
+    <button class="delete-button" type="submit">Verwijder</button>
+  </form>
+  </div>
+{% endif %}
+  {% set liked_tasks = session.get('liked_tasks', []) %}
+   <div class="like-button">    <span data-id="{{ task.id }}">      
+    <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
+        </button>
+      </form>
+      <div class="like-count-container">
+      <label class="label-like-count">Likes:</label>
+      <span class="like-count">{{ task.likes }}</span>
+      </div>
+    </span>
     </div>
-</div>
-
-<!-- Modal Elements -->
-<div id="overlay" class="overlay hidden" onclick="closeCard()"></div>
-<div id="modal" class="modal hidden">
-    <button type="button" class="close-modal" onclick="closeCard()">×</button>
-    <div id="modal-content"></div>
-</div>
+   </div>
 
 <!-- JavaScript -->
 <script>
-function handleUpdate(event, form) {
+  function handleUpdate(event, form) {
     event.preventDefault();
-    
-    const card = form.closest('.card');
+
+    const card = form.closest(".card");
     const taskData = {
-        title: card.querySelector('.title').textContent,
-        name: card.querySelector('.author').textContent.replace('Door:', '').trim(),
-        main_question: card.querySelector('.headquestion').textContent.replace('Hoofdvraag:', '').trim(),
-        description: card.querySelector('.challenge-info').textContent.replace('Beschrijving:', '').trim(),
-        category: card.querySelector('.category').textContent.replace('Categorie:', '').trim()
+      title: card.querySelector(".title").textContent,
+      name: card
+        .querySelector(".author")
+        .textContent.replace("Door:", "")
+        .trim(),
+      main_question: card
+        .querySelector(".headquestion")
+        .textContent.replace("Hoofdvraag:", "")
+        .trim(),
+      description: card
+        .querySelector(".challenge-info")
+        .textContent.replace("Beschrijving:", "")
+        .trim(),
+      category: card
+        .querySelector(".category")
+        .textContent.replace("Categorie:", "")
+        .trim(),
     };
 
     // Store the data in sessionStorage
-    sessionStorage.setItem('updateTaskData', JSON.stringify(taskData));
-    
+    sessionStorage.setItem("updateTaskData", JSON.stringify(taskData));
+
     // Redirect to the update page
     window.location.href = form.action;
     return false;
-}
-
-function expandCard(button) {
-    const card = button.closest('.card');
-    const modal = document.getElementById('modal');
-    const overlay = document.getElementById('overlay');
-    const modalContent = document.getElementById('modal-content');
-
-    const clone = card.cloneNode(true);
-    const innerExpand = clone.querySelector('.expand-button');
-    if (innerExpand) innerExpand.remove();
-
-    modalContent.innerHTML = '';
-    modalContent.appendChild(clone);
-
-    modal.classList.remove('hidden');
-    overlay.classList.remove('hidden');
-}
-
-function closeCard() {
-    document.getElementById('modal').classList.add('hidden');
-    document.getElementById('overlay').classList.add('hidden');
+  }
+  function handleCardClick(event, url) {
+  // Don't redirect if clicking on buttons or forms
+  if (event.target.closest('.button-container') || 
+      event.target.closest('.like-button') || 
+      event.target.closest('form')) {
+    return;
+  }
+  window.location.href = url;
 }
 </script>

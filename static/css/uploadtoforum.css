@@ -1,201 +1,217 @@
 body {
-    background-color: #afaeae;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow-x: hidden;
-    overflow-y: hidden;
+  background-color: #afaeae;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.flash-message {
+  padding: 0.75rem;
+  margin: 1rem auto;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  z-index: 1001;
 }
 
 select {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 h1 {
-    text-align: center;
-    color: white;  
-    margin-top: -20px;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: -20px;
+  font-size: 2rem;
 }
 
 .logo {
-    width: 150px;
-    height: 75px;
+  width: 150px;
+  height: 75px;
 }
 
 .top-color {
-    text-shadow: rebeccapurple 0 0 20px;
-    position: absolute;
-    width: 100%;
-    background-color:  #22194d;
-    left: 0px;
-    top: 0px;
-    padding-top: 10px;
-    padding-left: 5px;
-    height: 150px;
-    z-index: 1000;
+  text-shadow: rebeccapurple 0 0 20px;
+  position: fixed;
+  width: 100%;
+  background-color: #22194d;
+  left: 0px;
+  top: 0px;
+  padding-top: 10px;
+  padding-left: 5px;
+  height: 150px;
+  z-index: 1000;
 }
 
 textarea {
-    text-decoration: none;
-    resize: none;
-    width: 250px;
+  text-decoration: none;
+  resize: none;
+  width: 250px;
 }
 
 .forum {
-    font-size: 12.5px;
+  font-size: 12.5px;
 }
 
 hr {
-    margin-top: 100px;
-    margin-left: -10px;
-    margin-right: -10px;
+  margin-top: 100px;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 
 .submit {
-    position: absolute;
-    width: 200px;
-    left: 1275px;
-    top: 210px;
-    font-size: 20px;
-    height: 50px;
+  position: absolute;
+  width: 200px;
+  left: 1275px;
+  top: 210px;
+  font-size: 20px;
+  height: 50px;
 }
 
 .author {
-    position: absolute;
-    top: 220px;
-    left: 50px;
+  position: absolute;
+  top: 220px;
+  left: 50px;
 }
 
 .authorText {
-    top: 180px;
+  top: 180px;
 }
 
 .title {
-    position: absolute;
-    top: 300px;
-    left: 50px;
+  position: absolute;
+  top: 220px;
+  left: 50px;
 }
 
 .titleText {
-    top: 260px;
+  top: 180px;
 }
 
 .mainquestion {
-    position: absolute;
-    top: 220px;
-    left: 350px;
+  position: absolute;
+  top: 220px;
+  left: 350px;
 }
 
 .mainquestionText {
-    top: 180px;
+  top: 180px;
 }
 
 .subquestions {
-    position: absolute;
-    top: 300px;
-    left: 350px;
+  position: absolute;
+  top: 300px;
+  left: 350px;
 }
 
 .subquestionsText {
-    top: 260px;
+  top: 260px;
 }
 
 .challengeinfo {
-    position: absolute;
-    top: 450px;
-    left: 350px;
+  position: absolute;
+  top: 450px;
+  left: 350px;
 }
 
 .challengeinfoText {
-    top: 410px;
+  top: 410px;
 }
 
-.endproduct  {
-    position: absolute;
-    left: 650px;
-    top: 220px;
+.endproduct {
+  position: absolute;
+  left: 650px;
+  top: 220px;
 }
 
 .endproductText {
-    top: 180px;
+  top: 180px;
 }
 
 .image {
-    position: absolute;
-    top: 340px;
-    left: 950px;
+  position: absolute;
+  top: 340px;
+  left: 950px;
 }
 
 .imageinput {
-    position: absolute;
-    top: 300px;
-    left: 950px;
+  position: absolute;
+  top: 300px;
+  left: 950px;
 }
 
 .imageinputText {
-    top: 260px;
-    left: 950px;
+  top: 260px;
+  left: 950px;
 }
 
 .filters {
-    position: absolute;
-    top: 220px;
-    left: 950px;
+  position: absolute;
+  top: 220px;
+  left: 950px;
 }
 
 .filtersText {
-    top: 180px;
-    left: 950px;
+  top: 180px;
+  left: 950px;
 }
 
 textarea,
 select,
 input[type="file"] {
-    font-size: 15px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background-color: #f8f8f8;
-    transition: border-color 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  transition: border-color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 textarea:focus,
 select:focus,
 input[type="file"]:focus {
-    outline: none;
-    border-color: #22194d;
-    background-color: #fff;
+  outline: none;
+  border-color: #22194d;
+  background-color: #fff;
 }
 
 label h3 {
-    font-size: 18px;
-    margin-bottom: 6px;
-    color: #22194d;
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: #22194d;
 }
 
 .submit {
-    background-color: #22194d;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
+  background-color: #22194d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 
 .submit:hover {
-    background-color: #1a1440;
-    cursor: pointer;
+  background-color: #1a1440;
+  cursor: pointer;
 }
 
 .imageinputText {
-    color: #22194d;
-    font-size: 18px;
-    margin-bottom: 10px;
+  color: #22194d;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 #preview {
-    margin-top: 15px;
-    max-width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .forum-button {
@@ -208,24 +224,135 @@ label h3 {
 }
 
 .forum-button-text {
-    text-decoration: none;
-    color: black;
+  text-decoration: none;
+  color: black;
 }
 
 .contact {
-    position: absolute;
-    color: white;
-    top: 115px;
-    right: 25px;
-    z-index: 1000;
+  position: absolute;
+  color: white;
+  top: 115px;
+  right: 25px;
+  z-index: 1000;
 }
 
-@media (min-width: 1024px) {
-    h1 {
-        font-size: 2.75rem;
-    }
+@media (max-width: 900px) {
+  h1 {
+    font-size: 2rem;
+  }
+  body {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  .forum {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 0 8px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    font-size: 1rem !important;
+    box-sizing: border-box !important;
+  }
+  .author,
+  .title,
+  .mainquestion,
+  .subquestions,
+  .challengeinfo,
+  .endproduct,
+  .image,
+  .imageinput,
+  .filters,
+  .submit,
+  .authorText,
+  .titleText,
+  .mainquestionText,
+  .subquestionsText,
+  .challengeinfoText,
+  .endproductText,
+  .imageinputText,
+  .filtersText {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 12px 0 !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    font-size: 1rem !important;
+  }
+  textarea,
+  select,
+  input[type="file"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    padding: 10px 0;
+    font-size: 1rem !important;
+  }
+  .logo {
+    width: 100px;
+    height: auto;
+  }
+  .contact {
+    position: static;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .forum-button {
+    position: static;
+    width: 100%;
+    margin-bottom: 10px;
+    height: auto;
+    font-size: 1rem;
+  }
+  .submit {
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    position: static !important;
+    margin: 20px 0 0 0 !important;
+    font-size: 1.1rem !important;
+    height: 45px !important;
+  }
+  #preview {
+    max-width: 100vw !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto 10px auto;
+  }
 }
 
-select {
-    cursor: pointer;
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  .top-color {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+  .logo {
+    width: 80px;
+    height: auto;
+  }
+  .forum {
+    padding-top: 120px !important;
+  }
+  .forum-button {
+    font-size: 0.95rem;
+    padding: 8px 0;
+  }
+  .contact {
+    font-size: 0.95rem;
+  }
+  label h3 {
+    font-size: 1rem;
+  }
 }

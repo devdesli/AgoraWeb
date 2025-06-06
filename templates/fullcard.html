@@ -1,0 +1,134 @@
+{% extends 'base.html' %} {% block head %} {{ super() }}
+<title>Bekijk challenge</title>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/fullcard.css') }}"
+/>
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %} {% with messages = get_flashed_messages() %} {%
+if messages %} {% for message in messages %}
+<div class="flash-message">{{ message }}</div>
+{% endfor %} {% endif %} {% endwith %} {% if current_user.is_authenticated and
+current_user.is_admin %}
+<div class="admin-controls">
+  <div class="admin-actions">
+    {% if not task.approved %}
+    <a
+      href="{{ url_for('approve_challenge', id=task.id) }}"
+      class="admin-button approve-button"
+    >
+      <i class="bx bx-check"></i> Challenge goedkeuren
+    </a>
+    {% endif %}
+    <a
+      href="{{ url_for('delete_challenge', id=task.id) }}"
+      class="admin-button delete-button"
+      onclick="return confirm('Weet je zeker dat je deze challenge wilt verwijderen?')"
+    >
+      <i class="bx bx-trash"></i> Challenge verwijderen
+    </a>
+    <a href="{{ url_for('admin') }}" class="admin-button">
+      <i class="bx bx-arrow-back"></i> Terug naar admin
+    </a>
+  </div>
+  <div class="challenge-status">
+    Status:
+    <span
+      class="status-badge {% if task.approved %}approved{% else %}pending{% endif %}"
+    >
+      {% if task.approved %}Goedgekeurd{% else %}In afwachting{% endif %}
+    </span>
+  </div>
+</div>
+{% endif %}
+
+<div class="content">
+  <div class="card-header">
+    <h2 class="title">{{ task.title }}</h2>
+    <p class="author">Door: {{ task.name }}</p>
+  </div>
+
+  <div class="main-content">
+    <div class="main-grid">
+      <div class="left-section">
+        {% if task.image %}
+        <div class="task-image">
+          <img
+            src="{{ url_for('static', filename='uploads/' + task.image) }}"
+            alt="Challenge afbeelding"
+          />
+        </div>
+        {% else %}
+        <div class="task-image">
+          <span class="placeholder-text">Image placeholder</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="right-section">
+        <div class="headquestion">
+          <h3>Hoofdvraag</h3>
+          <p>{{ task.main_question }}</p>
+        </div>
+
+        <div class="sub-questions">
+          <h3>Deelvragen</h3>
+          <p>{{ task.sub_questions }}</p>
+        </div>
+
+        <div class="information">
+          <h3>Beschrijving</h3>
+          <p>{{ task.description }}</p>
+        </div>
+      </div>
+
+      <div class="bottom-section">
+        <div class="endproduct">
+          <h3>Eindproduct</h3>
+          <p>{{ task.end_product }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="action-buttons">
+      {% if current_user.is_authenticated and (current_user.is_admin or
+      current_user.id == task.author_id) %}
+      <a href="{{ url_for('update', id=task.id) }}" class="admin-button">
+        <i class="bx bx-edit"></i> Update
+      </a>
+      {% endif %}
+
+      <a href="{{ url_for('forum') }}" class="forum-button">
+        <i class="bx bx-arrow-back"></i> Terug naar forum
+      </a>
+    </div>
+
+    <div class="category">
+      <i class="bx bx-bookmark"></i> {{ task.category }}
+    </div>
+
+    {% if current_user.is_authenticated %}
+    <div class="like-section">
+      {% set liked_tasks = session.get('liked_tasks', []) %}
+      <form
+        action="{{ url_for('like', id=task.id) }}"
+        method="POST"
+        style="display: inline"
+      >
+        <button type="submit" class="like-button">
+          <i
+            class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"
+          ></i>
+        </button>
+      </form>
+      <span class="like-count">{{ task.likes }} likes</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

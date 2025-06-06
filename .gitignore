@@ -6,3 +6,7 @@ __pycache__/
 /instance
 /var/app-instance
 /migrations
+/instance
+static/uploads/
+create_user.py
+make_admin.py

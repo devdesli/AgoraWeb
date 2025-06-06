@@ -1,21 +1,91 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block head %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{url_for('static', filename='css/index.css') }}"
+/>
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+/>
+<script src="{{url_for('static', filename='js/home.js') }}"></script>
+{% endblock %} {% block body %}
+<div class="top-color">
+  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+  in messages %}
+  <div class="flash-message">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %}
 
-{% block head %}
-{{ super() }}
-  <link rel="stylesheet" href="{{url_for('static', filename='css/index.css') }}">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-  <script src="{{url_for('static', filename='js/home.js') }}"></script>
-{% endblock %}
+  <h1>Maakplaats</h1>
 
-{% block body %}
-<div class="container">
-  <div class="button-container">
-    <button class="forum-button">
-      <a href="uploadtoforum">post een challenge of het forum</a>
-    </button>
-    <button class="forum-button">
-      <a href="forum">bekijk challenges op het forum</a>
-    </button>
+  <div class="contact">
+    <p>
+      Heb je een vraag of tip? Stuur dan een mail naar:
+      <a href="mailto:develloperdesli@gmail.com" style="color: white"
+        >admin@gmail.com</a
+      >
+    </p>
+  </div>
+  <div class="logo">
+    <a href="https://liemersagora.beezer.com/" target="_blank">
+      <img
+        class="logo"
+        src="{{ url_for('static', filename='pictures/logo.png') }}"
+        alt="Logo"
+      />
+    </a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="content-section">
+    <h2>Welkom bij het Agora Challenge Forum</h2>
+    <p>
+      Hier kun je inspirerende challenges vinden en delen met andere
+      Agora-studenten. Of je nu op zoek bent naar een nieuwe uitdaging of je
+      eigen ervaringen wilt delen, dit is de plek om samen te leren en te
+      groeien.
+    </p>
+    <p>
+      Om een challenge te plaatsen ga je naar de knop "Challenge Plaatsen"
+      onderaan de pagina. Hier kun je jouw eigen challenge toevoegen en
+      delen met de community. Als je een challenge wilt bekijken, ga dan naar
+      het forum door op "Challenges Bekijken" te klikken.
+      Op het forum kunn je op een challenge clicken om hem te bekijken.
+    </p>
+  </div>
+
+  <div class="content-section">
+    <h2>Wat kun je hier doen?</h2>
+    <div class="button-container">
+      {% if current_user.is_authenticated %}
+      <button class="forum-button">
+        <a href="{{ url_for('upload') }}">Challenge Plaatsen</a>
+      </button>
+      <button class="forum-button">
+        <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
+      </button>
+      {% if current_user.is_admin %}
+      <button class="forum-button">
+        <a href="{{ url_for('admin') }}">Admin Panel</a>
+      </button>
+      {% endif %}
+      {% if current_user.is_authenticated%}
+      <button class="forum-button">
+        <a href="{{ url_for('logout') }}">Uitloggen</a>
+      </button>
+      {% endif %}
+      {% else %}
+      <button class="forum-button">
+        <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
+      </button>
+      <button class="forum-button">
+        <a href="{{ url_for('login') }}">Inloggen</a>
+      </button>
+      <button class="forum-button">
+        <a href="{{ url_for('register') }}">Registreren</a>
+      </button>
+      {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}
