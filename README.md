@@ -2,7 +2,7 @@ We wanted to make it possible to share challenges with other people on a forum s
 To share with the community what you created😁
 You can make an account and post a new challenge on the forum, update it, and delete it.
 
-ITS ALSO ONLINE [the website](https://agorawebapp.pythonanywhere.com/)
+ITS ALSO ONLINE [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
 🤔 I’m looking for help with the design if anybody has tips just contact me with the info under here.
 
