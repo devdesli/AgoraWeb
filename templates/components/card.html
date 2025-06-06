@@ -27,7 +27,8 @@
   </div>
 {% endif %}
   {% set liked_tasks = session.get('liked_tasks', []) %}
-   <div class="like-button">    <span data-id="{{ task.id }}">      
+   <div class="like-button">    
+    <span data-id="{{ task.id }}">  
     <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
         </button>
       </form>
