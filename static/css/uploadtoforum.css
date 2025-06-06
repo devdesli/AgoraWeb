@@ -223,6 +223,15 @@ label h3 {
   width: 200px;
 }
 
+.home-button {
+  position: absolute;
+  right: 25px;
+  top: 60px;
+  border-radius: 20px;
+  height: 30px;
+  width: 200px;
+}
+
 .forum-button-text {
   text-decoration: none;
   color: black;

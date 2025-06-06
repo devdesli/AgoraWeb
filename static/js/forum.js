@@ -1,16 +1,17 @@
-document.addEventListener("click", function (event) {
-  const button = event.target.closest(".like-button");
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest(".like-button");
 
-  if (button) {
+    if (!button) return;
+
     event.preventDefault();
+
     const icon = button.querySelector("i");
     const likeCountElement = button.querySelector(".like-count");
     const todoId = button.getAttribute("data-id");
 
-    // Prevent multiple rapid clicks
-    if (button.dataset.processing === "true") {
-      return;
-    }
+    // Prevent rapid clicks
+    if (button.dataset.processing === "true") return;
     button.dataset.processing = "true";
 
     fetch(`/like/${todoId}`, {
@@ -20,29 +21,30 @@ document.addEventListener("click", function (event) {
       },
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
       })
       .then((data) => {
         if (data.success) {
-          // Update the like count with validation
-          const likes = Math.max(0, data.likes);
-          likeCountElement.textContent = likes;
+          // Update like count
+          likeCountElement.textContent = Math.max(0, data.likes);
 
-          // Toggle the icon class based on liked status
+          // Update icon
           icon.classList.remove("bxs-like", "bx-like");
           icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+
+          // Optional: add class for styling (liked/unliked)
+          icon.classList.toggle("liked", data.liked);
+          icon.classList.toggle("unliked", !data.liked);
         } else {
-          console.error("Error toggling like:", data.error);
+          console.error("Server error:", data.error);
         }
       })
       .catch((err) => console.error("Fetch error:", err))
       .finally(() => {
         button.dataset.processing = "false";
       });
-  }
+  });
 });
 
 document.addEventListener("DOMContentLoaded", function () {

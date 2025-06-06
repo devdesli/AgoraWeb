@@ -26,22 +26,73 @@
   </form>
   </div>
 {% endif %}
-  {% set liked_tasks = session.get('liked_tasks', []) %}
-   <div class="like-button">    
-    <span data-id="{{ task.id }}">  
-    <form action="{{ url_for('like', id=task.id) }}" method="POST">        <button type="submit">            <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
+   <div class="like-container">    
+    <div data-id="{{ task.id }}">
+    {% set liked_tasks = session.get('liked_tasks', []) %}
+    <form action="{{ url_for('like', id=task.id) }}" method="POST">        
+      <button type="submit" class="like-button">            
+        <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
         </button>
       </form>
       <div class="like-count-container">
       <label class="label-like-count">Likes:</label>
       <span class="like-count">{{ task.likes }}</span>
       </div>
-    </span>
     </div>
-   </div>
+    </div>
+  </div>
 
 <!-- JavaScript -->
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("click", function (event) {
+    const button = event.target.closest(".like-button");
+
+    if (!button) return;
+
+    event.preventDefault();
+
+    const icon = button.querySelector("i");
+    const likeCountElement = button.querySelector(".like-count");
+    const todoId = button.getAttribute("data-id");
+
+    // Prevent rapid clicks
+    if (button.dataset.processing === "true") return;
+    button.dataset.processing = "true";
+
+    fetch(`/like/${todoId}`, {
+      method: "POST",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          // Update like count
+          likeCountElement.textContent = Math.max(0, data.likes);
+
+          // Update icon
+          icon.classList.remove("bxs-like", "bx-like");
+          icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+
+          // Optional: add class for styling (liked/unliked)
+          icon.classList.toggle("liked", data.liked);
+          icon.classList.toggle("unliked", !data.liked);
+        } else {
+          console.error("Server error:", data.error);
+        }
+      })
+      .catch((err) => console.error("Fetch error:", err))
+      .finally(() => {
+        button.dataset.processing = "false";
+      });
+  });
+});
+
   function handleUpdate(event, form) {
     event.preventDefault();
 
