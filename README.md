@@ -19,13 +19,6 @@ venv/Scripts/activate to activate the virtual enviroment
 to run
 when in the main folder just type python app.py to start the flask server.
 ⚡This automaticly starts the server on all adresses if your machine has firewall disabled it will get exposed to the network.
-or run hosted through terminal 
-export FLASK_APP=app.py
-flask run --host=0.0.0.0
-
-$env:FLASK_APP = "app.py"
-flask shell
-
 
 use the create user .py to create a testuser named testuser password testuser.
 or make an account through the website.
