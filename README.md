@@ -16,9 +16,10 @@ then make an venv by running
 python - venv venv
 this names the venv folder venv you can change this if you want just remember to also change the name of the next command to the right folder.
 venv/Scripts/activate to activate the virtual enviroment
+then install the dependencies by running pip install -r requirements.txt
+
 to run
 when in the main folder just type python app.py to start the flask server.
 ⚡This automaticly starts the server on all adresses if your machine has firewall disabled it will get exposed to the network.
 
-use the create user .py to create a testuser named testuser password testuser.
-or make an account through the website.
+You can make an account through the website.
