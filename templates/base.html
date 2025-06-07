@@ -19,11 +19,20 @@
       href="{{ url_for('static', filename='pictures/logo.png') }}"
     />
     {% endblock %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash-message flash-message-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
   </head>
 
   <body>
     {% block body %}
-    <!-- Add this near your navigation menu -->
     {% if current_user.is_authenticated and current_user.is_admin %}
     <a href="{{ url_for('admin') }}" class="nav-link">Admin Panel</a>
     {% endif %} {% endblock %}

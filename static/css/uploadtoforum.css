@@ -216,25 +216,34 @@ label h3 {
 
 .forum-button {
   position: absolute;
+  color: white;
   right: 25px;
   top: 20px;
   border-radius: 20px;
+  border: none;
+  padding: 0;
   height: 30px;
   width: 200px;
+  background: linear-gradient(#22194d 1%, #9198e5 100%);
+}
+
+.forum-button a,
+.home-button a {
+  color: white;
+  text-decoration: none;
 }
 
 .home-button {
   position: absolute;
+  color: white;
   right: 25px;
   top: 60px;
   border-radius: 20px;
   height: 30px;
   width: 200px;
-}
-
-.forum-button-text {
-  text-decoration: none;
-  color: black;
+  border: none;
+  padding: 0;
+  background: linear-gradient(#22194d 5%, #9198e5 100%);
 }
 
 .contact {

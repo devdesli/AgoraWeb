@@ -59,11 +59,14 @@ h1 {
   border-radius: 20px;
   height: 30px;
   width: 200px;
+  background: linear-gradient(#22194d 1%, #9198e5 100%);
+  border: none;
+  cursor: pointer;
 }
 
 .forum-button-text {
   text-decoration: none;
-  color: black;
+  color: white;
 }
 
 .forum {

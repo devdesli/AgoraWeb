@@ -2,7 +2,7 @@
   <h2 class="title">{{ task.title }}</h2>
   <div class="card-bottom">
     <p class="author"><strong>Door:</strong> {{ task.name }}</p>
-    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>  
+    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>
   </div>
   <div class="info-container">
   <p class="headquestion">
@@ -26,25 +26,20 @@
   </form>
   </div>
 {% endif %}
-   <div class="like-container">    
-    <div data-id="{{ task.id }}">
-    {% set liked_tasks = session.get('liked_tasks', []) %}
-    <form action="{{ url_for('like', id=task.id) }}" method="POST">        
-      <button type="submit" class="like-button">            
-        <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
-        </button>
-      </form>
-      <div class="like-count-container">
-      <label class="label-like-count">Likes:</label>
-      <span class="like-count">{{ task.likes }}</span>
-      </div>
-    </div>
-    </div>
+   <div class="like-button" data-id="{{ task.id }}">
+  <button type="button">
+    <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
+  </button>
+  <div class="like-count-container">
+    <label class="label-like-count">Likes:</label>
+    <span class="like-count">{{ task.likes }}</span>
   </div>
+ </div>
+</div>
 
 <!-- JavaScript -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("click", function (event) {
     const button = event.target.closest(".like-button");
 
@@ -66,6 +61,14 @@
         "X-Requested-With": "XMLHttpRequest",
       },
     })
+    .then(response => {
+    if (response.status === 401) {
+        alert('You must be logged in to like challenges.');
+        window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname);
+        return;
+    }
+    return response.json();
+})
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
@@ -92,6 +95,10 @@
       });
   });
 });
+
+
+
+
 
   function handleUpdate(event, form) {
     event.preventDefault();
@@ -126,8 +133,8 @@
   }
   function handleCardClick(event, url) {
   // Don't redirect if clicking on buttons or forms
-  if (event.target.closest('.button-container') || 
-      event.target.closest('.like-button') || 
+  if (event.target.closest('.button-container') ||
+      event.target.closest('.like-button') ||
       event.target.closest('form')) {
     return;
   }

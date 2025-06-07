@@ -39,6 +39,17 @@ def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'success': False,
+            'error': 'Authentication required'
+        }), 401  # Unauthorized
+    else:
+        flash('You need to be logged in to perform this action.', 'warning')
+        return redirect(url_for('login', next=request.url))
+
 @app.route('/fullcard/<int:id>', methods=['GET'])
 def fullcard(id):
     task = Todo.query.get_or_404(id)
@@ -51,7 +62,7 @@ def fullcard(id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        flash('You are already logged in.')
+        flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
     if request.method == 'POST':
@@ -74,17 +85,17 @@ def login():
                 return redirect(next_page or url_for('index'))
             else:
                 print(f"Password incorrect")  # Debug log
-                flash('Invalid password')
+                flash('Invalid password', "error")
         else:
             print(f"User not found")  # Debug log
-            flash('No account found with that username or email')
+            flash('No account found with that username or email', "error")
     
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        flash('You are already logged in.')
+        flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
     if request.method == 'POST':
@@ -94,15 +105,15 @@ def register():
         confirm_password = request.form.get('confirm_password')
         
         if password != confirm_password:
-            flash('Passwords do not match')
+            flash('Passwords do not match', "error")
             return redirect(url_for('register'))
         
         if User.query.filter_by(username=username).first():
-            flash('Username already exists')
+            flash('Username already exists', "error")
             return redirect(url_for('register'))
         
         if User.query.filter_by(email=email).first():
-            flash('Email already registered')
+            flash('Email already registered', "error")
             return redirect(url_for('register'))
         
         user = User(username=username, email=email)
@@ -110,7 +121,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         
-        flash('Registration successful! Please log in.')
+        flash('Registration successful! Please log in.', "succes")
         return redirect(url_for('login'))
     
     return render_template('register.html')
@@ -365,7 +376,7 @@ def delete(id):
         flash('There was a problem deleting that challenge')
         return redirect(url_for('forum'))
 
-
+# change this folder to the actual folder off the upload folder 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -389,9 +400,6 @@ def upload_image():
 
             return redirect('/uploadtoforum')
     return render_template('upload.html')
-
-# Removed duplicate route
-
 
 if __name__ == '__main__':
     with app.app_context():

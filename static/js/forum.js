@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("click", function (event) {
     const button = event.target.closest(".like-button");
-
     if (!button) return;
 
     event.preventDefault();
@@ -10,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const likeCountElement = button.querySelector(".like-count");
     const todoId = button.getAttribute("data-id");
 
-    // Prevent rapid clicks
     if (button.dataset.processing === "true") return;
     button.dataset.processing = "true";
 
@@ -20,20 +18,21 @@ document.addEventListener("DOMContentLoaded", function () {
         "X-Requested-With": "XMLHttpRequest",
       },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Network response was not ok");
-        return res.json();
+      .then((response) => {
+        if (response.status === 401) {
+          alert("You must be logged in to like challenges.");
+          window.location.href = "/login?next=" + encodeURIComponent(window.location.pathname);
+          return;
+        }
+        return response.json();
       })
       .then((data) => {
-        if (data.success) {
-          // Update like count
-          likeCountElement.textContent = Math.max(0, data.likes);
+        if (!data) return;
 
-          // Update icon
+        if (data.success) {
+          likeCountElement.textContent = Math.max(0, data.likes);
           icon.classList.remove("bxs-like", "bx-like");
           icon.classList.add(data.liked ? "bxs-like" : "bx-like");
-
-          // Optional: add class for styling (liked/unliked)
           icon.classList.toggle("liked", data.liked);
           icon.classList.toggle("unliked", !data.liked);
         } else {
@@ -46,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
   // Event delegation for like buttons
