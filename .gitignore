@@ -2,3 +2,4 @@ challengeforum/
 __pycache__/
 migrations/
 static/uploads/
+create_user.py
