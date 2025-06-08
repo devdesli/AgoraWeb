@@ -1,9 +1,13 @@
 .like-button button {
-  font-size: 30px;
+  font-size: 32px;
   position: absolute;
   bottom: 70px;
   right: 5px;
   cursor: pointer;
+  border: none;
+  background: transparent;
+  color: white;
+  transition: transform 0.2s ease;
 }
 
 button {
@@ -156,6 +160,8 @@ select {
   overflow: hidden;
   white-space: normal;
   word-wrap: break-word;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
 }
 
 .delete-button {
@@ -170,24 +176,6 @@ select {
 
 .delete-button i {
   font-size: 18px;
-}
-
-.expand-label {
-  position: absolute;
-  bottom: 0px;
-  left: 10px;
-}
-
-.expand-button {
-  position: absolute;
-  bottom: 0px;
-  left: 150px;
-  width: 25px;
-  height: 25px;
-  font-size: 25px;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
 .update-button {

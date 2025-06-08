@@ -203,9 +203,14 @@ def forum():
         query = query.order_by(Todo.date_created.asc())
     elif sortfilter == 'likes':
         query = query.order_by(Todo.likes.desc())
-    
+    elif sortfilter == 'personal':
+        if current_user.is_authenticated:
+            query = query.filter_by(author_id=current_user.id)
+        else:
+            flash('log in to filter by own challenge', "error")
+
     tasks = query.all()
-    return render_template('forum.html', tasks=tasks)
+    return render_template('forum.html', tasks=tasks, sortfilter=sortfilter)
 
 @app.route('/uploadtoforum', methods=['GET', 'POST'])
 @login_required
