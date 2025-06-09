@@ -64,6 +64,13 @@
       <button class="forum-button">
         <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
       </button>
+
+      {% if current_user.is_master %}
+      <button class="forum-button master-button">
+        <a href="{{ url_for('admin') }}">Master Panel</a>
+      </button>
+      {% endif %}
+ 
       {% if current_user.is_admin %}
       <button class="forum-button">
         <a href="{{ url_for('admin') }}">Admin Panel</a>

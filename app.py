@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
@@ -32,6 +32,12 @@ login_manager.login_message_category = "warning"
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+import string, random
+
+def generate_random_password(length=10):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for _ in range(length))
 
 def load_tasks():
     if os.path.exists('tasks.json'):
@@ -198,6 +204,21 @@ def delete_user(id):
         return redirect(url_for('admin'))
     db.session.delete(user)
     db.session.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/reset_user_password/<int:id>', methods=['GET'])
+@login_required
+def reset_user_password(id):
+    # Only master users can reset passwords
+    if not current_user.is_master:
+        abort(403)
+
+    user = User.query.get_or_404(id)
+    new_password = generate_random_password()
+    user.set_password(new_password)
+    db.session.commit()
+
+    flash(f"Password for user '{user.username}' has been reset to: {new_password}")
     return redirect(url_for('admin'))
 
 @app.route('/')

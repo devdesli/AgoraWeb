@@ -1,7 +1,26 @@
 .admin-container {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
+}
+
+.home-btn {
+  border: none;
+  text-decoration: none;
+  background: #baadff;
+  height: 50px;
+  width: 100px;
+  border-radius: 100px;
+}
+
+.btn {
+    border: none;
+  text-decoration: none;
+  background: #baadff;
+  height: 50px;
+  width: 100px;
+  border-radius: 100px;
+  cursor: pointer;
 }
 
 h1 {
