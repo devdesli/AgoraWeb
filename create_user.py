@@ -1,13 +1,16 @@
 from app import app, db
 from models import User
 
+username = input("username\n")
+email = input("email \n")
+password = input("password\n")
 with app.app_context():
-    existing_user = User.query.filter_by(username='testuser').first()
+    existing_user = User.query.filter_by(username=username).first()
     if not existing_user:
-        user = User(username='testuser', email='test@example.com', is_admin=False)
-        user.set_password('testpass')
+        user = User(username=username, email=email, is_admin=False)
+        user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        print('Test user created successfully')
+        print(' user created successfully')
     else:
-        print('Test user already exists')
+        print('user already exists')
