@@ -64,7 +64,7 @@
           <option value="newest" {% if request.args.get('sortfilter') == 'newest' %}selected{% endif %}>Nieuwste challenge</option>
           <option value="oldest" {% if request.args.get('sortfilter') == 'oldest' %}selected{% endif %}>Oudste challenge</option>
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
-          <option value="eigen challenges" {% if request.args.get('sortfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
+          <option value="personal" {% if request.args.get('sortfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
         </select>
       </form>
     </div>

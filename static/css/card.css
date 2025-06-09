@@ -56,7 +56,8 @@ button {
 .card {
   position: relative;
   width: 470px;
-  height: 37vh;
+  height: 27.5vh;
+  min-height: 300px;
   background-color: #22194d;
   color: white;
   display: flex;

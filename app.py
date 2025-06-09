@@ -1,4 +1,5 @@
 import os
+import secrets
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
@@ -8,10 +9,12 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
 import json
-import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "supersecret"  # Change this to a secure secret key
+app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
@@ -24,6 +27,7 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.login_message_category = "warning"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -38,6 +42,22 @@ def load_tasks():
 def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('File too large. Max size is 2MB.', 'error')
+    return redirect(request.referrer or url_for('uploadtoforum')), 413
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -66,8 +86,8 @@ def login():
         return redirect(url_for('index'))
     
     if request.method == 'POST':
-        username_or_email = request.form.get('username')
-        password = request.form.get('password')
+        username_or_email = request.form.get('username', "").strip()
+        password = request.form.get('password', "").strip()
         print(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
         
         # Try to find user by username or email
@@ -99,10 +119,10 @@ def register():
         return redirect(url_for('index'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
         
         if password != confirm_password:
             flash('Passwords do not match', "error")
@@ -188,7 +208,8 @@ def index():
 def forum():
     vakfilter = request.args.get('vakfilter', '')
     sortfilter = request.args.get('sortfilter', 'newest')
-    
+    username = current_user.username if current_user.is_authenticated else None
+
     # Only show approved challenges unless user is admin
     query = Todo.query
     if not (current_user.is_authenticated and current_user.is_admin):
@@ -197,17 +218,20 @@ def forum():
     if vakfilter:
         query = query.filter_by(category=vakfilter)
     
-    if sortfilter == 'newest':
-        query = query.order_by(Todo.date_created.desc())
-    elif sortfilter == 'oldest':
-        query = query.order_by(Todo.date_created.asc())
-    elif sortfilter == 'likes':
-        query = query.order_by(Todo.likes.desc())
-    elif sortfilter == 'personal':
+    if sortfilter == 'personal':
         if current_user.is_authenticated:
-            query = query.filter_by(author_id=current_user.id)
+            query = query.join(User).filter(User.username == current_user.username)       
         else:
             flash('log in to filter by own challenge', "error")
+
+    elif sortfilter == 'newest':
+        query = query.order_by(Todo.date_created.desc())
+
+    elif sortfilter == 'oldest':
+        query = query.order_by(Todo.date_created.asc())
+
+    elif sortfilter == 'likes':
+        query = query.order_by(Todo.likes.desc())
 
     tasks = query.all()
     return render_template('forum.html', tasks=tasks, sortfilter=sortfilter)
@@ -216,12 +240,12 @@ def forum():
 @login_required
 def upload():
     if request.method == 'POST':
-        title = request.form.get('title')
-        main_question = request.form.get('mainQuestion')
-        sub_questions = request.form.get('subQuestions')
-        description = request.form.get('description')
-        end_product = request.form.get('endProduct')
-        category = request.form.get('categorie')
+        title = request.form.get('title', '').strip()
+        main_question = request.form.get('mainQuestion', '').strip()
+        sub_questions = request.form.get('subQuestions', '').strip()
+        description = request.form.get('description', '').strip()
+        end_product = request.form.get('endProduct', '').strip()
+        category = request.form.get('categorie', '').strip()
         name = current_user.username
         
         image_filename = None
@@ -308,6 +332,14 @@ def like(id):
         flash('Error processing like')
         return redirect(url_for('forum'))
 
+@app.route("/like_status/<int:todo_id>")
+@login_required
+def like_status(todo_id):
+    liked = Like.query.filter_by(todo_id=todo_id, user_id=current_user.id).first() is not None
+    like_count = Like.query.filter_by(todo_id=todo_id).count()
+    
+    return jsonify(success=True, liked=liked, likes=like_count)
+
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
@@ -324,12 +356,12 @@ def update(id):
     if request.method == 'POST':
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
         task.title = request.form.get('title')
-        task.main_question = request.form.get('mainQuestion')
-        task.sub_questions = request.form.get('subQuestions')
-        task.description = request.form.get('description')
-        task.end_product = request.form.get('endProduct')
-        task.category = request.form.get('categorie')
-        # Note: name is not updated as it should stay as the original author's username
+        task.main_question = request.form.get('mainQuestion').strip()
+        task.sub_questions = request.form.get('subQuestions').strip()
+        task.description = request.form.get('description').strip()
+        task.end_product = request.form.get('endProduct').strip()
+        task.category = request.form.get('categorie').strip()
+        # name is not updated as it should stay as the original author's username
         
         if 'image' in request.files:
             file = request.files['image']
@@ -384,7 +416,7 @@ def delete(id):
 # change this folder to the actual folder off the upload folder 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Max 2 MB upload
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):

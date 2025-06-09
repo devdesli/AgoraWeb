@@ -3,3 +3,5 @@ __pycache__/
 migrations/
 static/uploads/
 create_user.py
+.env
+keygen.py

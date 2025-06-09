@@ -1,4 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // 1. Fetch current like states from backend on page load
+  document.querySelectorAll(".like-button").forEach(button => {
+    const todoId = button.getAttribute("data-id");
+
+    fetch(`/like_status/${todoId}`, {
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+      .then(res => res.json())
+      .then(data => {
+        const icon = button.querySelector("i");
+        const likeCountElement = button.querySelector(".like-count");
+
+        if (data.success) {
+          likeCountElement.textContent = data.likes;
+          icon.classList.remove("bx-like", "bxs-like");
+          icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+        }
+      });
+  });
+
+  // 2. Handle like button clicks
   document.addEventListener("click", function (event) {
     const button = event.target.closest(".like-button");
     if (!button) return;
@@ -33,8 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
           likeCountElement.textContent = Math.max(0, data.likes);
           icon.classList.remove("bxs-like", "bx-like");
           icon.classList.add(data.liked ? "bxs-like" : "bx-like");
-          icon.classList.toggle("liked", data.liked);
-          icon.classList.toggle("unliked", !data.liked);
         } else {
           console.error("Server error:", data.error);
         }
@@ -43,21 +62,5 @@ document.addEventListener("DOMContentLoaded", function () {
       .finally(() => {
         button.dataset.processing = "false";
       });
-  });
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Event delegation for like buttons
-  document.addEventListener("click", function (event) {
-    let likeButton = event.target.closest(".like-button button"); // Selecteer de like-knop
-    if (likeButton) {
-      let icon = likeButton.querySelector("i");
-      if (icon) {
-        icon.classList.toggle("bx-like");
-        icon.classList.toggle("bxs-like");
-      }
-      return;
-    }
   });
 });
