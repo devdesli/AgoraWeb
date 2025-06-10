@@ -5,7 +5,19 @@
 />
 {% endblock %} {% block body %}
 <div class="admin-container">
+  {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_master) %}
+  <div class="admin-message">
+    <p>"With great power comes great responsibility." - Uncle Ben 🦸‍♂️</p>
+  </div>
+  {% endif %}
+  {% if current_user.is_master %}
+  <h1>Master Panel</h1>
+  {% endif %}
+
+  {% if current_user.is_admin and not current_user.is_master %}
   <h1>Admin Panel</h1>
+  {% endif %}
+
   {% with messages = get_flashed_messages() %} {% if messages %} {% for message
   in messages %}
   <div class="flash-message">{{ message }}</div>

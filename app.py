@@ -8,6 +8,8 @@ from flask import Flask, render_template, request, redirect, jsonify, session, u
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
+from flask_mail import Mail, Message
+from config import Config
 import json
 
 from dotenv import load_dotenv
@@ -18,10 +20,15 @@ app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
+# config from config.py
+app.config.from_object(Config)
 
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# initialize flask mail 
+mail = Mail(app)
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -206,6 +213,85 @@ def delete_user(id):
     db.session.commit()
     return redirect(url_for('admin'))
 
+# app.py
+
+# ... (existing imports and configurations) ...
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            token = user.set_reset_token() # Generate and save the token
+            
+            reset_url = url_for('reset_password', token=token, _external=True)
+            msg = Message(
+                subject='Password Reset Request',
+                sender=app.config['MAIL_USERNAME'], # Use app.config for sender
+                recipients=[user.email]
+            )
+            msg.body = f"""To reset your password, visit the following link:
+{reset_url}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+"""
+            try:
+                mail.send(msg)
+                flash('A password reset link has been sent to your email.', 'info')
+            except Exception as e:
+                flash(f'Failed to send email. Please try again later. Error: {str(e)}', 'error')
+                db.session.rollback() # Rollback the token generation if email fails
+                print(f"Email sending error: {e}") # Log the error for debugging
+        else:
+            # It's good practice not to reveal if an email exists for security reasons
+            flash('If an account with that email exists, a password reset link has been sent.', 'info')
+        
+        return redirect(url_for('login'))
+    
+    return render_template('forgot_password.html')
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    user = User.query.filter_by(reset_token=token).first()
+
+    if not user or not user.verify_reset_token(token):
+        flash('That is an invalid or expired token.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if not password or not confirm_password:
+            flash('Please enter both password and confirm password.', 'error')
+            return render_template('reset_password.html', token=token)
+
+        if password != confirm_password:
+            flash('Passwords do not match.', 'error')
+            return render_template('reset_password.html', token=token)
+
+        user.set_password(password)
+        user.reset_token = None # Clear the token after successful reset
+        user.reset_token_expiration = None # Clear the expiration
+        db.session.commit()
+        flash('Your password has been reset successfully!', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html', token=token)
+
+# Remove or modify the reset_user_password route if it's only for master users
+# If it's intended for master users to force reset, it should also use a token or similar
+# The current implementation of reset_user_password directly giving a password is less secure
+# for general use, but might be acceptable for an internal admin tool with highly trusted users.
+# For public facing resets, the token-based approach is crucial.
 @app.route('/reset_user_password/<int:id>', methods=['GET'])
 @login_required
 def reset_user_password(id):
@@ -214,11 +300,24 @@ def reset_user_password(id):
         abort(403)
 
     user = User.query.get_or_404(id)
-    new_password = generate_random_password()
+    new_password = generate_random_password() # This generates a raw password
     user.set_password(new_password)
     db.session.commit()
-
-    flash(f"Password for user '{user.username}' has been reset to: {new_password}")
+    
+    msg = Message(
+        subject='Password reset', 
+        sender=app.config['MAIL_USERNAME'],
+        recipients=[user.email]
+    )
+    msg.body = f"Hey, your password has been reset by an administrator.\n The new password is: {new_password}"    
+    
+    try:
+        mail.send(msg)
+        flash(f"Password for user '{user.username}' has been reset, and email sent.")
+    except Exception as e:
+        flash(f"Password for user '{user.username}' has been reset, but failed to send email. Error: {str(e)}", 'error')
+        print(f"Admin forced reset email error: {e}") # Log the error
+        
     return redirect(url_for('admin'))
 
 @app.route('/')

@@ -4,17 +4,8 @@
   margin: 0 auto;
 }
 
-.home-btn {
-  border: none;
-  text-decoration: none;
-  background: #baadff;
-  height: 50px;
-  width: 100px;
-  border-radius: 100px;
-}
-
 .btn {
-    border: none;
+  border: none;
   text-decoration: none;
   background: #baadff;
   height: 50px;
@@ -23,8 +14,35 @@
   cursor: pointer;
 }
 
+.btn a {
+  text-decoration: none;
+}
+
 h1 {
   color: white;
+}
+
+.admin-message {
+  background-color: #3d2e8c;
+  color: #fff;
+  padding: 15px 20px;
+  border-left: 5px solid #f9c000;
+  margin: 20px 0;
+  font-weight: bold;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: translateY(-10vh);
+  animation: fadeSlideIn 2s ease-out forwards;
+  width: 100%;
+  justify-content: center;
+}
+
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .section {

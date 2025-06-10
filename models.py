@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, timedelta
+import secrets
 
 db = SQLAlchemy()
 
@@ -14,7 +14,22 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     is_master = db.Column(db.Boolean, default=False)
     challenges = db.relationship('Todo', backref='author', lazy=True, cascade='all, delete-orphan')
+    reset_token = db.Column(db.String(128), nullable=True)
+    reset_token_expiration = db.Column(db.DateTime, nullable=True)
 
+    def set_reset_token(self):
+        self.reset_token = secrets.token_urlsafe(32) # Generate a secure URL-safe token
+        self.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1) # Token expires in 1 hour
+        db.session.add(self)
+        db.session.commit()
+        return self.reset_token
+
+    def verify_reset_token(self, token):
+        # Check if the token matches and hasn't expired
+        return self.reset_token == token and \
+               self.reset_token_expiration and \
+               self.reset_token_expiration > datetime.now(timezone.utc)
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

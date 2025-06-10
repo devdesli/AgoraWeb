@@ -71,7 +71,7 @@
       </button>
       {% endif %}
  
-      {% if current_user.is_admin %}
+      {% if current_user.is_admin and not current_user.is_master %}
       <button class="forum-button">
         <a href="{{ url_for('admin') }}">Admin Panel</a>
       </button>
