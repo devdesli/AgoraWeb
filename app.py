@@ -253,7 +253,7 @@ If you did not make this request then simply ignore this email and no changes wi
         
         return redirect(url_for('login'))
     
-    return render_template('forgot_password.html')
+    return render_template('forgot.html')
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -285,7 +285,7 @@ def reset_password(token):
         flash('Your password has been reset successfully!', 'success')
         return redirect(url_for('login'))
 
-    return render_template('reset_password.html', token=token)
+    return render_template('reset.html', token=token)
 
 # Remove or modify the reset_user_password route if it's only for master users
 # If it's intended for master users to force reset, it should also use a token or similar
