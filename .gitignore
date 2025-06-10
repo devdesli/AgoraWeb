@@ -1,9 +1,23 @@
+# Environment variables
+.env
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+instance/*.db
+instance/*.sqlite
+instance/*.sqlite3
+
+# Uploaded files
+static/uploads/
+
 challengeforum/
 __pycache__/
 migrations/
 static/uploads/
 create_user.py
-.env
 keygen.py
-/instance
+instance/
 your_database.db
+instance/your_database.db
