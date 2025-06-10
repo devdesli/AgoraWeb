@@ -1,4 +1,4 @@
-.body {
+body {
   background: fixed linear-gradient(#afaeae, #22194d);
 }
 
@@ -11,15 +11,23 @@
 .btn {
   border: none;
   text-decoration: none;
-  background: #baadff;
+  background: #22194d;
   height: 50px;
   width: 100px;
-  border-radius: 100px;
+  border-radius: 50px;
   cursor: pointer;
+  color: white;
+  padding: 10px;
 }
 
 .btn a {
+  height: 50px;
+  width: 100px;
+  word-wrap: break-word;
+  word-break: normal;
   text-decoration: none;
+  max-width: 100px;
+  color: white;
 }
 
 h1 {

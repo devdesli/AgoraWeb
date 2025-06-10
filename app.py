@@ -229,7 +229,7 @@ def admin_email():
 @app.route('/admin/approve_challenge/<int:id>')
 @login_required
 def approve_challenge(id):
-    if not current_user.is_admin or not current_user.is_master:
+    if not current_user.is_master and not current_user.is_admin:
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     challenge.approved = True
@@ -239,7 +239,7 @@ def approve_challenge(id):
 @app.route('/admin/delete_challenge/<int:id>')
 @login_required
 def delete_challenge(id):
-    if not current_user.is_admin or not current_user.is_master:
+    if not current_user.is_master and not current_user.is_admin:
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     db.session.delete(challenge)
@@ -249,7 +249,7 @@ def delete_challenge(id):
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
-    if not current_user.is_admin or current_user.is_master:
+    if not current_user.is_admin and current_user.is_master:
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
     if user.is_admin:
