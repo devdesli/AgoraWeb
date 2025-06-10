@@ -1,3 +1,7 @@
+.body {
+  background: fixed linear-gradient(#afaeae, #22194d);
+}
+
 .admin-container {
   padding: 2rem;
   max-width: 1300px;
