@@ -81,6 +81,7 @@ td {
   padding: 30px;
   border-radius: 12px;
   margin-bottom: 30px;
+  border: 0.5px solid white;
 }
 
 .content-section h2 {

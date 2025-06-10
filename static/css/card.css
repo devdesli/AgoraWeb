@@ -63,6 +63,7 @@ button {
   justify-content: space-between;
   border-radius: 12px;
   transition: 0.2s ease;
+  border: 0.5px solid white;
 }
 
 .card::before {

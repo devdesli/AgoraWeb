@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% block head %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin_email.css') }}"
+/>
+{% endblock %} {% block body %}
+{% if current_user.is_admin or current_user.is_master %}
+<div class="container">
+  <form method="POST">
+    <div class="form-group">
+      <input type="text" name="subject" placeholder="subject" required>
+      <textarea rows="15" name="input_text" class="input" placeholder="input email text" type="text" required></textarea>
+    </div>
+    <button type="submit">Send</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

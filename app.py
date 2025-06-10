@@ -186,11 +186,50 @@ def admin():
         return redirect(url_for('index'))
     flash('error')
     return redirect(url_for('index'))
+
+@app.route('/admin/send-email/', methods=["POST", "GET"])
+@login_required
+def admin_email():
+    # Authorization check FIRST
+    if not current_user.is_master and not current_user.is_admin:
+        abort(403)
+
+    if request.method == 'POST':
+        subject = request.form.get('subject')
+        input_text = request.form.get('input_text')
+
+        if not subject or not input_text:
+            flash("Subject and message body are required.", "error")
+            return render_template('admin_email.html')
+
+        # Get all user emails
+        recipients = [user.email for user in User.query.all() if user.email]
+
+        if not recipients:
+            flash("No valid user emails found.", "error")
+            return render_template('admin_email.html')
+
+        msg = Message(
+            subject=subject,
+            sender=app.config['MAIL_USERNAME'],
+            recipients=recipients
+        )
+        msg.body = input_text
+
+        try:
+            mail.send(msg)
+            flash("Email sucesfully sent to all users.")
+        except Exception as e:
+            flash(f"Sending email failed. Error: {str(e)}", 'error')
+            print(f"Admin send email error: {e}")  # Log the error
+
+    return render_template('admin_email.html')
+
     
 @app.route('/admin/approve_challenge/<int:id>')
 @login_required
 def approve_challenge(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin or not current_user.is_master:
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     challenge.approved = True
@@ -200,7 +239,7 @@ def approve_challenge(id):
 @app.route('/admin/delete_challenge/<int:id>')
 @login_required
 def delete_challenge(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin or not current_user.is_master:
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     db.session.delete(challenge)
@@ -210,7 +249,7 @@ def delete_challenge(id):
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
-    if not current_user.is_admin:
+    if not current_user.is_admin or current_user.is_master:
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
     if user.is_admin:
@@ -219,10 +258,6 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('admin'))
-
-# app.py
-
-# ... (existing imports and configurations) ...
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -265,6 +300,7 @@ If you did not make this request then simply ignore this email and no changes wi
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
+        flash("already logged in")
         return redirect(url_for('index'))
 
     user = User.query.filter_by(reset_token=token).first()
@@ -393,7 +429,7 @@ def upload():
             category=category,
             image=image_filename,
             author_id=current_user.id,
-            approved=current_user.is_admin,
+            approved=current_user.is_admin or current_user.is_master,
             likes=0
         )
 
