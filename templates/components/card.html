@@ -1,4 +1,4 @@
-<div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id) }}')" style="cursor: pointer;">
+<div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id, slug=task.slug) }}')" >
   <h2 class="title">{{ task.title }}</h2>
   <div class="card-bottom">
     <p class="author"><strong>Door:</strong> {{ task.name }}</p>

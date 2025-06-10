@@ -86,9 +86,10 @@ def unauthorized():
     else:
         flash('You need to be logged in to perform this action.', 'warning')
         return redirect(url_for('login', next=request.url))
-
-@app.route('/fullcard/<int:id>', methods=['GET'])
-def fullcard(id):
+    
+@app.route('/card/<int:id>', defaults={'slug': None})
+@app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
+def fullcard(id, slug):
     task = Todo.query.get_or_404(id)
     if not task.approved and not (current_user.is_authenticated and current_user.is_admin):
         flash('This challenge is not approved yet')

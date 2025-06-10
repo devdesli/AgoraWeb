@@ -52,7 +52,7 @@ button {
   gap: 30px; /* Space between cards */
   padding: 20px; /* Padding around the grid */
   margin-top: 125px; /* Space from the top, moved from 'position: relative; top:' */
-  min-width: 100%;
+  min-width: 97.5%;
   max-width: 1300px;
   margin-left: auto;
   margin-right: auto;

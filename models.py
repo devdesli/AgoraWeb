@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
+from slugify import slugify
 import secrets
 
 db = SQLAlchemy()
@@ -46,6 +47,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     # dingen die op de kaart staan 
+    slug = db.Column(db.String(120), unique=True)
     likes = db.Column(db.Integer, default=0)
     name = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(100), nullable=False)
@@ -57,7 +59,12 @@ class Todo(db.Model):
     image = db.Column(db.String(100), nullable=True)
     approved = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if not self.slug and self.title:
+            self.slug = slugify(self.title)
+    
     def __repr__(self):
         return f'<Todo {self.id}>'
 

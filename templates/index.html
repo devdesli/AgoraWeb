@@ -92,9 +92,11 @@
         <a href="{{ url_for('register') }}">Registreren</a>
       </button>
       {% endif %}
+    {% if current_user.is_admin or current_user.is_master %}
       <button class="forum-button">
         <a href="https://github.com/devdesli/AgoraWeb">Bekijk dit project op Github</a>
       </button>
+      {% endif %}
     </div>
   </div>
 </div>

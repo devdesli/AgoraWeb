@@ -141,6 +141,11 @@ h3 {
   top: 100px;
   right: 10px;
   z-index: 1000;
+  font-size: 12px;
+}
+
+.contact a {
+  color: white;
 }
 
 select {
