@@ -35,6 +35,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = "warning"
+ 
+# debug 
+# import inspect
+# print("Path to User model:", inspect.getfile(User))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -168,18 +172,21 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
+    if current_user.is_master or current_user.is_admin:
+        challenges = Todo.query.all()
+        users = User.query.all()
+        return render_template('admin.html', challenges=challenges, users=users)
+    
     if not current_user.is_authenticated:
         flash('Please log in first.')
         return redirect(url_for('login'))
     
-    if not current_user.is_admin:
+    if not current_user.is_master or not current_user.is_admin:
         flash('You are not authorized to view this page.')
         return redirect(url_for('index'))
+    flash('error')
+    return redirect(url_for('index'))
     
-    challenges = Todo.query.all()
-    users = User.query.all()
-    return render_template('admin.html', challenges=challenges, users=users)
-
 @app.route('/admin/approve_challenge/<int:id>')
 @login_required
 def approve_challenge(id):

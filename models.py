@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 import secrets
 
 db = SQLAlchemy()
@@ -15,21 +15,27 @@ class User(UserMixin, db.Model):
     is_master = db.Column(db.Boolean, default=False)
     challenges = db.relationship('Todo', backref='author', lazy=True, cascade='all, delete-orphan')
     reset_token = db.Column(db.String(128), nullable=True)
-    reset_token_expiration = db.Column(db.DateTime, nullable=True)
+    reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True) 
 
     def set_reset_token(self):
-        self.reset_token = secrets.token_urlsafe(32) # Generate a secure URL-safe token
-        self.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1) # Token expires in 1 hour
+        self.reset_token = secrets.token_urlsafe(32)
+        self.reset_token_expiration = datetime.now(timezone.utc) + timedelta(hours=1) 
         db.session.add(self)
         db.session.commit()
         return self.reset_token
 
     def verify_reset_token(self, token):
-        # Check if the token matches and hasn't expired
-        return self.reset_token == token and \
-               self.reset_token_expiration and \
-               self.reset_token_expiration > datetime.now(timezone.utc)
-    
+        if self.reset_token is None or self.reset_token != token:
+            return False
+
+        if self.reset_token_expiration is None:
+            return False
+        
+        loaded_expiration = self.reset_token_expiration.replace(tzinfo=timezone.utc)
+
+        # Now compare the localized datetime to the current UTC datetime
+        return loaded_expiration > datetime.now(timezone.utc) # Corrected comparison to >
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -38,7 +44,7 @@ class User(UserMixin, db.Model):
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    date_created = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     # dingen die op de kaart staan 
     likes = db.Column(db.Integer, default=0)
     name = db.Column(db.String(100), nullable=False)
