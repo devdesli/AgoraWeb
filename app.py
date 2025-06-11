@@ -12,9 +12,6 @@ from flask_mail import Mail, Message
 from config import Config
 import json
 
-from dotenv import load_dotenv
-load_dotenv()
-
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
@@ -96,7 +93,7 @@ def unauthorized():
 @app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
 def fullcard(id, slug):
     task = Todo.query.get_or_404(id)
-    if not task.approved and not (current_user.is_authenticated and current_user.is_admin):
+    if not task.approved and not (current_user.is_authenticated and current_user.is_master or current_user.is_admin):
         flash('This challenge is not approved yet')
         return redirect(url_for('forum'))
     
@@ -180,8 +177,9 @@ def logout():
 def admin():
     if current_user.is_master or current_user.is_admin:
         challenges = Todo.query.all()
+        app_status = app.config['APP_STATUS']
         users = User.query.all()
-        return render_template('admin.html', challenges=challenges, users=users)
+        return render_template('admin.html', challenges=challenges, users=users, app_status=app_status)
     
     if not current_user.is_authenticated:
         flash('Please log in first.')

@@ -65,7 +65,7 @@
               >See challenge</a
             >
             <a
-              href="{{ url_for('delete_challenge', id=challenge.id) }}"
+              href="{{ url_for('delete_challenge', id=challenge.id, slug=challenge.slug) }}"
               class="action-button delete-button"
               onclick="return confirm('Are you sure you want to delete this challenge?')"
               >Delete</a
@@ -137,6 +137,14 @@
         {% endfor %}
       </tbody>
     </table>
+  </div>
+  <div class="section">
+  {% if app_status == 'production' %}
+  <div class="status-banner production">Running in Production</div>
+  {% else %}
+  <div class="status-banner dev">Development Mode</div>
+  {% endif %}
+
   </div>
 </div>
 {% endblock %}

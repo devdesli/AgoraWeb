@@ -115,7 +115,7 @@ current_user.is_master or current_user.is_admin %}
 
   <div class="card-footer">
     <div class="action-buttons">
-      {% if current_user.is_authenticated and (current_user.is_admin or
+      {% if current_user.is_authenticated and (current_user.is_master or current_user.is_admin or
       current_user.id == task.author_id) %}
       <a href="{{ url_for('update', id=task.id) }}" class="admin-button">
         <i class="bx bx-edit"></i> Update
