@@ -2,10 +2,9 @@ We wanted to make it possible to share challenges with other people on a forum s
 To share with the community what you created😁
 You can make an account and post a new challenge on the forum, update it, and delete it.
 
-V0.1.1 CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
+V0.1.2 CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
 ALPHA RELEASE IS CURRENTLY BEING DEVELLOPED 😊
-V0.1.2 is comming soon stay tuned for that!
 
 🤔 I’m looking for help with the design if anybody has tips just contact me with the info under here.
 
