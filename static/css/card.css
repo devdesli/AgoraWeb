@@ -46,12 +46,10 @@ button {
 
 .container {
   display: grid;
-  /* auto-fit: fills available space, growing cards if needed */
-  /* minmax(300px, 1fr): minimum card width 300px, expands to fill grid column */
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 30px; /* Space between cards */
-  padding: 20px; /* Padding around the grid */
-  margin-top: 125px; /* Space from the top, moved from 'position: relative; top:' */
+  gap: 30px;
+  padding: 20px;
+  margin-top: 125px;
   min-width: 97.5%;
   max-width: 1300px;
   margin-left: auto;
@@ -63,15 +61,15 @@ button {
   background-color: #22194d;
   color: white;
   display: flex;
-  flex-direction: column; /* Stack content vertically */
-  justify-content: space-between; /* Pushes content to top and footer to bottom */
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 0.5px solid white;
-  padding: 20px; /* Added padding to the card itself */
-  min-height: 250px; /* Adjusted minimum height */
+  padding: 20px;
+  min-height: 250px;
   max-height: 300px;
-  box-sizing: border-box; /* Include padding in the element's total width and height */
+  box-sizing: border-box; 
 }
 
 .card::before {

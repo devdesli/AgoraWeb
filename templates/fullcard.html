@@ -12,7 +12,7 @@
 if messages %} {% for message in messages %}
 <div class="flash-message">{{ message }}</div>
 {% endfor %} {% endif %} {% endwith %} {% if current_user.is_authenticated and
-current_user.is_admin %}
+current_user.is_master or current_user.is_admin %}
 <div class="admin-controls">
   <div class="admin-actions">
     {% if not task.approved %}
@@ -52,23 +52,42 @@ current_user.is_admin %}
   </div>
 
   <div class="main-content">
+    {% if task.image %}
     <div class="main-grid">
       <div class="left-section">
-        {% if task.image %}
         <div class="task-image">
           <img
             src="{{ url_for('static', filename='uploads/' + task.image) }}"
             alt="Challenge afbeelding"
           />
         </div>
-        {% else %}
-        <div class="task-image">
-          <span class="placeholder-text">Image placeholder</span>
-        </div>
-        {% endif %}
       </div>
 
       <div class="right-section">
+        <div class="headquestion">
+          <h3>Hoofdvraag</h3>
+          <p>{{ task.main_question }}</p>
+        </div>
+
+        <div class="sub-questions">
+          <h3>Deelvragen</h3>
+          <p>{{ task.sub_questions }}</p>
+        </div>
+      </div>
+      <div class="bottom-section">
+        <div class="information">
+          <h3>Beschrijving</h3>
+          <p>{{ task.description }}</p>
+        </div>
+        <div class="endproduct">
+          <h3>Eindproduct</h3>
+          <p>{{ task.end_product }}</p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="main-section">
+      <div class="section">
         <div class="headquestion">
           <h3>Hoofdvraag</h3>
           <p>{{ task.main_question }}</p>
@@ -84,13 +103,13 @@ current_user.is_admin %}
           <p>{{ task.description }}</p>
         </div>
       </div>
-
       <div class="bottom-section">
         <div class="endproduct">
           <h3>Eindproduct</h3>
           <p>{{ task.end_product }}</p>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 
