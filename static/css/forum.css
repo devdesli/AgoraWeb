@@ -252,6 +252,10 @@ select {
   .filter-text h3 {
     font-size: var(--font-size-base);
   }
+  .filters-container {
+    display: flex;
+    flex-direction: column;
+  }
 
   .filters {
     display: flex;
@@ -263,6 +267,9 @@ select {
     top: 10px;
   }
   .module-button {
+    position: static;
+    margin-right: 25px;
+    margin-top: 25px;
     padding: 8px 16px;
     font-size: var(--font-size-sm);
     color: white;
@@ -312,10 +319,12 @@ select {
   h1 {
     font-size: var(--font-size-2xl);
     position: relative;
-    bottom: -75px;
+    bottom: -85px;
   }
 
   .module-container {
+    position: absolute;
+    top: 0px;
     width: 100%;
     margin: 2rem 0 0 0;
     padding: 0;
@@ -325,8 +334,8 @@ select {
   }
 
   .module-button {
-    position: absolute;
-    top: -30px;
+    position: static;
+    margin-top: -35px;
     font-size: var(--font-size-sm);
     align-items: center;
   }

@@ -47,7 +47,7 @@ button {
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fit, 450px);
-  justify-content: center; /* center when fewer items */  
+  justify-content: center; /* center when fewer items */
   gap: 30px;
   padding: 20px;
   margin-top: 125px;
@@ -69,7 +69,7 @@ button {
   padding: 20px;
   min-height: 250px;
   max-height: 300px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   cursor: pointer;
 }
 
@@ -134,7 +134,7 @@ select {
   position: absolute;
   left: 10px;
   top: 50px;
-  max-width: 250px;
+  max-width: 225px;
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;
@@ -232,13 +232,16 @@ p.title {
 @media (max-width: 900px) {
   .container {
     position: relative;
+    grid-template-columns: repeat(auto-fit, 100%);
     flex-direction: column;
     align-items: center;
     justify-content: center;
     top: 50px;
+    width: 100%;
   }
   .card {
-    width: 95%;
+    width: 100%;
+    justify-content: center;
   }
   .module-container {
     display: flex;
