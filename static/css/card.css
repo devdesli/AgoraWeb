@@ -12,20 +12,15 @@
 
 button {
   cursor: pointer;
-  font-family: var(--font-family-primary);
 }
 
 .like-count {
   color: white;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: 15px;
 }
 
 .label-like-count {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: 15px;
   color: white;
 }
 
@@ -34,7 +29,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 0px;
   bottom: 40px;
   right: 10px;
   width: 80px;
@@ -43,10 +38,10 @@ button {
 .button-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   position: absolute;
   bottom: 5px;
-  right: 200px;
+  right: 175px;
 }
 
 .container {
@@ -84,20 +79,23 @@ button {
   bottom: 60px;
   width: 90%;
   right: 5%;
-  height: 2px;
+  height: 2.5px;
   border-radius: 5px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .card::after {
   content: "";
   position: absolute;
-  top: 70px;
+  top: 62.5px;
   width: 95%;
   right: 2.5%;
-  height: 1px;
+  height: 2.5px;
   border-radius: 5px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background-color: #2d2267;
+}
+
+.card-glow {
 }
 
 .card:hover {
@@ -115,12 +113,10 @@ button {
 }
 
 .author {
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  opacity: 0.9;
+  font-size: 12px;
+  opacity: 0.8;
   position: absolute;
-  bottom: 15px;
+  bottom: 0px;
   right: 10px;
   max-width: 300px;
   word-wrap: break-word;
@@ -132,7 +128,6 @@ button {
 
 select {
   cursor: pointer;
-  font-family: var(--font-family-primary);
 }
 
 .challenge-info {
@@ -143,9 +138,6 @@ select {
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-relaxed);
 }
 
 .headquestion {
@@ -159,34 +151,27 @@ select {
   word-wrap: break-word;
   word-break: break-word;
   text-align: right;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-normal);
 }
 
 .category {
   position: absolute;
   left: 10px;
-  bottom: 15px;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  bottom: 0px;
+  font-size: 12.5px;
 }
 
 .title {
   position: absolute;
   left: 10px;
   top: 5px;
-  font-family: var(--font-family-heading);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  font-size: 25px;
   max-width: 97.5%;
   max-height: 100px;
   overflow: hidden;
   white-space: normal;
   word-wrap: break-word;
-  letter-spacing: -0.025em;
-  line-height: var(--line-height-tight);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
 }
 
 .delete-button {
@@ -194,22 +179,13 @@ select {
   background-color: white;
   border: none;
   cursor: pointer;
-  border-radius: 6px;
-  height: 32px;
-  width: 70px;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  transition: all 0.2s ease;
-}
-
-.delete-button:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-1px);
+  border-radius: 2px;
+  height: 20px;
+  width: 60px;
 }
 
 .delete-button i {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .update-button {
@@ -218,27 +194,17 @@ select {
   color: black;
   border: none;
   cursor: pointer;
-  border-radius: 6px;
-  width: 70px;
-  height: 32px;
-  margin-bottom: 4px;
+  border-radius: 2px;
+  width: 60px;
+  height: 20px;
+  margin-bottom: 2.5px;
   text-decoration: none;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.update-button:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-1px);
 }
 
 .update-button i {
-  font-size: 16px;
+  font-size: 18px;
+  height: 30px;
+  width: 100px;
 }
 
 p.title {
@@ -261,9 +227,6 @@ p.title {
   height: auto;
   max-height: 100px;
   overflow-y: auto;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-normal);
 }
 
 @media (max-width: 900px) {
@@ -294,17 +257,15 @@ p.title {
     top: 150px;
     width: 100%;
   }
-  
   .top-color a {
     color: white;
   }
-  
   .card {
     width: 95%;
     height: auto;
     min-height: 350px;
     height: 40vh;
-    padding: 20px;
+    padding: 15px;
   }
 
   .card::before {
@@ -313,20 +274,18 @@ p.title {
     bottom: 80px;
     width: 90%;
     right: 5%;
-    height: 2px;
+    height: 2.5px;
     border-radius: 5px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background-color: rgba(255, 255, 255, 0.3);
   }
 
   .title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
+    font-size: 1.25rem;
   }
-  
   .challenge-info {
     max-width: 150px;
     top: 70px;
-    font-size: var(--font-size-xs);
+    font-size: 14px;
   }
 
   .headquestion {
@@ -336,7 +295,7 @@ p.title {
     word-wrap: break-word;
     word-break: break-word;
     white-space: normal;
-    font-size: var(--font-size-xs);
+    font-size: 14px;
     right: 10px;
     top: 70px;
     text-align: right;
@@ -348,7 +307,7 @@ p.title {
     right: 10px;
     top: 87.5px;
     width: 35%;
-    font-size: var(--font-size-xs);
+    font-size: 14px;
     word-wrap: break-word;
     word-break: break-word;
     white-space: normal;
@@ -356,11 +315,7 @@ p.title {
 
   .category {
     bottom: 0px;
-    font-size: var(--font-size-xs);
-  }
-
-  .author {
-    font-size: var(--font-size-xs);
+    font-size: 14px;
   }
 
   .update-button,
@@ -368,8 +323,8 @@ p.title {
     bottom: 10px;
     width: auto;
     height: auto;
-    padding: 6px 12px;
-    font-size: var(--font-size-xs);
+    padding: 5px 10px;
+    font-size: 12px;
   }
 
   .like-button button {
@@ -380,7 +335,7 @@ p.title {
   .like-count,
   .label-like-count {
     bottom: 40px;
-    font-size: var(--font-size-xs);
+    font-size: 12px;
   }
 
   .button-container {
@@ -409,7 +364,7 @@ p.title {
   .category {
     position: static;
     margin-bottom: -10px;
-    font-size: var(--font-size-xs);
+    font-size: 14px;
     order: 1;
     flex: 1 1 0;
     text-align: left;
@@ -420,7 +375,7 @@ p.title {
   .author {
     position: static;
     margin-bottom: 0;
-    font-size: var(--font-size-xs);
+    font-size: 14px;
     opacity: 0.8;
     order: 2;
     flex: 1 1 0;

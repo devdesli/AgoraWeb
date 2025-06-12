@@ -336,12 +336,7 @@ def reset_password(token):
 
     return render_template('reset.html', token=token)
 
-# Remove or modify the reset_user_password route if it's only for master users
-# If it's intended for master users to force reset, it should also use a token or similar
-# The current implementation of reset_user_password directly giving a password is less secure
-# for general use, but might be acceptable for an internal admin tool with highly trusted users.
-# For public facing resets, the token-based approach is crucial.
-@app.route('/reset_user_password/<int:id>', methods=['GET'])
+@app.route('/reset_user_password/<int:id>', methods=['POST']) # Change to POST for better security
 @login_required
 def reset_user_password(id):
     # Only master users can reset passwords
@@ -349,24 +344,45 @@ def reset_user_password(id):
         abort(403)
 
     user = User.query.get_or_404(id)
-    new_password = generate_random_password() # This generates a raw password
-    user.set_password(new_password)
-    db.session.commit()
-    
+
+    # Prevent master admin from resetting their own password this way (or other admins)
+    if user.is_master and user.id == current_user.id:
+        flash("You cannot reset your own master password this way.", "error")
+        return redirect(url_for('admin'))
+
+    # Generate a reset token for the user
+    token = user.set_reset_token() # This method is already defined in your User model
+
+    # Construct the reset URL
+    reset_url = url_for('reset_password', token=token, _external=True)
+
     msg = Message(
-        subject='Password reset', 
+        subject='Administrator initiated Password Reset Request',
         sender=app.config['MAIL_USERNAME'],
         recipients=[user.email]
     )
-    msg.body = f"Hey, your password has been reset by an administrator.\n The new password is: {new_password}"    
-    
+    msg.body = f"""Hello {user.username},
+
+An administrator has initiated a password reset for your account on Agora.
+
+To set a new password, please visit the following link:
+{reset_url}
+
+This link is valid for a limited time. If you did not request this, or if you believe this is in error, please ignore this email. Your current password will remain unchanged until you follow the link and set a new one.
+
+Thank you,
+Agora Team
+"""
+
     try:
         mail.send(msg)
-        flash(f"Password for user '{user.username}' has been reset, and email sent.")
+        db.session.commit() # Commit the token to the database after successful email sending
+        flash(f"Password reset link sent to '{user.username}' ({user.email}). User must use the link to set a new password.", "info")
     except Exception as e:
-        flash(f"Password for user '{user.username}' has been reset, but failed to send email. Error: {str(e)}", 'error')
-        print(f"Admin forced reset email error: {e}") # Log the error
-        
+        db.session.rollback() # Rollback the token generation if email fails
+        flash(f"Failed to send password reset email to '{user.username}'. Error: {str(e)}", 'error')
+        print(f"Admin forced reset email error: {e}") # Log the error for debugging
+
     return redirect(url_for('admin'))
 
 @app.route('/')

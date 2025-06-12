@@ -87,7 +87,8 @@ body {
   border-radius: 8px;
   height: auto;
   margin-top: 10px;
-  min-width: 160px;
+  min-width: 140px;
+  max-width: 175px;
   font-family: var(--font-family-primary);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
