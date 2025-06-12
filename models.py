@@ -52,7 +52,7 @@ class Todo(db.Model):
     name = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     main_question = db.Column(db.String(200), nullable=False)
-    sub_questions = db.Column(db.String(500), nullable=False)
+    sub_questions = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
     end_product = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(50), nullable=False)

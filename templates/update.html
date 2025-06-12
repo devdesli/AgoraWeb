@@ -49,10 +49,25 @@
 {{ task.main_question }}</textarea
     >
 
-    <label><h3>Deelvragen</h3></label>
-    <textarea name="subQuestions" required maxlength="150">
-{{ task.sub_questions }}</textarea
+    <label for="subQuestions" class="subquestions subquestionsText"
+      ><h3>Deelvragen</h3></label
     >
+    <div id="subQuestionsContainer">
+      <textarea
+        rows="1"
+        class="subquestions"
+        name="subQuestion[]"
+        required
+        maxlength="150"
+        placeholder="Vul hier jouw deelvraag in"
+      >
+{{ task.sub_questions }}</textarea
+      >
+    </div>
+    <button type="button" id="addSubQuestion" class="add-subquestion-button">
+      Voeg deelvraag toe
+    </button>
+    <br />
 
     <label><h3>Informatie</h3></label>
     <textarea name="description" required maxlength="100">
@@ -107,6 +122,37 @@
 </div>
 
 <script>
+  // Script for dynamic sub-question input fields
+  document.addEventListener("DOMContentLoaded", function () {
+    const addSubQuestionButton = document.getElementById("addSubQuestion");
+    const subQuestionsContainer = document.getElementById(
+      "subQuestionsContainer"
+    );
+
+    addSubQuestionButton.addEventListener("click", function () {
+      const newTextArea = document.createElement("textarea");
+      newTextArea.rows = "1";
+      newTextArea.className = "subquestions";
+      newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
+      newTextArea.required = true;
+      newTextArea.maxLength = "150";
+      newTextArea.placeholder = "Vul hier een extra deelvraag in";
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "remove-subquestion-button";
+      removeButton.innerHTML = "&times;"; // 'x' icon
+      removeButton.addEventListener("click", function () {
+        subQuestionsContainer.removeChild(newTextArea);
+        subQuestionsContainer.removeChild(removeButton);
+      });
+
+      subQuestionsContainer.appendChild(newTextArea);
+      subQuestionsContainer.appendChild(removeButton);
+      newTextArea.focus(); // Focus on the new input
+    });
+  });
+
   document
     .getElementById("imageInput")
     .addEventListener("change", function (event) {

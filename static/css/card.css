@@ -70,6 +70,7 @@ button {
   min-height: 250px;
   max-height: 300px;
   box-sizing: border-box; 
+  cursor: pointer;
 }
 
 .card::before {
@@ -100,6 +101,7 @@ button {
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 1px 1px rgba(212, 43, 135, 0.6);
+  cursor: pointer;
 }
 
 .info-container {

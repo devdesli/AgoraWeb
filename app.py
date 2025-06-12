@@ -1,5 +1,6 @@
 import os
 import secrets
+import json
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
@@ -216,7 +217,8 @@ def admin_email():
         msg = Message(
             subject=subject,
             sender=app.config['MAIL_USERNAME'],
-            recipients=recipients
+            recipients=["agorawebapplication@gmail.com"],
+            bcc=recipients
         )
         msg.body = input_text
 
@@ -382,16 +384,16 @@ def forum():
     if not (current_user.is_authenticated and current_user.is_admin):
         query = query.filter_by(approved=True)
     
-    if vakfilter:
-        query = query.filter_by(category=vakfilter)
-    
-    if sortfilter == 'personal':
+    if vakfilter == 'personal':
         if current_user.is_authenticated:
-            query = query.join(User).filter(User.username == current_user.username)       
+            # Corrected line: Use author_id and current_user.id
+            query = query.filter_by(author_id=current_user.id)
         else:
-            flash('log in to filter by own challenge', "error")
+            flash('Log in to filter by your own challenges.', "error")
+    elif vakfilter:
+        query = query.filter_by(category=vakfilter)
 
-    elif sortfilter == 'newest':
+    if sortfilter == 'newest':
         query = query.order_by(Todo.date_created.desc())
 
     elif sortfilter == 'oldest':
@@ -409,11 +411,12 @@ def upload():
     if request.method == 'POST':
         title = request.form.get('title', '').strip()
         main_question = request.form.get('mainQuestion', '').strip()
-        sub_questions = request.form.get('subQuestions', '').strip()
+        sub_questions_list = request.form.getlist('subQuestion[]')
         description = request.form.get('description', '').strip()
         end_product = request.form.get('endProduct', '').strip()
         category = request.form.get('categorie', '').strip()
         name = current_user.username
+        sub_questions_json = json.dumps([q.strip() for q in sub_questions_list if q.strip()])
         
         image_filename = None
         if 'image' in request.files:
@@ -427,7 +430,7 @@ def upload():
             title=title,
             name=name,
             main_question=main_question,
-            sub_questions=sub_questions,
+            sub_questions=sub_questions_json,
             description=description,
             end_product=end_product,
             category=category,
@@ -524,7 +527,9 @@ def update(id):
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
         task.title = request.form.get('title')
         task.main_question = request.form.get('mainQuestion').strip()
-        task.sub_questions = request.form.get('subQuestions').strip()
+        sub_questions_list = request.form.getlist('subQuestion[]')
+        # Convert the list to a JSON string
+        task.sub_questions = json.dumps([q.strip() for q in sub_questions_list if q.strip()])
         task.description = request.form.get('description').strip()
         task.end_product = request.form.get('endProduct').strip()
         task.category = request.form.get('categorie').strip()

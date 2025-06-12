@@ -13,7 +13,7 @@
     <h1>Maakplaats</h1>
 
     <div class="contact">
-        <p>Heb je een vraag of tip? Stuur dan een mail naar: <a href="mailto:develloperdesli@gmail.com">admin@gmail.com</a></p>
+        <p>Heb je een vraag of tip? Stuur dan een mail naar: <a href="mailto:agorawebapplication@gmail.com">admin@gmail.com</a></p>
     </div>
     <div class="logo">
        <a href="https://liemersagora.beezer.com/" target="_blank">
@@ -33,6 +33,7 @@
     <form class="filters" action="/forum" method="GET">
         <select name="vakfilter" class="filterselect" onchange="this.form.submit()">
           <option value="">Geen filter</option>
+            <option value="personal" {% if request.args.get('vakfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
           <option value="Aardrijkskunde" {% if request.args.get('vakfilter') == 'Aardrijkskunde' %}selected{% endif %}>Aardrijkskunde</option>
           <option value="Biologie" {% if request.args.get('vakfilter') == 'Biologie' %}selected{% endif %}>Biologie</option>
           <option value="Informatica" {% if request.args.get('vakfilter') == 'Informatica' %}selected{% endif %}>Informatica</option>
@@ -57,7 +58,6 @@
           <option value="newest" {% if request.args.get('sortfilter') == 'newest' %}selected{% endif %}>Nieuwste challenge</option>
           <option value="oldest" {% if request.args.get('sortfilter') == 'oldest' %}selected{% endif %}>Oudste challenge</option>
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
-          <option value="personal" {% if request.args.get('sortfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
         </select>
       </form>
     </div>

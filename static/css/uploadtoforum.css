@@ -107,13 +107,19 @@ hr {
 }
 
 .subquestions {
-  position: absolute;
-  top: 300px;
-  left: 350px;
+  position: relative;
+  margin-top: 300px;
+  margin-left: 350px;
 }
 
 .subquestionsText {
-  top: 260px;
+  margin-top: 260px;
+}
+
+.add-subquestion-button {
+  position: absolute;
+  top: 300px;
+  z-index: 1000;
 }
 
 .challengeinfo {
@@ -251,9 +257,14 @@ label h3 {
 .contact {
   position: absolute;
   color: white;
-  top: 80px;
+  top: 85px;
   right: 25px;
   z-index: 1000;
+  font-size: 12px;
+}
+
+.contact a {
+  color: white;
 }
 
 @media (max-width: 900px) {
