@@ -1,14 +1,12 @@
-We wanted to make it possible to share challenges with other people on a forum so we created this forum for that purpose.
-To share with the community what you created😁
-You can make an account and post a new challenge on the forum, update it, and delete it.
+We wanted inspiration, but where do you find it?  
+That's why we created this forum to share with the community what we made how we made it and how you can do something like it.  
+
 
 V0.1.2 CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
-ALPHA RELEASE IS CURRENTLY BEING DEVELLOPED 😊
+ALPHA RELEASE IS CURRENTLY BEING DEVELLOPED 😊  
 
-🤔 I’m looking for help with the design if anybody has tips just contact me with the info under here.
-
-📫 How to reach me: Send an e-mail to my github e-mail see able on my account. 
+📫 How to reach me: Send an email to agorawebapplication@gmail.com
 
 This isn't finished and will probaly keep being updated in the future.
 
