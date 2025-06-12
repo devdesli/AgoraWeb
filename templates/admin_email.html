@@ -6,6 +6,7 @@
 {% endblock %} {% block body %}
 {% if current_user.is_admin or current_user.is_master %}
 <div class="container">
+  <h1>Send an e-mail to all accounts</h1>
   <form method="POST">
     <div class="form-group">
       <input type="text" name="subject" placeholder="subject" required>

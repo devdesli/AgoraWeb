@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from slugify import slugify
+import json
 import secrets
 
 db = SQLAlchemy()
@@ -60,6 +61,15 @@ class Todo(db.Model):
     approved = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
+    
+    def get_sub_questions_list(self):
+        try:
+            # Safely loads the JSON string into a Python list
+            return json.loads(self.sub_questions) if self.sub_questions else []
+        except json.JSONDecodeError:
+            # Fallback for malformed JSON or if it's just a plain string
+            return [self.sub_questions] if self.sub_questions else []
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if not self.slug and self.title:

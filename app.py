@@ -30,7 +30,7 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 
-# initialize flask mail 
+# initialize flask mail
 mail = Mail(app)
 
 # Initialize Flask-Login
@@ -71,13 +71,12 @@ def request_entity_too_large(error):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
-
+    return render_template('error.html', statusCode=404, message="The page you requested could not be found."), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
+    return render_template('error.html', statusCode=500, message="An unexpected error occurred on our server. We are working to fix it!"), 500
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -255,10 +254,10 @@ def delete_challenge(id):
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
-    if not current_user.is_admin and current_user.is_master:
+    if not current_user.is_master or current_user.is_admin:
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
-    if user.is_admin:
+    if user.is_admin and not current_user.is_admin:
         flash('Cannot delete admin users')
         return redirect(url_for('admin'))
     db.session.delete(user)

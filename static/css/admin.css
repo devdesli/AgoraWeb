@@ -30,8 +30,9 @@ body {
 
 .btn:hover {
   background-color: #1a1440;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
+  transition: ease-out 1s;
 }
 
 .btn a {
@@ -113,13 +114,13 @@ td {
 th {
   background-color: #22194d;
   color: white;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-normal);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.025em;
 }
 
 td {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-normal);
   font-weight: var(--font-weight-normal);
 }
 

@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block head %}
+{% extends 'base.html' %} {% block head %} {{super()}}
 <link
   rel="stylesheet"
   href="{{url_for('static', filename='css/uploadtoforum.css') }}"
@@ -10,10 +10,7 @@
 <script src="{{url_for('static', filename='js/forum.js') }}"></script>
 {% endblock %} {% block body %}
 <div class="top-color">
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %}
-  <div class="flash-message">{{ message }}</div>
-  {% endfor %} {% endif %} {% endwith %}
+  <h1>Plaats hier je challenge op het forum</h1>
   <div class="contact">
     <p>
       Heb je een vraag of tip? Stuur dan een mail naar:
@@ -23,17 +20,6 @@
   <button class="forum-button">
     <a href="/forum" class="forum-button-text">Ga terug naar het forum</a>
   </button>
-  <div class="logo">
-    <a href="https://liemersagora.beezer.com/" target="_blank">
-      <img
-        class="logo"
-        src="{{ url_for('static', filename='pictures/logo.png') }}"
-        alt="Logo"
-      />
-    </a>
-  </div>
-
-  <h1>Plaats hier je challenge op het forum</h1>
 </div>
 
 <div class="forum">

@@ -30,7 +30,7 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 0px;
-  bottom: 40px;
+  bottom: 35px;
   right: 10px;
   width: 80px;
 }
@@ -46,14 +46,14 @@ button {
 
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, 450px);
+  justify-content: center; /* center when fewer items */  
   gap: 30px;
   padding: 20px;
   margin-top: 125px;
-  min-width: 97.5%;
-  max-width: 1300px;
+  min-width: 100%;
+  max-width: 1350px;
   margin-left: auto;
-  margin-right: auto;
 }
 
 .card {
@@ -219,7 +219,7 @@ p.title {
 .headquestion-info {
   position: absolute;
   right: 0px;
-  top: 70px;
+  top: 80px;
   width: 200px;
   white-space: normal;
   word-wrap: break-word;
@@ -231,10 +231,11 @@ p.title {
 
 @media (max-width: 900px) {
   .container {
+    position: relative;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    top: 8rem;
+    top: 50px;
   }
   .card {
     width: 95%;
@@ -254,7 +255,7 @@ p.title {
     align-items: center;
     justify-content: center;
     position: relative;
-    top: 150px;
+    top: 75px;
     width: 100%;
   }
   .top-color a {

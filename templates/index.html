@@ -10,11 +10,6 @@
 <script src="{{url_for('static', filename='js/home.js') }}"></script>
 {% endblock %} {% block body %}
 <div class="top-color">
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %}
-  <div class="flash-message">{{ message }}</div>
-  {% endfor %} {% endif %} {% endwith %}
-
   <h1>Maakplaats</h1>
 
   <div class="contact">

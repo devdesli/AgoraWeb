@@ -28,17 +28,6 @@ select {
   font-family: var(--font-family-primary);
 }
 
-h1 {
-  justify-content: center;
-  text-align: center;
-  color: white;
-  margin-top: -60px;
-  font-family: var(--font-family-heading);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.025em;
-}
-
 .logo {
   width: 150px;
   height: 75px;
@@ -56,6 +45,28 @@ h1 {
   height: 120px;
   z-index: 1000;
   border-bottom: 2px solid white;
+}
+
+.top-color h1 {
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: 25px;
+  font-family: var(--font-family-heading);
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: 25px;
+  font-family: var(--font-family-heading);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
 }
 
 textarea {
@@ -119,28 +130,29 @@ hr {
 
 .subquestions {
   position: relative;
-  margin-top: 300px;
+  margin-top: 250px;
   margin-left: 350px;
 }
 
 .subquestionsText {
-  margin-top: 260px;
+  margin-top: 275px;
 }
 
 .add-subquestion-button {
   position: absolute;
-  top: 300px;
+  top: 275px;
+  left: 350px;
   z-index: 1000;
 }
 
 .challengeinfo {
   position: absolute;
-  top: 450px;
-  left: 350px;
+  top: 325px;
+  left: 50px;
 }
 
 .challengeinfoText {
-  top: 410px;
+  top: 300px;
 }
 
 .endproduct {
@@ -155,7 +167,7 @@ hr {
 
 .image {
   position: absolute;
-  top: 340px;
+  top: 350px;
   left: 950px;
 }
 
@@ -166,7 +178,7 @@ hr {
 }
 
 .imageinputText {
-  top: 260px;
+  top: 275px;
   left: 950px;
 }
 
@@ -313,7 +325,11 @@ label h3 {
   h1 {
     font-size: var(--font-size-2xl);
   }
-  
+
+  .top-color {
+    height: 175px;
+  }
+
   body {
     display: block;
     width: 100vw;
@@ -321,8 +337,9 @@ label h3 {
     padding: 0;
     margin: 0;
     overflow-x: hidden;
+    overflow-y: auto;
   }
-  
+
   .forum {
     display: flex !important;
     flex-direction: column !important;
@@ -332,8 +349,9 @@ label h3 {
     max-width: 100vw !important;
     font-size: var(--font-size-base) !important;
     box-sizing: border-box !important;
+    margin-top: 200px;
   }
-  
+
   .author,
   .title,
   .mainquestion,
@@ -351,7 +369,8 @@ label h3 {
   .challengeinfoText,
   .endproductText,
   .imageinputText,
-  .filtersText {
+  .filtersText,
+  .add-subquestion-button {
     position: static !important;
     width: 100% !important;
     left: unset !important;
@@ -362,7 +381,7 @@ label h3 {
     max-width: 100vw !important;
     font-size: var(--font-size-base) !important;
   }
-  
+
   textarea,
   select,
   input[type="file"] {
@@ -372,19 +391,19 @@ label h3 {
     padding: 12px 16px;
     font-size: var(--font-size-base) !important;
   }
-  
+
   .logo {
     width: 100px;
     height: auto;
   }
-  
+
   .contact {
     position: static;
     text-align: center;
     margin-bottom: 12px;
     font-size: var(--font-size-xs);
   }
-  
+
   .forum-button {
     position: static;
     width: 100%;
@@ -393,7 +412,7 @@ label h3 {
     font-size: var(--font-size-base);
     padding: 12px 0;
   }
-  
+
   .submit {
     width: 100% !important;
     left: unset !important;
@@ -403,7 +422,7 @@ label h3 {
     font-size: var(--font-size-lg) !important;
     height: 48px !important;
   }
-  
+
   #preview {
     max-width: 100vw !important;
     height: auto !important;
@@ -420,32 +439,32 @@ label h3 {
   h1 {
     font-size: var(--font-size-xl);
   }
-  
+
   .top-color {
     padding: 12px;
     flex-direction: column;
     align-items: center;
     height: auto;
   }
-  
+
   .logo {
     width: 80px;
     height: auto;
   }
-  
+
   .forum {
     padding-top: 140px !important;
   }
-  
+
   .forum-button {
     font-size: var(--font-size-sm);
     padding: 10px 0;
   }
-  
+
   .contact {
     font-size: var(--font-size-xs);
   }
-  
+
   label h3 {
     font-size: var(--font-size-sm);
   }

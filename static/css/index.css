@@ -5,6 +5,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  display: flex;
 }
 
 .flash-message {
@@ -52,8 +53,8 @@ td {
   z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   border-bottom: 2px solid white;
+  justify-content: center;
 }
 
 .logo {
@@ -99,6 +100,7 @@ td {
   margin-bottom: 30px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
+  border: 0.5px solid white;
 }
 
 .content-section h2 {

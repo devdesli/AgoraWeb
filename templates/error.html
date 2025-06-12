@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}" />
+{% endblock %}
+
+{% block body %}
+  <div id="react-error-root"></div>
+
+  <script src="{{ url_for('static', filename='js/error-page-bundle.umd.js') }}"></script>
+  <script>
+    // Mount your React component after the script is loaded
+    // Call the render function exposed by your Vite bundle
+    // The 'ErrorPageBundle' comes from the 'name' property in vite.config.ts
+
+    // Define the Flask variables in JavaScript
+    // Using JSON.parse to ensure robust parsing of the JSON output from Jinja's tojson filter
+    const flaskStatusCode = JSON.parse('{{ statusCode | tojson | safe }}');
+    const flaskMessage = JSON.parse('{{ message | tojson | safe }}');
+
+    if (window.ErrorPageBundle && typeof window.ErrorPageBundle.render === 'function') {
+        window.ErrorPageBundle.render('react-error-root', {
+            statusCode: flaskStatusCode,
+            message: flaskMessage
+        });
+    } else {
+        console.error("Error: window.ErrorPageBundle.render is not defined. Has the script loaded correctly?");
+    }
+  </script>
+{% endblock %}

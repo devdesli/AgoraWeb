@@ -44,23 +44,23 @@ body {
   min-height: 125px;
   z-index: 1000;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   box-sizing: border-box;
   border-bottom: 2px solid white;
 }
 
 .filter-container {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
-  margin-right: 150px;
-  top: -15px;
+  left: 25px;
+  top: 15px;
 }
 
 .filter-text {
   position: relative;
   display: flex;
-  gap: 120px;
+  gap: 130px;
   align-items: center;
   padding: 0;
   flex: 1;
@@ -97,6 +97,7 @@ body {
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 0.5px solid white;
 }
 
 .filterselect:hover {
@@ -105,6 +106,7 @@ body {
 
 .filterselect option {
   background-color: #22194d;
+  border: 2px solid white;
   color: white;
   font-family: var(--font-family-primary);
 }
@@ -125,13 +127,14 @@ h1 {
 }
 
 .module-container {
-  right: 0px;
+  right: 25px;
   position: fixed;
-  top: 0px;
+  top: 25px;
   display: flex;
   align-items: center;
   gap: 10px;
   z-index: 1001;
+  transition: all 1s ease;
 }
 
 .forum-button {
@@ -151,14 +154,15 @@ h1 {
   text-decoration: none;
   border-radius: 8px;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
+  background: linear-gradient(#22194d, #afaeae);
+  transition: all 1s ease;
   backdrop-filter: blur(10px);
 }
 
 .module-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  background: linear-gradient(#afaeae, #22194d);
+  transform: translateY(-2px);
+  transition: all 1s ease-out;
 }
 
 .module-button i {
@@ -237,18 +241,21 @@ select {
   .top-color {
     padding: 10px 15px;
     padding-bottom: 30px;
+    height: 150px;
   }
 
   .filter-text {
     top: 10px;
     gap: 25px;
   }
-  
+
   .filter-text h3 {
     font-size: var(--font-size-base);
   }
-  
+
   .filters {
+    display: flex;
+    flex-direction: column;
     gap: 0rem;
   }
   .module-container {
@@ -259,7 +266,6 @@ select {
     padding: 8px 16px;
     font-size: var(--font-size-sm);
     color: white;
-    background: none;
   }
 }
 
@@ -270,16 +276,19 @@ select {
     flex-direction: column;
     min-height: auto;
     align-items: stretch;
+    height: 200px;
   }
 
   .filter-container {
-    margin-right: 0;
-    width: 100%;
-    top: 0;
-    order: 2;
+    margin-top: 30px;
+    margin-right: 5%;
+    width: 90%;
+    bottom: 0px;
+    order: 3;
   }
 
   .filter-text {
+    display: none;
     flex-direction: column;
     gap: 10px;
     width: 100%;
@@ -303,22 +312,23 @@ select {
   h1 {
     font-size: var(--font-size-2xl);
     position: relative;
-    top: -5px;
+    bottom: -75px;
   }
 
   .module-container {
-    position: static;
     width: 100%;
-    justify-content: center;
-    align-items: center;
     margin: 2rem 0 0 0;
     padding: 0;
-    order: unset;
+    order: 5;
     display: flex;
+    justify-content: center;
   }
 
   .module-button {
+    position: absolute;
+    top: -30px;
     font-size: var(--font-size-sm);
+    align-items: center;
   }
 
   .module-tekst {
@@ -333,12 +343,12 @@ select {
     top: 25px;
     right: 15px;
   }
-  
+
   .contact {
     position: relative;
     width: 100%;
     text-align: left;
-    top: 0px;
+    top: 40%;
     right: auto;
     order: 4;
     font-size: var(--font-size-xs);
