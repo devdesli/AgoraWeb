@@ -12,15 +12,20 @@
 
 button {
   cursor: pointer;
+  font-family: var(--font-family-primary);
 }
 
 .like-count {
   color: white;
-  font-size: 15px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .label-like-count {
-  font-size: 15px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   color: white;
 }
 
@@ -29,7 +34,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0px;
+  gap: 8px;
   bottom: 40px;
   right: 10px;
   width: 80px;
@@ -38,7 +43,7 @@ button {
 .button-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   position: absolute;
   bottom: 5px;
   right: 200px;
@@ -63,13 +68,15 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 0.5px solid white;
-  padding: 20px;
-  min-height: 250px;
-  max-height: 300px;
-  box-sizing: border-box; 
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  min-height: 280px;
+  max-height: 320px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
 }
 
 .card::before {
@@ -78,28 +85,26 @@ button {
   bottom: 60px;
   width: 90%;
   right: 5%;
-  height: 2.5px;
+  height: 2px;
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 .card::after {
   content: "";
   position: absolute;
-  top: 62.5px;
+  top: 70px;
   width: 95%;
   right: 2.5%;
-  height: 2.5px;
+  height: 1px;
   border-radius: 5px;
-  background-color: #2d2267;
-}
-
-.card-glow {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 1px 1px rgba(212, 43, 135, 0.6);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(212, 43, 135, 0.3);
+  border-color: rgba(212, 43, 135, 0.5);
 }
 
 .info-container {
@@ -111,8 +116,10 @@ button {
 }
 
 .author {
-  font-size: 17.5px;
-  opacity: 0.8;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  opacity: 0.9;
   position: absolute;
   bottom: 15px;
   right: 10px;
@@ -126,6 +133,7 @@ button {
 
 select {
   cursor: pointer;
+  font-family: var(--font-family-primary);
 }
 
 .challenge-info {
@@ -136,6 +144,9 @@ select {
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
 }
 
 .headquestion {
@@ -149,26 +160,34 @@ select {
   word-wrap: break-word;
   word-break: break-word;
   text-align: right;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
 .category {
   position: absolute;
   left: 10px;
   bottom: 15px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .title {
   position: absolute;
   left: 10px;
   top: 5px;
-  font-size: 25px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   max-width: 97.5%;
   max-height: 100px;
   overflow: hidden;
   white-space: normal;
   word-wrap: break-word;
-  font-family: "Inter", sans-serif;
-  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: var(--line-height-tight);
 }
 
 .delete-button {
@@ -176,13 +195,22 @@ select {
   background-color: white;
   border: none;
   cursor: pointer;
-  border-radius: 2px;
-  height: 20px;
-  width: 60px;
+  border-radius: 6px;
+  height: 32px;
+  width: 70px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-1px);
 }
 
 .delete-button i {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .update-button {
@@ -191,17 +219,27 @@ select {
   color: black;
   border: none;
   cursor: pointer;
-  border-radius: 2px;
-  width: 60px;
-  height: 20px;
-  margin-bottom: 2.5px;
+  border-radius: 6px;
+  width: 70px;
+  height: 32px;
+  margin-bottom: 4px;
   text-decoration: none;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.update-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-1px);
 }
 
 .update-button i {
-  font-size: 18px;
-  height: 30px;
-  width: 100px;
+  font-size: 16px;
 }
 
 p.title {
@@ -224,6 +262,9 @@ p.title {
   height: auto;
   max-height: 100px;
   overflow-y: auto;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
 @media (max-width: 900px) {
@@ -254,15 +295,17 @@ p.title {
     top: 150px;
     width: 100%;
   }
+  
   .top-color a {
     color: white;
   }
+  
   .card {
     width: 95%;
     height: auto;
     min-height: 350px;
     height: 40vh;
-    padding: 15px;
+    padding: 20px;
   }
 
   .card::before {
@@ -271,18 +314,20 @@ p.title {
     bottom: 80px;
     width: 90%;
     right: 5%;
-    height: 2.5px;
+    height: 2px;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   }
 
   .title {
-    font-size: 1.25rem;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
   }
+  
   .challenge-info {
     max-width: 150px;
     top: 70px;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
   }
 
   .headquestion {
@@ -292,7 +337,7 @@ p.title {
     word-wrap: break-word;
     word-break: break-word;
     white-space: normal;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     right: 10px;
     top: 70px;
     text-align: right;
@@ -304,7 +349,7 @@ p.title {
     right: 10px;
     top: 87.5px;
     width: 35%;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     word-wrap: break-word;
     word-break: break-word;
     white-space: normal;
@@ -312,7 +357,11 @@ p.title {
 
   .category {
     bottom: 0px;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
+  }
+
+  .author {
+    font-size: var(--font-size-xs);
   }
 
   .update-button,
@@ -320,8 +369,8 @@ p.title {
     bottom: 10px;
     width: auto;
     height: auto;
-    padding: 5px 10px;
-    font-size: 12px;
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
   }
 
   .like-button button {
@@ -332,7 +381,7 @@ p.title {
   .like-count,
   .label-like-count {
     bottom: 40px;
-    font-size: 12px;
+    font-size: var(--font-size-xs);
   }
 
   .button-container {
@@ -361,7 +410,7 @@ p.title {
   .category {
     position: static;
     margin-bottom: -10px;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     order: 1;
     flex: 1 1 0;
     text-align: left;
@@ -372,7 +421,7 @@ p.title {
   .author {
     position: static;
     margin-bottom: 0;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     opacity: 0.8;
     order: 2;
     flex: 1 1 0;
