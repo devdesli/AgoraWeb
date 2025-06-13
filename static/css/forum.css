@@ -237,7 +237,7 @@ select {
 }
 
 /* Tablet layout */
-@media (max-width: 900px) {
+@media (max-width: 950px) {
   .top-color {
     padding: 10px 15px;
     padding-bottom: 30px;
