@@ -5,6 +5,7 @@ That's why we created this forum to share with the community what we made how we
 V0.1.3 CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
 ALPHA RELEASE IS CURRENTLY BEING DEVELLOPED 😊  
+AND ALMOST READY FOR PRODUCTION
 
 📫 How to reach me: Send an email to agorawebapplication@gmail.com
 
