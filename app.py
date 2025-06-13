@@ -59,6 +59,13 @@ upload_logger = logging.getLogger('upload_logger')
 upload_logger.setLevel(logging.INFO)
 upload_logger.addHandler(upload_handler)
 
+activity_handler = RotatingFileHandler('logs/activity.log', maxBytes=10240, backupCount=3)
+activity_handler.setLevel(logging.INFO)
+activity_handler.setFormatter(formatter)
+activity_logger = logging.getLogger('activity_logger')
+activity_logger.setLevel(logging.INFO)
+activity_logger.addHandler(activity_handler)
+
 # Optional: if you want errors to also be logged separately
 error_handler = RotatingFileHandler('logs/error.log', maxBytes=10240, backupCount=3)
 error_handler.setLevel(logging.ERROR)
@@ -92,7 +99,12 @@ login_manager.login_message_category = "warning"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    user = User.query.get(int(user_id))
+    if user:
+        activity_logger.info(f"Loaded user: {user.username} (ID: {user.id})")
+    else:
+        activity_logger.warning(f"Tried to load non-existent user with ID: {user_id}")
+    return user
 
 import string, random
 
@@ -141,9 +153,9 @@ def unauthorized():
 def fullcard(id, slug):
     task = Todo.query.get_or_404(id)
     if not task.approved and not (current_user.is_authenticated and current_user.is_master or current_user.is_admin):
+        app.logger.info(f"{task}, Not approved yet")
         flash('This challenge is not approved yet')
         return redirect(url_for('forum'))
-    
     return render_template('fullcard.html', task=task)
 
 @app.route('/mychallenges')
@@ -155,6 +167,7 @@ def my_challenges():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        app.logger.info(f"{current_user.username} already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
@@ -175,12 +188,13 @@ def login():
                 print(f"Password correct, logging in")  # Debug log
                 login_user(user)
                 next_page = request.args.get('next')
+                app.logger.info(f"{username_or_email}, logged in succesfully")
                 return redirect(next_page or url_for('index'))
             else:
-                print(f"Password incorrect")  # Debug log
+                app.logger.error(f"Password incorrect for {username_or_email}")  # Debug log
                 flash('Invalid password', "error")
         else:
-            print(f"User not found")  # Debug log
+            app.logger.error(f"User not found {username_or_email}")  # Debug log
             flash('No account found with that username or email', "error")
     
     return render_template('login.html')
@@ -188,6 +202,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
+        app.logger.info(f"{current_user}, already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
@@ -198,14 +213,17 @@ def register():
         confirm_password = request.form.get('confirm_password', '')
         
         if password != confirm_password:
+            app.logger.error(f"Passwords for {username}, do not match")
             flash('Passwords do not match', "error")
             return redirect(url_for('register'))
         
         if User.query.filter_by(username=username).first():
+            app.logger.error(f"username {username} already exists")
             flash('Username already exists', "error")
             return redirect(url_for('register'))
         
         if User.query.filter_by(email=email).first():
+            app.logger.error(f"email {email} already registered")
             flash('Email already registered', "error")
             return redirect(url_for('register'))
         
@@ -213,7 +231,7 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        
+        app.logger.info(f"{user}, succesfully registered")
         flash('Registration successful! Please log in.', "succes")
         return redirect(url_for('login'))
     
@@ -222,6 +240,7 @@ def register():
 @app.route('/logout')
 @login_required
 def logout():
+    activity_logger.info(f"{current_user} {current_user.username}, logged out")
     logout_user()
     return redirect(url_for('index'))
 
@@ -235,10 +254,12 @@ def admin():
         return render_template('admin.html', challenges=challenges, users=users, app_status=app_status)
     
     if not current_user.is_authenticated:
+        activity_logger.info(f"trying to acces admin panel without logging in")
         flash('Please log in first.')
         return redirect(url_for('login'))
     
     if not current_user.is_master or not current_user.is_admin:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to acces admin without permission")
         flash('You are not authorized to view this page.')
         return redirect(url_for('index'))
     flash('error')
@@ -249,6 +270,7 @@ def admin():
 def admin_email():
     # Authorization check FIRST
     if not current_user.is_master and not current_user.is_admin:
+        activity_logger.info(f"{current_user} {current_user.username}, is trying to send an email without admin or master role")
         abort(403)
 
     if request.method == 'POST':
@@ -276,10 +298,11 @@ def admin_email():
 
         try:
             mail.send(msg)
+            app.logger.info(f"Email with header {msg} and text {msg.body} sended to all users")
             flash("Email sucesfully sent to all users.")
         except Exception as e:
             flash(f"Sending email failed. Error: {str(e)}", 'error')
-            print(f"Admin send email error: {e}")  # Log the error
+            error_logger(f"Admin send email error: {e}")  # Log the error
 
     return render_template('admin_email.html')
 
@@ -288,33 +311,47 @@ def admin_email():
 @login_required
 def approve_challenge(id):
     if not (current_user.is_master or current_user.is_admin):
+        activity_logger.info(f"{current_user}, tried to aprove challenge without master or admin role")
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     challenge.approved = True
     db.session.commit()
+    app.logger.info(f"Admin approved challenge {challenge}")
     return redirect(url_for('admin'))
 
 @app.route('/admin/delete_challenge/<int:id>')
 @login_required
 def delete_challenge(id):
     if not current_user.is_master and not current_user.is_admin:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to delete challenge without admin or master role")
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
-    db.session.delete(challenge)
-    db.session.commit()
+    try:
+        db.session.delete(challenge)
+        db.session.commit()
+        app.logger.info(f"Admin deleted challenge {challenge}")
+    except Exception as e:
+        flash("error deleting challenge")
+        app.logger.error(f"Error deleting challenge {challenge} {e}")
+
     return redirect(url_for('admin'))
 
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
     if not current_user.is_master or current_user.is_admin:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to delete user without admin or master role")
         return redirect(url_for('index'))
     user = User.query.get_or_404(id)
     if user.is_admin and not current_user.is_admin:
         flash('Cannot delete admin users')
+        activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
         return redirect(url_for('admin'))
-    db.session.delete(user)
-    db.session.commit()
+    try: 
+      db.session.delete(user)
+      db.session.commit()
+    except Exception as e:
+        app.logger.error(f"Error deleting user {user} {e}")
     return redirect(url_for('admin'))
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -343,13 +380,15 @@ If you did not make this request then simply ignore this email and no changes wi
             try:
                 mail.send(msg)
                 flash('A password reset link has been sent to your email.', 'info')
+                app.logger.info(f"{email}, requested password reset link and email has been send")
             except Exception as e:
                 flash(f'Failed to send email. Please try again later. Error: {str(e)}', 'error')
                 db.session.rollback() # Rollback the token generation if email fails
-                print(f"Email sending error: {e}") # Log the error for debugging
+                app.logger.error(f"Email sending error db rolled back: {e}") # Log the error for debugging
         else:
             # It's good practice not to reveal if an email exists for security reasons
             flash('If an account with that email exists, a password reset link has been sent.', 'info')
+            app.logger.info(f"Reset link sent to {email}")
         
         return redirect(url_for('login'))
     
@@ -358,12 +397,14 @@ If you did not make this request then simply ignore this email and no changes wi
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
+        app.logger.info(f"{current_user} {current_user.username}, already logged in")
         flash("already logged in")
         return redirect(url_for('index'))
 
     user = User.query.filter_by(reset_token=token).first()
 
     if not user or not user.verify_reset_token(token):
+        app.logger.error(f"{token}, is invalid or expired for {user}")
         flash('That is an invalid or expired token.', 'error')
         return redirect(url_for('forgot_password'))
 
@@ -376,6 +417,7 @@ def reset_password(token):
             return render_template('reset_password.html', token=token)
 
         if password != confirm_password:
+            app.logger.info(f"Passwords not matching for {user}")
             flash('Passwords do not match.', 'error')
             return render_template('reset_password.html', token=token)
 
@@ -383,6 +425,7 @@ def reset_password(token):
         user.reset_token = None # Clear the token after successful reset
         user.reset_token_expiration = None # Clear the expiration
         db.session.commit()
+        app.logger.info(f"Password for {user}, succesfully reset")
         flash('Your password has been reset successfully!', 'success')
         return redirect(url_for('login'))
 
@@ -393,12 +436,14 @@ def reset_password(token):
 def reset_user_password(id):
     # Only master users can reset passwords
     if not current_user.is_master:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to reset user password without master role")
         abort(403)
 
     user = User.query.get_or_404(id)
 
     # Prevent master admin from resetting their own password this way (or other admins)
     if user.is_master and user.id == current_user.id:
+        activity_logger.info(f"Master tried to reset own password through master panel permission denied")
         flash("You cannot reset your own master password this way.", "error")
         return redirect(url_for('admin'))
 
@@ -423,17 +468,18 @@ To set a new password, please visit the following link:
 This link is valid for a limited time. If you did not request this, or if you believe this is in error, please ignore this email. Your current password will remain unchanged until you follow the link and set a new one.
 
 Thank you,
-Agora Team
+Maakplaats Team
 """
 
     try:
         mail.send(msg)
         db.session.commit() # Commit the token to the database after successful email sending
+        activity_logger.info(f"Admin reseted password of {user.username} email send to {user.email}")
         flash(f"Password reset link sent to '{user.username}' ({user.email}). User must use the link to set a new password.", "info")
     except Exception as e:
         db.session.rollback() # Rollback the token generation if email fails
         flash(f"Failed to send password reset email to '{user.username}'. Error: {str(e)}", 'error')
-        print(f"Admin forced reset email error: {e}") # Log the error for debugging
+        app.logger.error(f"Admin forced reset email error: {e}") # Log the error for debugging
 
     return redirect(url_for('admin'))
 
@@ -525,16 +571,19 @@ def upload():
         try:
             db.session.add(new_task)
             db.session.commit()
+            upload_logger.info(f"{current_user} {current_user.username}, uploaded new task {new_task}")
             if not (current_user.is_master or current_user.is_admin):
+                app.logger.info(f"{current_user} {current_user.username}'s challenge {title}, is waiting for approval")
                 flash("When your challenge gets approved, you'll see it here.", "info")
             return redirect('/forum')
-        except IntegrityError:
+        except IntegrityError as i:
             db.session.rollback()
+            app.logger.error(f"A challenge with that slug already exists {i}")
             flash("A challenge with a similar slug already exists. Try a different title.", "danger")
             return render_template('uploadtoforum.html')
         except Exception as e:
             db.session.rollback()
-            print(f"Error adding challenge: {str(e)}")
+            app.logger.error(f"Error adding challenge: {str(e)}")
             return 'There was an issue adding your challenge'
     
     return render_template('uploadtoforum.html')
@@ -564,8 +613,10 @@ def like(id):
         # Add task to liked_tasks session if liked, remove if unliked
         liked_tasks = session.get('liked_tasks', [])
         if liked and id not in liked_tasks:
+            upload_logger.info(f"{current_user} {current_user.username}, liked {id}")
             liked_tasks.append(id)
         elif not liked and id in liked_tasks:
+            upload_logger.info(f"{current_user} {current_user.username}, unliked {id}")
             liked_tasks.remove(id)
         session['liked_tasks'] = liked_tasks
         
@@ -589,6 +640,7 @@ def like(id):
                 'error': str(e)
             }), 500
         flash('Error processing like')
+        app.logger.error(f"Error processing like {e}")
         return redirect(url_for('forum'))
 
 @app.route("/like_status/<int:todo_id>")
@@ -606,6 +658,7 @@ def update(id):
     
     # Check authorization
     if not (current_user.id == task.author_id or current_user.is_admin):
+        activity_logger.info(f"Someone not authorized tried to update {task}")
         flash('You are not authorized to edit this challenge')
         return redirect(url_for('forum'))
 
@@ -637,10 +690,11 @@ def update(id):
 
         try:
             db.session.commit()
+            upload_logger.info(f"{current_user} {current_user.username}, updated challenge {task}")
             flash('Challenge updated successfully')
             return redirect(url_for('forum'))
         except Exception as e:
-            print(f"Error updating challenge: {str(e)}")  # Debug logging
+            app.logger.error(f"Error updating challenge: {str(e)}")  # Debug logging
             db.session.rollback()
             flash('There was an issue updating your challenge')
             return redirect(url_for('forum'))
@@ -653,6 +707,7 @@ def delete(id):
     
     # Check authorization
     if not (current_user.id == task_to_delete.author_id or current_user.is_admin):
+        activity_logger.info(f"{current_user} {current_user.username}, tried to delete challenge {task_to_delete}")
         flash('You are not authorized to delete this challenge')
         return redirect(url_for('forum'))
     
@@ -670,9 +725,10 @@ def delete(id):
         db.session.commit()
         
         flash('Challenge deleted successfully')
+        app.logger.info(f"Challenge {task_to_delete}, deleted succesfully")
         return redirect(url_for('forum'))
     except Exception as e:
-        print(f"Error deleting challenge {id}: {str(e)}")  # Debug logging
+        app.logger.error(f"Error deleting challenge {id}: {str(e)}")  # Debug logging
         db.session.rollback()
         flash('There was a problem deleting that challenge')
         return redirect(url_for('forum'))
@@ -694,7 +750,7 @@ def upload_image():
             new_image = Image(filename=filename)
             db.session.add(new_image)
             db.session.commit()
-
+            upload_logger.info(f"{current_user} {current_user.username}, uploaded image {filename}")
             return redirect('/uploadtoforum')
         
     return render_template('upload.html')
