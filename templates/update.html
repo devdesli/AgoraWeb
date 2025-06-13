@@ -43,7 +43,9 @@
     <label for="subQuestions" class="subquestions subquestionsText"
       ><h3>Deelvragen</h3></label
     >
-    <div id="subQuestionsContainer">
+  <div id="subQuestionsContainer">
+  {% for subq in sub_questions %}
+    <div class="subquestion-row">
       <textarea
         rows="1"
         class="subquestions"
@@ -51,10 +53,13 @@
         required
         maxlength="150"
         placeholder="Vul hier jouw deelvraag in"
-      >
-{{ task.sub_questions }}</textarea
-      >
+      >{{ subq }}</textarea>
+      {% if not loop.first %}
+      <button type="button" class="remove-subquestion-button">&times;</button>
+      {% endif %}
     </div>
+  {% endfor %}
+</div>
     <button type="button" id="addSubQuestion" class="add-subquestion-button">
       Voeg deelvraag toe
     </button>
@@ -113,36 +118,42 @@
 </div>
 
 <script>
-  // Script for dynamic sub-question input fields
-      document.addEventListener("DOMContentLoaded", function () {
-        const addSubQuestionButton = document.getElementById("addSubQuestion");
-        const subQuestionsContainer = document.getElementById(
-          "subQuestionsContainer"
-        );
+  document.addEventListener("DOMContentLoaded", function () {
+    const addSubQuestionButton = document.getElementById("addSubQuestion");
+    const subQuestionsContainer = document.getElementById("subQuestionsContainer");
 
-        addSubQuestionButton.addEventListener("click", function () {
-          const newTextArea = document.createElement("textarea");
-          newTextArea.rows = "1";
-          newTextArea.className = "new-subquestions";
-          newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
-          newTextArea.required = true;
-          newTextArea.maxLength = "150";
-          newTextArea.placeholder = "Vul hier een deelvraag in";
+    // Delegate remove button clicks for all subquestion rows
+    subQuestionsContainer.addEventListener("click", function (e) {
+      if (e.target.classList.contains("remove-subquestion-button")) {
+        const rows = subQuestionsContainer.querySelectorAll(".subquestion-row");
+        if (rows.length > 1) {
+          e.target.parentElement.remove();
+        }
+      }
+    });
 
-          const removeButton = document.createElement("button");
-          removeButton.type = "button";
-          removeButton.className = "remove-subquestion-button";
-          removeButton.innerHTML = "&times;"; // 'x' icon
-          removeButton.addEventListener("click", function () {
-            subQuestionsContainer.removeChild(newTextArea);
-            subQuestionsContainer.removeChild(removeButton);
-          });
+    addSubQuestionButton.addEventListener("click", function () {
+      const row = document.createElement("div");
+      row.className = "subquestion-row";
+      const newTextArea = document.createElement("textarea");
+      newTextArea.rows = "1";
+      newTextArea.className = "subquestions";
+      newTextArea.name = "subQuestion[]";
+      newTextArea.required = true;
+      newTextArea.maxLength = "150";
+      newTextArea.placeholder = "Vul hier een deelvraag in";
 
-          subQuestionsContainer.appendChild(newTextArea);
-          subQuestionsContainer.appendChild(removeButton);
-          newTextArea.focus(); // Focus on the new input
-        });
-      });
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "remove-subquestion-button";
+      removeButton.innerHTML = "&times;";
+
+      row.appendChild(newTextArea);
+      row.appendChild(removeButton);
+      subQuestionsContainer.appendChild(row);
+      newTextArea.focus();
+    });
+  });
 
   document
     .getElementById("imageInput")
