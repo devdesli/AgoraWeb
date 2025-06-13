@@ -11,3 +11,4 @@ Currently running update support
 |1.0.0-PRE| :white_check_mark: |
 
 ## Reporting a Vulnerability
+If you find any Vulenerability's please send a report to agorawebapplication@gmail.com
