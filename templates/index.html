@@ -48,24 +48,23 @@
       <button class="forum-button">
         <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
       </button>
-
+      <button class="forum-button">
+        <a href="{{ url_for('my_challenges') }}">Mijn Challenges</a>
+      </button>
       {% if current_user.is_master %}
       <button class="forum-button master-button">
         <a href="{{ url_for('admin') }}">Master Panel</a>
       </button>
-      {% endif %}
- 
-      {% if current_user.is_admin and not current_user.is_master %}
+      {% endif %} {% if current_user.is_admin and not current_user.is_master %}
       <button class="forum-button">
         <a href="{{ url_for('admin') }}">Admin Panel</a>
       </button>
-      {% endif %}
-      {% if current_user.is_authenticated%}
+      {% endif %} {% if current_user.is_authenticated%}
       <button class="forum-button">
         <a href="{{ url_for('logout') }}">Uitloggen</a>
       </button>
-      {% endif %}
-      {% else %}
+
+      {% endif %} {% else %}
       <button class="forum-button">
         <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
       </button>
@@ -74,11 +73,6 @@
       </button>
       <button class="forum-button">
         <a href="{{ url_for('register') }}">Registreren</a>
-      </button>
-      {% endif %}
-    {% if current_user.is_admin or current_user.is_master %}
-      <button class="forum-button">
-        <a href="https://github.com/devdesli/AgoraWeb">Bekijk dit project op Github</a>
       </button>
       {% endif %}
     </div>

@@ -1,7 +1,6 @@
-import os
-import secrets
-import json
+from slugify import slugify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
@@ -11,7 +10,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
 from flask_mail import Mail, Message
 from config import Config
+import os
+import secrets
 import json
+import logging
+import uuid
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
@@ -29,6 +32,17 @@ app.config.from_object(Config)
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+# change this folder to the actual folder off the upload folder 
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Max 2 MB upload
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # initialize flask mail
 mail = Mail(app)
@@ -98,6 +112,12 @@ def fullcard(id, slug):
         return redirect(url_for('forum'))
     
     return render_template('fullcard.html', task=task)
+
+@app.route('/mychallenges')
+@login_required
+def my_challenges():
+    challenges = Todo.query.filter_by(author_id=current_user.id).order_by(Todo.date_created.desc()).all()
+    return render_template('my_challenges.html', challenges=challenges)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -441,6 +461,14 @@ def upload():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 image_filename = filename
 
+        # Create unique slug
+        base_slug = slugify(title) or f"untitled-{uuid.uuid4().hex[:6]}"
+        slug = base_slug
+        counter = 1
+        while Todo.query.filter_by(slug=slug).first():
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+
         new_task = Todo(
             title=title,
             name=name,
@@ -452,17 +480,23 @@ def upload():
             image=image_filename,
             author_id=current_user.id,
             approved=current_user.is_admin or current_user.is_master,
-            likes=0
+            likes=0,
+            slug=slug
         )
 
         try:
             db.session.add(new_task)
             db.session.commit()
             if not (current_user.is_master or current_user.is_admin):
-              flash("when you're challenge get's approved you will see it here.")
+                flash("When your challenge gets approved, you'll see it here.", "info")
             return redirect('/forum')
+        except IntegrityError:
+            db.session.rollback()
+            flash("A challenge with a similar slug already exists. Try a different title.", "danger")
+            return render_template('uploadtoforum.html')
         except Exception as e:
-            print(f"Error adding challenge: {str(e)}")  # Add this for debugging
+            db.session.rollback()
+            print(f"Error adding challenge: {str(e)}")
             return 'There was an issue adding your challenge'
     
     return render_template('uploadtoforum.html')
@@ -604,15 +638,6 @@ def delete(id):
         db.session.rollback()
         flash('There was a problem deleting that challenge')
         return redirect(url_for('forum'))
-
-# change this folder to the actual folder off the upload folder 
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Max 2 MB upload
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_image():
