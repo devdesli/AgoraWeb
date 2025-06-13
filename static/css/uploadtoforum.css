@@ -3,7 +3,7 @@ body {
   background: fixed linear-gradient(#afaeae, #22194d);
   font-family: var(--font-family-primary);
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
   width: 100%;
 }
 
@@ -132,10 +132,16 @@ hr {
   position: relative;
   margin-top: 250px;
   margin-left: 350px;
+  overflow-y: hidden;
 }
 
 .subquestionsText {
   margin-top: 275px;
+}
+
+.remove-subquestion-button {
+  position: relative;
+  left: 350px;
 }
 
 .add-subquestion-button {

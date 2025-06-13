@@ -34,7 +34,18 @@
       maxlength="70"
       placeholder="Vul de titel van jouw challenge in"
     ></textarea>
-
+        <!-- Beschrijving -->
+    <label for="description" class="challengeinfo challengeinfoText"
+      ><h3>Informatie</h3></label
+    >
+    <textarea
+      rows="3"
+      class="challengeinfo"
+      name="description"
+      maxlength="100"
+      required
+      placeholder="Informatie over jouw challenge"
+    ></textarea>
     <!-- Hoofdvraag -->
     <label for="mainQuestion" class="mainquestion mainquestionText"
       ><h3>Hoofdvraag</h3></label
@@ -56,13 +67,6 @@
         rows="1"
         class="subquestions"
         name="subQuestion[]"
-        {#
-        Changed
-        name
-        to
-        array
-        format
-        #}
         required
         maxlength="150"
         placeholder="Vul hier jouw deelvraag in"
@@ -72,19 +76,6 @@
       Voeg deelvraag toe
     </button>
     <br />
-
-    <!-- Beschrijving -->
-    <label for="description" class="challengeinfo challengeinfoText"
-      ><h3>Informatie</h3></label
-    >
-    <textarea
-      rows="3"
-      class="challengeinfo"
-      name="description"
-      maxlength="100"
-      required
-      placeholder="Informatie over jouw challenge"
-    ></textarea>
 
     <!-- Eindproduct -->
     <label for="endProduct" class="endproduct endproductText"
@@ -137,11 +128,11 @@
         addSubQuestionButton.addEventListener("click", function () {
           const newTextArea = document.createElement("textarea");
           newTextArea.rows = "1";
-          newTextArea.className = "subquestions";
+          newTextArea.className = "new-subquestions";
           newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
           newTextArea.required = true;
           newTextArea.maxLength = "150";
-          newTextArea.placeholder = "Vul hier een extra deelvraag in";
+          newTextArea.placeholder = "Vul hier een deelvraag in";
 
           const removeButton = document.createElement("button");
           removeButton.type = "button";
