@@ -1,64 +1,7 @@
 {% extends 'base.html' %}
 {% block head %}
-{{super()}}
 <title>Admin - View Logs</title>
-<style>
-    .container {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
-        padding: 15px;
-        max-height: 700px; /* Limit height for scrollability */
-        overflow-y: scroll; /* Add scrollbar if content overflows */
-        font-family: monospace; /* Monospace font for logs */
-        font-size: 0.85em;
-        white-space: pre-wrap; /* Preserve whitespace and wrap text */
-        word-wrap: break-word; /* Break long words */
-    }
-    .log-line {
-        margin-bottom: 2px;
-        line-height: 1.2;
-    }
-    .log-filter-form {
-        margin-bottom: 20px;
-        background-color: #f2f2f2;
-        padding: 15px;
-        border-radius: 5px;
-    }
-    .log-filter-form label {
-        margin-right: 10px;
-    }
-    .log-filter-form select,
-    .log-filter-form input[type="text"],
-    .log-filter-form input[type="number"] {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-right: 10px;
-    }
-    .log-filter-form button {
-        padding: 8px 15px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .log-filter-form button:hover {
-        background-color: #0056b3;
-    }
-    .download-link {
-        margin-top: 10px;
-        display: inline-block;
-        padding: 8px 15px;
-        background-color: #28a745;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-    }
-    .download-link:hover {
-        background-color: #218838;
-    }
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_logs.css') }}">
 {% endblock %}
 {% block body %}
 <div class="container mt-4">
