@@ -17,6 +17,7 @@ import json
 import logging
 from logging.handlers import RotatingFileHandler
 import uuid
+import string, random
 
 
 app = Flask(__name__)
@@ -106,8 +107,6 @@ def load_user(user_id):
         activity_logger.warning(f"Tried to load non-existent user with ID: {user_id}")
     return user
 
-import string, random
-
 def generate_random_password(length=10):
     characters = string.ascii_letters + string.digits + string.punctuation
     return ''.join(random.choice(characters) for _ in range(length))
@@ -125,15 +124,18 @@ def save_tasks(tasks):
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('File too large. Max size is 2MB.', 'error')
-    return redirect(request.referrer or url_for('uploadtoforum')), 413
+    error_logger(f"Error 413, {error}")
+    return redirect(request.referrer or url_for('uploadtoforum')), 
 
 
 @app.errorhandler(404)
 def not_found_error(error):
+    error_logger.info(f"Error 404, {error}")
     return render_template('error.html', statusCode=404, message="The page you requested could not be found."), 404
 
 @app.errorhandler(500)
 def internal_error(error):
+    error_logger.info(f"CRITICAL ERROR WEBSITE OFLINE, {error}")
     db.session.rollback()
     return render_template('error.html', statusCode=500, message="An unexpected error occurred on our server. We are working to fix it!"), 500
 
@@ -145,6 +147,7 @@ def unauthorized():
             'error': 'Authentication required'
         }), 401  # Unauthorized
     else:
+        activity_logger.info(f"Unauthorized handler")
         flash('You need to be logged in to perform this action.', 'warning')
         return redirect(url_for('login', next=request.url))
     
