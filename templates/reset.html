@@ -2,14 +2,14 @@
 <title>Bekijk challenge</title>
 <link
   rel="stylesheet"
-  href="{{ url_for('static', filename='css/reset.css') }}"
+  href="{{ url_for('static', filename='css/auth.css') }}"
 />
 <link
   href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
   rel="stylesheet"
 />
 {% endblock %} {% block body %}
-<div class="container">
+<div class="auth-container">
   <h2>Reset Your Password</h2>
   {% with messages = get_flashed_messages(with_categories=true) %} {% if
   messages %}
@@ -19,12 +19,10 @@
     {% endfor %}
   </ul>
   {% endif %} {% endwith %}
-  <form method="POST">
+  <form method="POST" class="auth-form">
     <div class="form-group">
       <label for="password">New Password:</label>
       <input type="password" id="password" name="password" required />
-    </div>
-    <div class="form-group">
       <label for="confirm_password">Confirm New Password:</label>
       <input
         type="password"
@@ -33,7 +31,7 @@
         required
       />
     </div>
-    <button type="submit">Reset Password</button>
+    <button type="submit" class="auth-button">Reset Password</button>
   </form>
 </div>
 {% endblock %}

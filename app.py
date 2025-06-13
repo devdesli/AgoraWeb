@@ -458,6 +458,8 @@ def upload():
         try:
             db.session.add(new_task)
             db.session.commit()
+            if not current_user.is_master or current_user.is_admin:
+              flash("when you're challenge get's approved you will see it here.")
             return redirect('/forum')
         except Exception as e:
             print(f"Error adding challenge: {str(e)}")  # Add this for debugging
