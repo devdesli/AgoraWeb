@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
 from flask_mail import Mail, Message
 from config import Config
+import time
 import os
 import secrets
 import json
@@ -455,11 +456,16 @@ def upload():
         
         image_filename = None
         if 'image' in request.files:
-            file = request.files['image']
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                image_filename = filename
+          file = request.files['image']
+          if file and allowed_file(file.filename):
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            title_slug = slugify(title)
+            timestamp = int(time.time())
+            # Optionally use current_user.id instead of username if usernames may change
+            custom_filename = f"{current_user.username}_{title_slug}_{timestamp}.{ext}"
+            filename = secure_filename(custom_filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image_filename = filename
 
         # Create unique slug
         base_slug = slugify(title) or f"untitled-{uuid.uuid4().hex[:6]}"
@@ -644,8 +650,13 @@ def upload_image():
     if request.method == 'POST':
         file = request.files['image']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            original_filename = secure_filename(file.filename)
+            timestamp = int(time.time())
+            
+            # Create new filename: e.g., 1718307203_myimage.jpg
+            filename = f"{current_user.username}_{timestamp}_{original_filename}"
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
             file.save(filepath)
 
             new_image = Image(filename=filename)
@@ -653,6 +664,7 @@ def upload_image():
             db.session.commit()
 
             return redirect('/uploadtoforum')
+        
     return render_template('upload.html')
 
 if __name__ == '__main__':
