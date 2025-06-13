@@ -112,6 +112,7 @@ hr {
   position: absolute;
   top: 220px;
   left: 50px;
+  overflow-y: hidden;
 }
 
 .titleText {
@@ -145,7 +146,7 @@ hr {
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  margin-bottom: -17.5px;
+  margin-bottom: -35px
 }
 
 .subquestionsText {
@@ -154,12 +155,28 @@ hr {
 
 .remove-subquestion-button {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   left: 350px;
+  font-size: 1.5em;
+  box-shadow: 0 1px 4px rgba(34, 25, 77, 0.08);
+  transition: background 0.2s;
+  height: 36px;
+  width: 36px;
+  border-radius: 100px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.remove-subquestion-button:hover {
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .add-subquestion-button {
   position: relative;
-  margin-top: 290px;
+  margin-top: 295px;
   left: 350px;
   z-index: 1000;
   padding: 8px 67.5px;
@@ -173,7 +190,7 @@ hr {
 
 .remove-subquestion-button {
   position: relative;
-  top: 270px;
+  top: 282.5px;
   left: 605px;
   display: flex;
   flex-direction: column;
@@ -250,7 +267,7 @@ input[type="file"] {
 
 textarea:focus,
 select:focus,
-input[type="file"]:focus {
+input[type="file"]:focus {+
   outline: none;
   border-color: #22194d;
   background-color: #fff;
@@ -361,6 +378,17 @@ label h3 {
 .contact a {
   color: white;
 }
+
+.subquestion-row {
+  display: flex;
+  align-items: center;
+}
+
+.subquestion-row .subquestions {
+  flex: 1;
+  margin-right: 8px;
+}
+
 
 @media (max-width: 900px) {
   h1 {

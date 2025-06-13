@@ -458,7 +458,7 @@ def upload():
         try:
             db.session.add(new_task)
             db.session.commit()
-            if not current_user.is_master or current_user.is_admin:
+            if not (current_user.is_master or current_user.is_admin):
               flash("when you're challenge get's approved you will see it here.")
             return redirect('/forum')
         except Exception as e:
@@ -538,7 +538,7 @@ def update(id):
         return redirect(url_for('forum'))
 
     if request.method == 'GET':
-        return render_template('update.html', task=task)
+        return render_template('update.html', task=task, sub_questions=task.get_sub_questions_list())
 
     if request.method == 'POST':
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
