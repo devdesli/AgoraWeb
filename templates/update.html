@@ -23,15 +23,6 @@
   <button class="forum-button">
     <a href="/forum" class="forum-button-text">Ga terug naar het forum</a>
   </button>
-  <div class="logo">
-    <a href="https://liemersagora.beezer.com/" target="_blank">
-      <img
-        class="logo"
-        src="{{ url_for('static', filename='pictures/logo.png') }}"
-        alt="Logo"
-      />
-    </a>
-  </div>
   <h1>Update je challenge</h1>
 </div>
 
@@ -123,35 +114,35 @@
 
 <script>
   // Script for dynamic sub-question input fields
-  document.addEventListener("DOMContentLoaded", function () {
-    const addSubQuestionButton = document.getElementById("addSubQuestion");
-    const subQuestionsContainer = document.getElementById(
-      "subQuestionsContainer"
-    );
+      document.addEventListener("DOMContentLoaded", function () {
+        const addSubQuestionButton = document.getElementById("addSubQuestion");
+        const subQuestionsContainer = document.getElementById(
+          "subQuestionsContainer"
+        );
 
-    addSubQuestionButton.addEventListener("click", function () {
-      const newTextArea = document.createElement("textarea");
-      newTextArea.rows = "1";
-      newTextArea.className = "subquestions";
-      newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
-      newTextArea.required = true;
-      newTextArea.maxLength = "150";
-      newTextArea.placeholder = "Vul hier een extra deelvraag in";
+        addSubQuestionButton.addEventListener("click", function () {
+          const newTextArea = document.createElement("textarea");
+          newTextArea.rows = "1";
+          newTextArea.className = "new-subquestions";
+          newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
+          newTextArea.required = true;
+          newTextArea.maxLength = "150";
+          newTextArea.placeholder = "Vul hier een deelvraag in";
 
-      const removeButton = document.createElement("button");
-      removeButton.type = "button";
-      removeButton.className = "remove-subquestion-button";
-      removeButton.innerHTML = "&times;"; // 'x' icon
-      removeButton.addEventListener("click", function () {
-        subQuestionsContainer.removeChild(newTextArea);
-        subQuestionsContainer.removeChild(removeButton);
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "remove-subquestion-button";
+          removeButton.innerHTML = "&times;"; // 'x' icon
+          removeButton.addEventListener("click", function () {
+            subQuestionsContainer.removeChild(newTextArea);
+            subQuestionsContainer.removeChild(removeButton);
+          });
+
+          subQuestionsContainer.appendChild(newTextArea);
+          subQuestionsContainer.appendChild(removeButton);
+          newTextArea.focus(); // Focus on the new input
+        });
       });
-
-      subQuestionsContainer.appendChild(newTextArea);
-      subQuestionsContainer.appendChild(removeButton);
-      newTextArea.focus(); // Focus on the new input
-    });
-  });
 
   document
     .getElementById("imageInput")

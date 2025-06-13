@@ -1,5 +1,5 @@
 body {
-  background-color: #afaeae;
+  background: fixed linear-gradient(0.25turn, #afaeae, #22194d);
   font-family: var(--font-family-primary);
   overflow-x: hidden;
   overflow-y: auto;
@@ -24,11 +24,12 @@ body {
 }
 
 h1 {
+  justify-content: center;
   text-align: center;
   color: white;
-  margin-top: -40px;
+  margin-top: 25px;
   font-family: var(--font-family-heading);
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.025em;
 }
@@ -44,6 +45,43 @@ h1 {
   height: 150px;
   z-index: 1000;
   box-sizing: border-box;
+}
+
+.new-subquestions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  margin-bottom: -17.5px;
+    z-index: 1;
+
+}
+
+.add-subquestion-button {
+  position: relative;
+  z-index: 1000;
+  padding: 8px 67.5px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  z-index: 1;
+}
+
+.remove-subquestion-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  padding: 4px 8px;
+  border-radius: 100px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
+    z-index: 1;
+
 }
 
 .logo {

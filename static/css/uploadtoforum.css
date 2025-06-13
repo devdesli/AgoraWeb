@@ -3,7 +3,7 @@ body {
   background: fixed linear-gradient(#afaeae, #22194d);
   font-family: var(--font-family-primary);
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
   width: 100%;
 }
 
@@ -52,8 +52,8 @@ select {
   text-align: center;
   color: white;
   margin-top: 25px;
-  font-family: var(--font-family-heading);
-  font-size: 32px;
+    font-family: var(--font-family-heading);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.025em;
 }
@@ -115,7 +115,7 @@ hr {
 }
 
 .titleText {
-  top: 180px;
+  top: 195px;
 }
 
 .mainquestion {
@@ -125,24 +125,59 @@ hr {
 }
 
 .mainquestionText {
-  top: 180px;
+  top: 195px;
 }
 
 .subquestions {
   position: relative;
-  margin-top: 250px;
-  margin-left: 350px;
+  top: 287.5px;
+  left: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  margin-bottom: 6px;
+}
+
+.new-subquestions {
+  position: relative;
+  top: 287.5px;
+  left: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  margin-bottom: -17.5px;
 }
 
 .subquestionsText {
-  margin-top: 275px;
+  top: 300px;
 }
 
 .add-subquestion-button {
-  position: absolute;
-  top: 275px;
+  position: relative;
+  margin-top: 290px;
   left: 350px;
   z-index: 1000;
+  padding: 8px 67.5px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.remove-subquestion-button {
+  position: relative;
+  top: 270px;
+  left: 605px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  padding: 4px 8px;
+  border-radius: 100px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
 }
 
 .challengeinfo {
@@ -162,23 +197,24 @@ hr {
 }
 
 .endproductText {
-  top: 180px;
+  top: 195px;
 }
 
 .image {
-  position: absolute;
-  top: 350px;
+  position: relative;
+  top: -75px;
   left: 950px;
 }
 
 .imageinput {
   position: absolute;
-  top: 300px;
+  top: 325px;
   left: 950px;
+  margin-bottom: 0;
 }
 
 .imageinputText {
-  top: 275px;
+  top: 300px;
   left: 950px;
 }
 
@@ -189,7 +225,7 @@ hr {
 }
 
 .filtersText {
-  top: 180px;
+  top: 195px;
   left: 950px;
 }
 
