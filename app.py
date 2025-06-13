@@ -234,7 +234,7 @@ def admin_email():
 @app.route('/admin/approve_challenge/<int:id>')
 @login_required
 def approve_challenge(id):
-    if not current_user.is_master and not current_user.is_admin:
+    if not (current_user.is_master or current_user.is_admin):
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     challenge.approved = True
@@ -560,6 +560,9 @@ def update(id):
                 file.save(filepath)
                 task.image = filename
         
+        if not (current_user.is_admin or current_user.is_master):
+            Todo.challenge.approved = False
+
         try:
             db.session.commit()
             flash('Challenge updated successfully')

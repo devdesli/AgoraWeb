@@ -6,6 +6,7 @@ body {
   padding: 0;
   min-height: 100vh;
   display: flex;
+  overflow-y: hidden;
 }
 
 .flash-message {
