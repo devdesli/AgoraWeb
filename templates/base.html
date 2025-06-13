@@ -18,13 +18,21 @@
       type="image/png"
       href="{{ url_for('static', filename='pictures/logo.png') }}"
     />
-    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    {% endblock %} {% with messages = get_flashed_messages(with_categories=true)
+    %} {% if messages %} {% for category, message in messages %}
+    <div class="flash-message flash-message-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
   </head>
 
   <body>
-    {% block body %}
-    <!-- Add this near your navigation menu -->
-    {% if current_user.is_authenticated and current_user.is_admin %}
+    {% block body %} {% if current_user.is_authenticated and
+    current_user.is_admin %}
     <a href="{{ url_for('admin') }}" class="nav-link">Admin Panel</a>
     {% endif %} {% endblock %}
   </body>

@@ -1,9 +1,13 @@
 .like-button button {
-  font-size: 30px;
+  font-size: 32px;
   position: absolute;
   bottom: 70px;
   right: 5px;
   cursor: pointer;
+  border: none;
+  background: transparent;
+  color: white;
+  transition: transform 0.2s ease;
 }
 
 button {
@@ -26,19 +30,9 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 0px;
-  bottom: 40px;
+  bottom: 35px;
   right: 10px;
   width: 80px;
-}
-
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 40px;
-  padding: 20px;
-  position: relative;
-  top: 120px;
 }
 
 .button-container {
@@ -47,18 +41,36 @@ button {
   gap: 5px;
   position: absolute;
   bottom: 5px;
-  right: 200px;
+  right: 175px;
 }
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 450px);
+  justify-content: center; /* center when fewer items */
+  gap: 30px;
+  padding: 20px;
+  margin-top: 125px;
+  min-width: 100%;
+  max-width: 1350px;
+  margin-left: auto;
+}
+
 .card {
   position: relative;
-  width: 470px;
-  height: 37vh;
   background-color: #22194d;
   color: white;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   border-radius: 12px;
-  transition: 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 0.5px solid white;
+  padding: 20px;
+  min-height: 250px;
+  max-height: 300px;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .card::before {
@@ -89,6 +101,7 @@ button {
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 1px 1px rgba(212, 43, 135, 0.6);
+  cursor: pointer;
 }
 
 .info-container {
@@ -100,10 +113,10 @@ button {
 }
 
 .author {
-  font-size: 17.5px;
+  font-size: 12px;
   opacity: 0.8;
   position: absolute;
-  bottom: 15px;
+  bottom: 0px;
   right: 10px;
   max-width: 300px;
   word-wrap: break-word;
@@ -121,7 +134,7 @@ select {
   position: absolute;
   left: 10px;
   top: 50px;
-  max-width: 250px;
+  max-width: 225px;
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;
@@ -143,7 +156,8 @@ select {
 .category {
   position: absolute;
   left: 10px;
-  bottom: 15px;
+  bottom: 0px;
+  font-size: 12.5px;
 }
 
 .title {
@@ -156,6 +170,8 @@ select {
   overflow: hidden;
   white-space: normal;
   word-wrap: break-word;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
 }
 
 .delete-button {
@@ -170,24 +186,6 @@ select {
 
 .delete-button i {
   font-size: 18px;
-}
-
-.expand-label {
-  position: absolute;
-  bottom: 0px;
-  left: 10px;
-}
-
-.expand-button {
-  position: absolute;
-  bottom: 0px;
-  left: 150px;
-  width: 25px;
-  height: 25px;
-  font-size: 25px;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
 .update-button {
@@ -221,7 +219,7 @@ p.title {
 .headquestion-info {
   position: absolute;
   right: 0px;
-  top: 70px;
+  top: 80px;
   width: 200px;
   white-space: normal;
   word-wrap: break-word;
@@ -233,13 +231,17 @@ p.title {
 
 @media (max-width: 900px) {
   .container {
+    position: relative;
+    grid-template-columns: repeat(auto-fit, 100%);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    top: 8rem;
+    top: 50px;
+    width: 100%;
   }
   .card {
-    width: 95%;
+    width: 100%;
+    justify-content: center;
   }
   .module-container {
     display: flex;
@@ -255,7 +257,9 @@ p.title {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    top: 30vh;
+    position: relative;
+    top: 75px;
+    width: 100%;
   }
   .top-color a {
     color: white;
@@ -263,7 +267,8 @@ p.title {
   .card {
     width: 95%;
     height: auto;
-    min-height: 40vh;
+    min-height: 350px;
+    height: 40vh;
     padding: 15px;
   }
 

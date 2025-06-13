@@ -1,15 +1,16 @@
 body {
   background-color: #afaeae;
-  font-family: Arial, Helvetica, sans-serif;
+  background: fixed linear-gradient(#afaeae, #22194d);
+  font-family: var(--font-family-primary);
   overflow-x: hidden;
   overflow-y: hidden;
   width: 100%;
 }
 
 .flash-message {
-  padding: 0.75rem;
+  padding: 12px 16px;
   margin: 1rem auto;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
@@ -17,46 +18,67 @@ body {
   text-align: center;
   position: relative;
   z-index: 1001;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 select {
   cursor: pointer;
+  font-family: var(--font-family-primary);
+}
+
+.logo {
+  width: 150px;
+  height: 75px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.top-color {
+  text-shadow: rgba(102, 51, 153, 0.5) 0 0 20px;
+  position: fixed;
+  width: 100%;
+  background-color: #22194d;
+  left: 0px;
+  top: 0px;
+  height: 120px;
+  z-index: 1000;
+  border-bottom: 2px solid white;
+}
+
+.top-color h1 {
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: 25px;
+  font-family: var(--font-family-heading);
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
 }
 
 h1 {
   justify-content: center;
   text-align: center;
   color: white;
-  margin-top: -20px;
-  font-size: 2rem;
-}
-
-.logo {
-  width: 150px;
-  height: 75px;
-}
-
-.top-color {
-  text-shadow: rebeccapurple 0 0 20px;
-  position: fixed;
-  width: 100%;
-  background-color: #22194d;
-  left: 0px;
-  top: 0px;
-  padding-top: 10px;
-  padding-left: 5px;
-  height: 150px;
-  z-index: 1000;
+  margin-top: 25px;
+  font-family: var(--font-family-heading);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
 }
 
 textarea {
   text-decoration: none;
   resize: none;
   width: 250px;
+  font-family: var(--font-family-primary);
 }
 
 .forum {
-  font-size: 12.5px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
 }
 
 hr {
@@ -70,7 +92,9 @@ hr {
   width: 200px;
   left: 1275px;
   top: 210px;
-  font-size: 20px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   height: 50px;
 }
 
@@ -105,23 +129,30 @@ hr {
 }
 
 .subquestions {
-  position: absolute;
-  top: 300px;
-  left: 350px;
+  position: relative;
+  margin-top: 250px;
+  margin-left: 350px;
 }
 
 .subquestionsText {
-  top: 260px;
+  margin-top: 275px;
+}
+
+.add-subquestion-button {
+  position: absolute;
+  top: 275px;
+  left: 350px;
+  z-index: 1000;
 }
 
 .challengeinfo {
   position: absolute;
-  top: 450px;
-  left: 350px;
+  top: 325px;
+  left: 50px;
 }
 
 .challengeinfoText {
-  top: 410px;
+  top: 300px;
 }
 
 .endproduct {
@@ -136,7 +167,7 @@ hr {
 
 .image {
   position: absolute;
-  top: 340px;
+  top: 350px;
   left: 950px;
 }
 
@@ -147,7 +178,7 @@ hr {
 }
 
 .imageinputText {
-  top: 260px;
+  top: 275px;
   left: 950px;
 }
 
@@ -165,13 +196,15 @@ hr {
 textarea,
 select,
 input[type="file"] {
-  font-size: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #f8f8f8;
-  transition: border-color 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 textarea:focus,
@@ -180,66 +213,123 @@ input[type="file"]:focus {
   outline: none;
   border-color: #22194d;
   background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(34, 25, 77, 0.1);
 }
 
 label h3 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 8px;
   color: #22194d;
+  letter-spacing: -0.025em;
 }
 
 .submit {
   background-color: #22194d;
   color: white;
   border: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.025em;
 }
 
 .submit:hover {
   background-color: #1a1440;
   cursor: pointer;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(34, 25, 77, 0.3);
 }
 
 .imageinputText {
   color: #22194d;
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 12px;
 }
 
 #preview {
-  margin-top: 15px;
+  margin-top: 16px;
   max-width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .forum-button {
   position: absolute;
+  color: white;
   right: 25px;
   top: 20px;
-  border-radius: 20px;
-  height: 30px;
+  border-radius: 12px;
+  border: none;
+  padding: 0;
+  height: 40px;
   width: 200px;
+  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
 }
 
-.forum-button-text {
+.forum-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
+}
+
+.forum-button a,
+.home-button a {
+  color: white;
   text-decoration: none;
-  color: black;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.home-button {
+  position: absolute;
+  color: white;
+  right: 25px;
+  top: 70px;
+  border-radius: 12px;
+  height: 40px;
+  width: 200px;
+  border: none;
+  padding: 0;
+  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
 }
 
 .contact {
   position: absolute;
   color: white;
-  top: 115px;
+  top: 85px;
   right: 25px;
   z-index: 1000;
+  font-size: 12px;
+}
+
+.contact a {
+  color: white;
 }
 
 @media (max-width: 900px) {
   h1 {
-    font-size: 2rem;
+    font-size: var(--font-size-2xl);
   }
+
+  .top-color {
+    height: 175px;
+  }
+
   body {
     display: block;
     width: 100vw;
@@ -247,17 +337,21 @@ label h3 {
     padding: 0;
     margin: 0;
     overflow-x: hidden;
+    overflow-y: auto;
   }
+
   .forum {
     display: flex !important;
     flex-direction: column !important;
-    gap: 16px !important;
-    padding: 0 8px !important;
+    gap: 20px !important;
+    padding: 0 16px !important;
     width: 100vw !important;
     max-width: 100vw !important;
-    font-size: 1rem !important;
+    font-size: var(--font-size-base) !important;
     box-sizing: border-box !important;
+    margin-top: 200px;
   }
+
   .author,
   .title,
   .mainquestion,
@@ -275,84 +369,115 @@ label h3 {
   .challengeinfoText,
   .endproductText,
   .imageinputText,
-  .filtersText {
+  .filtersText,
+  .add-subquestion-button {
     position: static !important;
     width: 100% !important;
     left: unset !important;
     top: unset !important;
-    margin: 0 0 12px 0 !important;
+    margin: 0 0 16px 0 !important;
     box-sizing: border-box !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    font-size: 1rem !important;
+    font-size: var(--font-size-base) !important;
   }
+
   textarea,
   select,
   input[type="file"] {
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    padding: 10px 0;
-    font-size: 1rem !important;
+    padding: 12px 16px;
+    font-size: var(--font-size-base) !important;
   }
+
   .logo {
     width: 100px;
     height: auto;
   }
+
   .contact {
     position: static;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-size: var(--font-size-xs);
   }
+
   .forum-button {
     position: static;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     height: auto;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
+    padding: 12px 0;
   }
+
   .submit {
     width: 100% !important;
     left: unset !important;
     top: unset !important;
     position: static !important;
-    margin: 20px 0 0 0 !important;
-    font-size: 1.1rem !important;
-    height: 45px !important;
+    margin: 24px 0 0 0 !important;
+    font-size: var(--font-size-lg) !important;
+    height: 48px !important;
   }
+
   #preview {
     max-width: 100vw !important;
     height: auto !important;
     display: block;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 12px auto;
+  }
+
+  label h3 {
+    font-size: var(--font-size-base);
   }
 }
 
 @media (max-width: 600px) {
   h1 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
   }
+
   .top-color {
-    padding: 10px;
+    padding: 12px;
     flex-direction: column;
     align-items: center;
     height: auto;
   }
+
   .logo {
     width: 80px;
     height: auto;
   }
+
   .forum {
-    padding-top: 120px !important;
+    padding-top: 140px !important;
   }
+
   .forum-button {
-    font-size: 0.95rem;
-    padding: 8px 0;
+    font-size: var(--font-size-sm);
+    padding: 10px 0;
   }
+
   .contact {
-    font-size: 0.95rem;
+    font-size: var(--font-size-xs);
   }
+
   label h3 {
-    font-size: 1rem;
+    font-size: var(--font-size-sm);
+  }
+
+  textarea,
+  select,
+  input[type="file"] {
+    font-size: var(--font-size-sm) !important;
+    padding: 10px 14px;
+  }
+
+  .submit {
+    font-size: var(--font-size-base) !important;
+    height: 44px !important;
   }
 }

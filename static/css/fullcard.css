@@ -10,12 +10,14 @@
 .body {
   width: 100%;
   height: 200vh;
+  background: fixed linear-gradient(#afaeae, #22194d);
+  font-family: var(--font-family-primary);
 }
 
 .flash-message {
-  padding: 0.75rem;
+  padding: 12px 16px;
   margin: 1rem auto;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
@@ -23,48 +25,57 @@
   text-align: center;
   position: relative;
   z-index: 1001;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .admin-controls {
   background-color: var(--primary);
-  padding: 1rem;
+  padding: 20px;
   color: var(--text-light);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 16px;
+  border-bottom: 2px solid white;
 }
 
 .admin-actions {
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .admin-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 8px;
   color: var(--text-light);
   text-decoration: none;
-  font-weight: 500;
-  transition: 0.2s ease;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
   background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .admin-button.approve-button {
   background-color: var(--success);
+  border-color: var(--success);
 }
 
 .admin-button.approve-button:hover {
@@ -73,6 +84,7 @@
 
 .admin-button.delete-button {
   background-color: var(--danger);
+  border-color: var(--danger);
 }
 
 .admin-button.delete-button:hover {
@@ -80,14 +92,18 @@
 }
 
 .challenge-status {
-  font-weight: 500;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
 }
 
 .status-badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -102,38 +118,57 @@
 
 .content {
   min-height: 75vh;
-  padding: 2rem;
-  background-color: #afaeae;
+  padding: 40px;
+  background: fixed linear-gradient(#22194d, #afaeae);
   width: 100%;
   margin: 0 auto;
 }
 
 .card-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 40px;
 }
 
 .title {
-  font-size: 4rem;
-  color: black;
-  margin-bottom: 0.5rem;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin-bottom: 12px;
+  letter-spacing: -0.025em;
+  line-height: var(--line-height-tight);
 }
 
 .author {
-  font-size: 1.2rem;
-  color: black;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  opacity: 0.9;
 }
 
 .main-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 20px;
 }
 
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 24px;
+}
+
+.main-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.section {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  gap: 24px;
 }
 
 .left-section {
@@ -143,7 +178,7 @@
 .right-section {
   display: grid;
   grid-template-rows: repeat(3, auto);
-  gap: 1rem;
+  gap: 24px;
 }
 
 .bottom-section {
@@ -152,7 +187,7 @@
 
 .task-image {
   background-color: #22194d;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -160,6 +195,7 @@
   width: 100%;
   height: 63vh;
   position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .task-image img {
@@ -173,21 +209,24 @@
 
 .placeholder-text {
   color: white;
-  font-size: 1.5rem;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
 }
 
 .headquestion,
 .sub-questions,
 .information {
   background-color: #22194d;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 24px;
   color: white;
   height: 20vh;
   overflow-y: auto;
   word-wrap: break-word;
   word-break: break-word;
   white-space: normal;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sub-questions {
@@ -198,15 +237,16 @@
 
 .endproduct {
   background-color: #22194d;
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 24px;
   color: white;
-  margin-top: 1rem;
+  margin-top: 24px;
   grid-column: 1 / -1;
   min-height: 20vh;
   word-wrap: break-word;
   word-break: break-word;
   white-space: normal;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .information {
@@ -221,74 +261,90 @@
 .sub-questions h3,
 .information h3,
 .endproduct h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 16px;
   color: white;
+  letter-spacing: -0.025em;
 }
 
 .headquestion p,
 .sub-questions p,
 .information p,
 .endproduct p {
-  line-height: 1.6;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
   margin: 0;
   word-wrap: break-word;
   word-break: break-word;
   white-space: normal;
   max-width: 100%;
+  opacity: 0.9;
 }
 
 .card-footer {
   max-width: 1400px;
-  margin: 2rem auto 0;
-  padding: 1rem;
+  margin: 40px auto 0;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 20px;
 }
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .forum-button {
   background-color: var(--primary);
   color: var(--text-light);
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   text-decoration: none;
-  transition: background-color 0.2s;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .forum-button:hover {
   background-color: #1a1440;
+  transform: translateY(-1px);
 }
 
 .category {
-  font-size: 1.1rem;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
   color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .like-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .like-button {
   background: none;
   border: none;
   color: white;
-  font-size: 1.8rem;
+  font-size: 28px;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 8px;
   transition: transform 0.2s;
   display: flex;
   align-items: center;
@@ -299,7 +355,9 @@
 }
 
 .like-count {
-  font-size: 1.1rem;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
   color: white;
 }
 
@@ -313,25 +371,33 @@
   }
 
   .right-section {
-    gap: 1rem;
+    gap: 16px;
   }
 
   .title {
-    font-size: 2.5rem;
+    font-size: var(--font-size-3xl);
   }
 
   .task-image {
     height: 40vh;
   }
+
+  .content {
+    padding: 24px;
+  }
 }
 
 @media (max-width: 600px) {
   .content {
-    padding: 1rem;
+    padding: 16px;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: var(--font-size-2xl);
+  }
+
+  .author {
+    font-size: var(--font-size-base);
   }
 
   .task-image {
@@ -346,5 +412,27 @@
   .action-buttons {
     width: 100%;
     justify-content: center;
+  }
+
+  .headquestion h3,
+  .sub-questions h3,
+  .information h3,
+  .endproduct h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  .headquestion p,
+  .sub-questions p,
+  .information p,
+  .endproduct p {
+    font-size: var(--font-size-sm);
+  }
+
+  .category {
+    font-size: var(--font-size-base);
+  }
+
+  .like-count {
+    font-size: var(--font-size-base);
   }
 }

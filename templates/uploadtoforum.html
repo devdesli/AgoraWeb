@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block head %}
+{% extends 'base.html' %} {% block head %} {{super()}}
 <link
   rel="stylesheet"
   href="{{url_for('static', filename='css/uploadtoforum.css') }}"
@@ -10,31 +10,16 @@
 <script src="{{url_for('static', filename='js/forum.js') }}"></script>
 {% endblock %} {% block body %}
 <div class="top-color">
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %}
-  <div class="flash-message">{{ message }}</div>
-  {% endfor %} {% endif %} {% endwith %}
+  <h1>Plaats hier je challenge op het forum</h1>
   <div class="contact">
     <p>
-      Heb je een vraag of een tip? Stuur dan een mail naar:
-      <a href="mailto:develloperdesli@gmail.com">develloperdesli@gmail.com</a>
-      of vraag Karun of Rens
+      Heb je een vraag of tip? Stuur dan een mail naar:
+      <a href="mailto:agorawebapplication@gmail.com">admin@gmail.com</a>
     </p>
   </div>
   <button class="forum-button">
     <a href="/forum" class="forum-button-text">Ga terug naar het forum</a>
   </button>
-  <div class="logo">
-    <a href="https://liemersagora.beezer.com/" target="_blank">
-      <img
-        class="logo"
-        src="{{ url_for('static', filename='pictures/logo.png') }}"
-        alt="Logo"
-      />
-    </a>
-  </div>
-
-  <h1>Plaats hier je challenge op het forum</h1>
 </div>
 
 <div class="forum">
@@ -63,18 +48,30 @@
       placeholder="Vul hier jouw hoofdvraag in"
     ></textarea>
 
-    <!-- Deelvragen -->
     <label for="subQuestions" class="subquestions subquestionsText"
       ><h3>Deelvragen</h3></label
     >
-    <textarea
-      rows="5"
-      class="subquestions"
-      name="subQuestions"
-      required
-      maxlength="150"
-      placeholder="Vul hier jouw deelvragen in"
-    ></textarea>
+    <div id="subQuestionsContainer">
+      <textarea
+        rows="1"
+        class="subquestions"
+        name="subQuestion[]"
+        {#
+        Changed
+        name
+        to
+        array
+        format
+        #}
+        required
+        maxlength="150"
+        placeholder="Vul hier jouw deelvraag in"
+      ></textarea>
+    </div>
+    <button type="button" id="addSubQuestion" class="add-subquestion-button">
+      Voeg deelvraag toe
+    </button>
+    <br />
 
     <!-- Beschrijving -->
     <label for="description" class="challengeinfo challengeinfoText"
@@ -112,7 +109,7 @@
       <option value="Informatica">Informatica</option>
       <option value="Economie">Economie</option>
       <option value="Natuurkunde">Natuurkunde</option>
-      <option value="Maatschapijleer">Maatschapijleer</option>
+      <option value="Maatschappijleer">Maatschappijleer</option>
       <option value="Lichamelijke opvoeding">lichamelijke opvoeding</option>
       <option value="Kunst en Cultuur">Kunst en Cultuur</option>
       <option value="Wiskunde">Wiskunde</option>
@@ -130,6 +127,37 @@
     <br />
 
     <script>
+      // Script for dynamic sub-question input fields
+      document.addEventListener("DOMContentLoaded", function () {
+        const addSubQuestionButton = document.getElementById("addSubQuestion");
+        const subQuestionsContainer = document.getElementById(
+          "subQuestionsContainer"
+        );
+
+        addSubQuestionButton.addEventListener("click", function () {
+          const newTextArea = document.createElement("textarea");
+          newTextArea.rows = "1";
+          newTextArea.className = "subquestions";
+          newTextArea.name = "subQuestion[]"; // Array name for multiple inputs
+          newTextArea.required = true;
+          newTextArea.maxLength = "150";
+          newTextArea.placeholder = "Vul hier een extra deelvraag in";
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "remove-subquestion-button";
+          removeButton.innerHTML = "&times;"; // 'x' icon
+          removeButton.addEventListener("click", function () {
+            subQuestionsContainer.removeChild(newTextArea);
+            subQuestionsContainer.removeChild(removeButton);
+          });
+
+          subQuestionsContainer.appendChild(newTextArea);
+          subQuestionsContainer.appendChild(removeButton);
+          newTextArea.focus(); // Focus on the new input
+        });
+      });
+
       document
         .getElementById("fileInput")
         .addEventListener("change", function (event) {

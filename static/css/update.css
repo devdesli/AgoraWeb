@@ -1,6 +1,6 @@
 body {
   background-color: #afaeae;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-family-primary);
   overflow-x: hidden;
   overflow-y: auto;
   margin: 0;
@@ -8,9 +8,9 @@ body {
 }
 
 .flash-message {
-  padding: 0.75rem;
+  padding: 12px 16px;
   margin: 1rem auto;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
@@ -18,16 +18,23 @@ body {
   text-align: center;
   position: relative;
   z-index: 1001;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 h1 {
   text-align: center;
   color: white;
-  margin-top: -20px;
+  margin-top: -40px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
 }
 
 .top-color {
-  text-shadow: rebeccapurple 0 0 20px;
+  text-shadow: rgba(102, 51, 153, 0.5) 0 0 20px;
   position: fixed;
   width: 100%;
   background-color: #22194d;
@@ -50,20 +57,46 @@ h1 {
   top: 115px;
   right: 25px;
   z-index: 1000;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
+
+.contact a {
+  color: white;
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.contact a:hover {
+  text-decoration: underline;
 }
 
 .forum-button {
   position: absolute;
   right: 25px;
   top: 20px;
-  border-radius: 20px;
-  height: 30px;
+  border-radius: 12px;
+  height: 40px;
   width: 200px;
+  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+}
+
+.forum-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
 }
 
 .forum-button-text {
   text-decoration: none;
-  color: black;
+  color: white;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .forum {
@@ -71,25 +104,30 @@ h1 {
   max-width: 1000px;
   margin: 0 auto;
   display: grid;
-  gap: 20px;
+  gap: 24px;
 }
 
 label h3 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 8px;
   color: #22194d;
+  letter-spacing: -0.025em;
 }
 
 textarea,
 select,
 input[type="file"] {
-  font-size: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #f8f8f8;
-  transition: border-color 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   width: 100%;
   box-sizing: border-box;
   resize: vertical;
@@ -101,28 +139,73 @@ input[type="file"]:focus {
   outline: none;
   border-color: #22194d;
   background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(34, 25, 77, 0.1);
 }
 
 .submit {
   background-color: #22194d;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 20px;
+  border-radius: 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   height: 50px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.025em;
 }
 
 .submit:hover {
   background-color: #1a1440;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(34, 25, 77, 0.3);
 }
 
 #preview {
-  margin-top: 15px;
+  margin-top: 16px;
   max-width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: none;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .forum {
+    padding-top: 160px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  label h3 {
+    font-size: var(--font-size-base);
+  }
+
+  textarea,
+  select,
+  input[type="file"] {
+    font-size: var(--font-size-sm);
+    padding: 10px 14px;
+  }
+
+  .submit {
+    font-size: var(--font-size-base);
+    height: 44px;
+  }
+
+  .contact {
+    font-size: var(--font-size-xs);
+  }
+
+  .forum-button {
+    width: 180px;
+    height: 36px;
+    font-size: var(--font-size-sm);
+  }
 }

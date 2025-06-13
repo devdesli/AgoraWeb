@@ -7,11 +7,6 @@
 <div class="auth-container">
   <h1>Login</h1>
 
-  {% with messages = get_flashed_messages() %} {% if messages %} {% for message
-  in messages %}
-  <div class="flash-message">{{ message }}</div>
-  {% endfor %} {% endif %} {% endwith %}
-
   <form method="POST" action="{{ url_for('login') }}" class="auth-form">
     <div class="form-group">
       <label for="username">Username or Email</label>
@@ -31,7 +26,7 @@
 
     <button type="submit" class="auth-button">Login</button>
   </form>
-
+  <p><a href="{{ url_for('forgot_password') }}">Forgot your password?</a></p>
   <p class="auth-link">
     Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
   </p>
