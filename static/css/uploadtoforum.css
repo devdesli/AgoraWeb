@@ -152,6 +152,11 @@ hr {
   top: 300px;
 }
 
+.remove-subquestion-button {
+  position: relative;
+  left: 350px;
+}
+
 .add-subquestion-button {
   position: relative;
   margin-top: 290px;
