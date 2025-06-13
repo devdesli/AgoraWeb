@@ -156,10 +156,10 @@ td {
   font-weight: var(--font-weight-medium);
 }
 
-h1 {
+.top-color h1 {
   color: white;
   text-align: center;
-  margin-top: 0;
+  justify-content: center;
   font-family: var(--font-family-heading);
   font-size: var(--font-size-5xl);
   font-weight: var(--font-weight-bold);

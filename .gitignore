@@ -21,3 +21,4 @@ keygen.py
 instance/
 your_database.db
 instance/your_database.db
+logs/

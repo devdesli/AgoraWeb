@@ -15,7 +15,9 @@ import os
 import secrets
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 import uuid
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
@@ -33,8 +35,38 @@ app.config.from_object(Config)
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+# --- Logging Setup ---
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+
+formatter = logging.Formatter(
+    '%(asctime)s [%(levelname)s] in %(module)s: %(message)s'
+)
+
+# General app log (INFO and above)
+file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=3)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
+
+# Upload log (INFO and above)
+upload_handler = RotatingFileHandler('logs/upload.log', maxBytes=10240, backupCount=3)
+upload_handler.setLevel(logging.INFO)
+upload_handler.setFormatter(formatter)
+upload_logger = logging.getLogger('upload_logger')
+upload_logger.setLevel(logging.INFO)
+upload_logger.addHandler(upload_handler)
+
+# Optional: if you want errors to also be logged separately
+error_handler = RotatingFileHandler('logs/error.log', maxBytes=10240, backupCount=3)
+error_handler.setLevel(logging.ERROR)
+error_handler.setFormatter(formatter)
+error_logger = logging.getLogger('error_logger')
+error_logger.setLevel(logging.ERROR)
+error_logger.addHandler(error_handler)
+
 # change this folder to the actual folder off the upload folder 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -129,7 +161,7 @@ def login():
     if request.method == 'POST':
         username_or_email = request.form.get('username', "").strip()
         password = request.form.get('password', "").strip()
-        print(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
+        app.logger.info(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
         
         # Try to find user by username or email
         user = User.query.filter(
