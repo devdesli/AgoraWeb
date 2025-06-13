@@ -47,7 +47,7 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
   font-weight: var(--font-weight-normal);
-  background-color: var(--color-background);
+  background: linear-gradient(#afaeae, #22194d);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
