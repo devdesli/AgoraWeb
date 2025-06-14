@@ -32,7 +32,7 @@
     method="POST"
     enctype="multipart/form-data"
   >
-    {{ csrf_token() }}
+    {{ delete.hidden_tag() }}
     <label><h3>Titel</h3></label>
     <textarea name="title" required maxlength="30">{{ task.title }}</textarea>
 

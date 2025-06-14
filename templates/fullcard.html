@@ -166,7 +166,7 @@ current_user.is_master or current_user.is_admin %}
         method="POST"
         style="display: inline"
       >
-        {{ csrf_token() }}
+        {{ likeform.hidden_tag() }}
         <button type="submit" class="like-button">
           <i
             class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"

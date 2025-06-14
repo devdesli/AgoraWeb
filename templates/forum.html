@@ -28,7 +28,7 @@
     <form class="filters" action="/forum" method="GET">
         <select name="vakfilter" class="filterselect" onchange="this.form.submit()">
           <option value="">Geen filter</option>
-            <option value="personal" {% if request.args.get('vakfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
+          <option value="personal" {% if request.args.get('vakfilter') == 'personal' %}selected{% endif %}>Eigen Challenges</option>
           <option value="Aardrijkskunde" {% if request.args.get('vakfilter') == 'Aardrijkskunde' %}selected{% endif %}>Aardrijkskunde</option>
           <option value="Biologie" {% if request.args.get('vakfilter') == 'Biologie' %}selected{% endif %}>Biologie</option>
           <option value="Informatica" {% if request.args.get('vakfilter') == 'Informatica' %}selected{% endif %}>Informatica</option>

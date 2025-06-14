@@ -10,7 +10,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
 from flask_mail import Mail, Message
 from config import Config
-from extensions import csrf
 import time
 import os
 import secrets
@@ -22,6 +21,8 @@ import string, random
 import re
 from xhtml2pdf import pisa
 import io
+from flask_wtf import CSRFProtect
+from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
@@ -39,7 +40,8 @@ app.config.from_object(Config)
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
-csrf.init_app(app)
+csrf = CSRFProtect(app)
+
 
 # --- Logging Setup ---
 if not os.path.exists('logs'):
@@ -64,12 +66,13 @@ upload_logger = logging.getLogger('upload_logger')
 upload_logger.setLevel(logging.INFO)
 upload_logger.addHandler(upload_handler)
 
-activity_handler = RotatingFileHandler('logs/activity.log', maxBytes=10240, backupCount=3)
+activity_handler = RotatingFileHandler('logs/activity.log', maxBytes=10240, backupCount=3, delay=True)
 activity_handler.setLevel(logging.INFO)
 activity_handler.setFormatter(formatter)
 activity_logger = logging.getLogger('activity_logger')
 activity_logger.setLevel(logging.INFO)
 activity_logger.addHandler(activity_handler)
+
 
 # Optional: if you want errors to also be logged separately
 error_handler = RotatingFileHandler('logs/error.log', maxBytes=10240, backupCount=3)
@@ -164,11 +167,13 @@ def google_verification():
 @app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
 def fullcard(id, slug):
     task = Todo.query.get_or_404(id)
+    form = DeleteForm()
+    likeform = LikeForm()
     if not task.approved and not (current_user.is_authenticated and current_user.is_master or current_user.is_admin):
         app.logger.info(f"{task}, Not approved yet")
         flash('This challenge is not approved yet')
         return redirect(url_for('forum'))
-    return render_template('fullcard.html', task=task)
+    return render_template('fullcard.html', task=task, form=form, likeform=likeform)
 
 @app.route('/challenge/download/<int:challenge_id>')
 @login_required
@@ -199,19 +204,22 @@ def download_challenge_pdf(challenge_id):
 @app.route('/mychallenges')
 @login_required
 def my_challenges():
+    form = DeleteForm()
     challenges = Todo.query.filter_by(author_id=current_user.id).order_by(Todo.date_created.desc()).all()
-    return render_template('my_challenges.html', challenges=challenges)
+    return render_template('my_challenges.html', challenges=challenges, form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    form = LoginForm()
+
     if current_user.is_authenticated:
         app.logger.info(f"{current_user.username} already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
-    
-    if request.method == 'POST':
-        username_or_email = request.form.get('username', "").strip()
-        password = request.form.get('password', "").strip()
+
+    if form.validate_on_submit():
+        username_or_email = form.username.data.strip()
+        password = form.password.data.strip()
         app.logger.info(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
         
         # Try to find user by username or email
@@ -223,7 +231,6 @@ def login():
         if user:
             print(f"User found in database")  # Debug log
             if user.check_password(password):
-                print(f"Password correct, logging in")  # Debug log
                 login_user(user)
                 next_page = request.args.get('next')
                 app.logger.info(f"{username_or_email}, logged in succesfully")
@@ -235,16 +242,18 @@ def login():
             app.logger.error(f"User not found {username_or_email}")  # Debug log
             flash('No account found with that username or email', "error")
     
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    form = RegisterForm()
+
     if current_user.is_authenticated:
         app.logger.info(f"{current_user}, already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
-    if request.method == 'POST':
+    if form.validate_on_submit():
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '')
@@ -253,17 +262,17 @@ def register():
         if password != confirm_password:
             app.logger.error(f"Passwords for {username}, do not match")
             flash('Passwords do not match', "error")
-            return redirect(url_for('register'))
+            return redirect(url_for('register', form=form))
         
         if User.query.filter_by(username=username).first():
             app.logger.error(f"username {username} already exists")
             flash('Username already exists', "error")
-            return redirect(url_for('register'))
+            return redirect(url_for('register', form=form))
         
         if User.query.filter_by(email=email).first():
             app.logger.error(f"email {email} already registered")
             flash('Email already registered', "error")
-            return redirect(url_for('register'))
+            return redirect(url_for('register', form=form))
         
         user = User(username=username, email=email)
         try: 
@@ -275,7 +284,7 @@ def register():
           return redirect(url_for('login'))
         except Exception as e:
          app.logger.error(f"{user.username}, error while registering {e}")
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @app.route('/logout')
 @login_required
@@ -287,11 +296,12 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
+    form = ResetUserBtnForm()
     if current_user.is_master or current_user.is_admin:
         challenges = Todo.query.all()
         app_status = app.config['APP_STATUS']
         users = User.query.all()
-        return render_template('admin.html', challenges=challenges, users=users, app_status=app_status)
+        return render_template('admin.html', challenges=challenges, users=users, app_status=app_status, form=form)
     
     if not current_user.is_authenticated:
         activity_logger.info(f"trying to acces admin panel without logging in")
@@ -373,12 +383,12 @@ def view_logs():
     activity_logger.info(f"{current_user.username} (ID: {current_user.id}) accessed {log_name} with filter '{filter_text}' and lines '{num_lines_str}'.")
 
     return render_template('admin_logs.html',
-                           log_lines=filtered_log_lines,
-                           log_name=log_name,
-                           log_type=log_type,
-                           filter_text=filter_text,
-                           num_lines=num_lines_str,
-                           all_log_types=['app_log', 'upload_log', 'activity_log', 'error_log'])
+        log_lines=filtered_log_lines,
+        log_name=log_name,
+        log_type=log_type,
+        filter_text=filter_text,
+        num_lines=num_lines_str,
+        all_log_types=['app_log', 'upload_log', 'activity_log', 'error_log'])
 
 
 @app.route('/admin/logs/download/<log_file_name>')
@@ -413,12 +423,13 @@ def download_log(log_file_name):
 @app.route('/admin/send-email/', methods=["POST", "GET"])
 @login_required
 def admin_email():
+    form = AdminEmailForm()
     # Authorization check FIRST
-    if not current_user.is_master and not current_user.is_admin:
+    if not (current_user.is_master or current_user.is_admin):
         activity_logger.info(f"{current_user} {current_user.username}, is trying to send an email without admin or master role")
         abort(403)
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         subject = request.form.get('subject')
         input_text = request.form.get('input_text')
 
@@ -449,7 +460,7 @@ def admin_email():
             flash(f"Sending email failed. Error: {str(e)}", 'error')
             error_logger(f"Admin send email error: {e}")  # Log the error
 
-    return render_template('admin_email.html')
+    return render_template('admin_email.html', form=form)
 
     
 @app.route('/admin/approve_challenge/<int:id>')
@@ -467,7 +478,7 @@ def approve_challenge(id):
 @app.route('/admin/delete_challenge/<int:id>')
 @login_required
 def delete_challenge(id):
-    if not current_user.is_master and not current_user.is_admin:
+    if not (current_user.is_master or current_user.is_admin):
         activity_logger.info(f"{current_user} {current_user.username}, tried to delete challenge without admin or master role")
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
@@ -502,10 +513,11 @@ def delete_user(id):
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
+    form = ForgotForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         email = request.form.get('email', '').strip().lower()
         user = User.query.filter_by(email=email).first()
 
@@ -536,12 +548,13 @@ If you did not make this request then simply ignore this email and no changes wi
             flash('If an account with that email exists, a password reset link has been sent.', 'info')
             app.logger.info(f"Reset link sent to {email}")
         
-        return redirect(url_for('login'))
+        return redirect(url_for('login', form=form))
     
-    return render_template('forgot.html')
+    return render_template('forgot.html', form=form)
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    form = ResetForm()
     if current_user.is_authenticated:
         app.logger.info(f"{current_user} {current_user.username}, already logged in")
         flash("already logged in")
@@ -554,7 +567,7 @@ def reset_password(token):
         flash('That is an invalid or expired token.', 'error')
         return redirect(url_for('forgot_password'))
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
@@ -635,6 +648,8 @@ def index():
 
 @app.route('/forum')
 def forum():
+    form = DeleteForm()
+    likeform = LikeForm()
     vakfilter = request.args.get('vakfilter', '')
     sortfilter = request.args.get('sortfilter', 'newest')
     username = current_user.username if current_user.is_authenticated else None
@@ -663,12 +678,13 @@ def forum():
         query = query.order_by(Todo.likes.desc())
 
     tasks = query.all()
-    return render_template('forum.html', tasks=tasks, sortfilter=sortfilter)
+    return render_template('forum.html', likeform=likeform, form=form, tasks=tasks, sortfilter=sortfilter)
 
 @app.route('/uploadtoforum', methods=['GET', 'POST'])
 @login_required
 def upload():
-    if request.method == 'POST':
+    form = UploadToForumForm()
+    if form.validate_on_submit():
         title = request.form.get('title', '').strip()
         main_question = request.form.get('mainQuestion', '').strip()
         sub_questions_list = request.form.getlist('subQuestion[]')
@@ -732,8 +748,9 @@ def upload():
             db.session.rollback()
             app.logger.error(f"Error adding challenge: {str(e)}")
             return 'There was an issue adding your challenge'
-    
-    return render_template('uploadtoforum.html')
+    else:
+        app.logger.warning(f"Form validation failed. Errors: {form.errors}")
+    return render_template('uploadtoforum.html', form=form)
 
 @app.route('/like/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -802,7 +819,8 @@ def like_status(todo_id):
 @login_required
 def update(id):
     task = Todo.query.get_or_404(id)
-    
+    form = UploadForm()
+    delete = DeleteForm()
     # Check authorization
     if not (current_user.id == task.author_id or current_user.is_admin):
         activity_logger.info(f"Someone not authorized tried to update {task}")
@@ -810,19 +828,17 @@ def update(id):
         return redirect(url_for('forum'))
 
     if request.method == 'GET':
-        return render_template('update.html', task=task, sub_questions=task.get_sub_questions_list())
+        return render_template('update.html',form=form, task=task, sub_questions=task.get_sub_questions_list(), delete=delete)
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
         task.title = request.form.get('title')
         task.main_question = request.form.get('mainQuestion').strip()
         sub_questions_list = request.form.getlist('subQuestion[]')
-        # Convert the list to a JSON string
         task.sub_questions = json.dumps([q.strip() for q in sub_questions_list if q.strip()])
         task.description = request.form.get('description').strip()
         task.end_product = request.form.get('endProduct').strip()
         task.category = request.form.get('categorie').strip()
-        # name is not updated as it should stay as the original author's username
         
         if 'image' in request.files:
             file = request.files['image']
@@ -901,6 +917,8 @@ def upload_image():
             return redirect('/uploadtoforum')
         
     return render_template('upload.html')
+
+csrf.exempt(like)
 
 if __name__ == '__main__':
     with app.app_context():

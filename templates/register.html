@@ -13,7 +13,7 @@
   {% endfor %} {% endif %} {% endwith %}
 
   <form method="POST" action="{{ url_for('register') }}" class="auth-form">
-    {{ csrf_token() }}
+    {{ form.hidden_tag() }}
     <div class="form-group">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" required />

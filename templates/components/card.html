@@ -22,7 +22,7 @@
     method="POST"
     onsubmit="return confirm('Are you sure you want to delete this task?');"
   >
-    {{ csrf_token() }}
+    {{ form.hidden_tag() }}
     <button class="delete-button" type="submit">Verwijder</button>
   </form>
   </div>
