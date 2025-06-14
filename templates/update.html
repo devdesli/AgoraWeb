@@ -32,7 +32,7 @@
     method="POST"
     enctype="multipart/form-data"
   >
-    {{ delete.hidden_tag() }}
+    {{ form.hidden_tag() }}
     <label><h3>Titel</h3></label>
     <textarea name="title" required maxlength="30">{{ task.title }}</textarea>
 
@@ -78,27 +78,28 @@
       ><h3>Kies een bijbehorende filter</h3></label
     >
     <select class="filters" name="categorie" required>
-      <option disabled selected hidden></option>
-      <option value="Aardrijkskunde">Aardrijkskunde</option>
-      <option value="Biologie">Biologie</option>
-      <option value="Informatica">Informatica</option>
-      <option value="Economie">Economie</option>
-      <option value="Natuurkunde">Natuurkunde</option>
-      <option value="Maatschapijleer">Maatschapijleer</option>
-      <option value="Lichamelijke opvoeding">lichamelijke opvoeding</option>
-      <option value="Kunst en Cultuur">Kunst en Cultuur</option>
-      <option value="Wiskunde">Wiskunde</option>
-      <option value="Geschiedenis">Geschiedenis</option>
-      <option value="Engels">Engels</option>
-      <option value="Spaans">Spaans</option>
-      <option value="Nederlands">Nederlands</option>
-      <option value="Frans">frans</option>
-      <option value="Duits">Duits</option>
-      <option value="Handvaardigheid">Handvaardigheid</option>
-      <option value="Muziek">Muziek</option>
-      <option value="Scheikunde">Scheikunde</option>
-      <option value="Overig">Overig</option>
+    <option disabled hidden {% if not task.category %}selected{% endif %}></option>
+    <option value="Aardrijkskunde" {% if task.category == "Aardrijkskunde" %}selected{% endif %}>Aardrijkskunde</option>
+    <option value="Biologie" {% if task.category == "Biologie" %}selected{% endif %}>Biologie</option>
+    <option value="Informatica" {% if task.category == "Informatica" %}selected{% endif %}>Informatica</option>
+    <option value="Economie" {% if task.category == "Economie" %}selected{% endif %}>Economie</option>
+    <option value="Natuurkunde" {% if task.category == "Natuurkunde" %}selected{% endif %}>Natuurkunde</option>
+    <option value="Maatschapijleer" {% if task.category == "Maatschapijleer" %}selected{% endif %}>Maatschapijleer</option>
+    <option value="Lichamelijke opvoeding" {% if task.category == "Lichamelijke opvoeding" %}selected{% endif %}>Lichamelijke opvoeding</option>
+     <option value="Kunst en Cultuur" {% if task.category == "Kunst en Cultuur" %}selected{% endif %}>Kunst en Cultuur</option>
+    <option value="Wiskunde" {% if task.category == "Wiskunde" %}selected{% endif %}>Wiskunde</option>
+    <option value="Geschiedenis" {% if task.category == "Geschiedenis" %}selected{% endif %}>Geschiedenis</option>
+    <option value="Engels" {% if task.category == "Engels" %}selected{% endif %}>Engels</option>
+    <option value="Spaans" {% if task.category == "Spaans" %}selected{% endif %}>Spaans</option>
+     <option value="Nederlands" {% if task.category == "Nederlands" %}selected{% endif %}>Nederlands</option>
+      <option value="Frans" {% if task.category == "Frans" %}selected{% endif %}>Frans</option>
+      <option value="Duits" {% if task.category == "Duits" %}selected{% endif %}>Duits</option>
+      <option value="Handvaardigheid" {% if task.category == "Handvaardigheid" %}selected{% endif %}>Handvaardigheid</option>
+      <option value="Muziek" {% if task.category == "Muziek" %}selected{% endif %}>Muziek</option>
+      <option value="Scheikunde" {% if task.category == "Scheikunde" %}selected{% endif %}>Scheikunde</option>
+      <option value="Overig" {% if task.category == "Overig" %}selected{% endif %}>Overig</option>
     </select>
+
 
     <label><h3>Huidige afbeelding</h3></label>
     {% if task.image %}

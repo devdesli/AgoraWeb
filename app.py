@@ -23,8 +23,11 @@ from xhtml2pdf import pisa
 import io
 from flask_wtf import CSRFProtect
 from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm
+from werkzeug.datastructures import CombinedMultiDict
 
 UPLOAD_FOLDER = 'static/uploads'
+
+# Call this before your routes
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
@@ -43,6 +46,22 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
+app.config['WTF_CSRF_CHECK_DEFAULT'] = True
+app.config['WTF_CSRF_ENABLED'] = True
+
+def ensure_upload_directory():
+    upload_dir = app.config.get('UPLOAD_FOLDER', 'static/uploads')
+    if not os.path.exists(upload_dir):
+        try:
+            os.makedirs(upload_dir, exist_ok=True)
+            print(f"Created upload directory: {upload_dir}")
+        except Exception as e:
+            print(f"Error creating upload directory: {e}")
+            raise
+    return upload_dir
+
+# Call this before your routes
+ensure_upload_directory()
 
 
 # --- Logging Setup ---
@@ -684,7 +703,8 @@ def forum():
 @app.route('/uploadtoforum', methods=['GET', 'POST'])
 @login_required
 def upload():
-    form = UploadToForumForm()
+    form = UploadToForumForm(CombinedMultiDict([request.form, request.files]))
+
     if form.validate_on_submit():
         title = request.form.get('title', '').strip()
         main_question = request.form.get('mainQuestion', '').strip()
@@ -819,9 +839,12 @@ def like_status(todo_id):
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
+    from werkzeug.datastructures import CombinedMultiDict
+    
     task = Todo.query.get_or_404(id)
-    form = UploadForm()
+    form = UploadToForumForm(CombinedMultiDict([request.form, request.files]))  # Use UploadToForumForm instead
     delete = DeleteForm()
+    
     # Check authorization
     if not (current_user.id == task.author_id or current_user.is_admin):
         activity_logger.info(f"Someone not authorized tried to update {task}")
@@ -829,28 +852,43 @@ def update(id):
         return redirect(url_for('forum'))
 
     if request.method == 'GET':
-        return render_template('update.html',form=form, task=task, sub_questions=task.get_sub_questions_list(), delete=delete)
+        return render_template('update.html', form=form, task=task, sub_questions=task.get_sub_questions_list(), delete=delete)
 
     if form.validate_on_submit():
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
-        task.title = request.form.get('title')
-        task.main_question = request.form.get('mainQuestion').strip()
+        
+        # Update task fields
+        task.title = request.form.get('title', '').strip()
+        task.main_question = request.form.get('mainQuestion', '').strip()
+        
+        # Handle sub questions properly
         sub_questions_list = request.form.getlist('subQuestion[]')
         task.sub_questions = json.dumps([q.strip() for q in sub_questions_list if q.strip()])
-        task.description = request.form.get('description').strip()
-        task.end_product = request.form.get('endProduct').strip()
-        task.category = request.form.get('categorie').strip()
         
+        task.description = request.form.get('description', '').strip()
+        task.end_product = request.form.get('endProduct', '').strip()
+        task.category = request.form.get('categorie', '').strip()
+
+        # Handle image upload
         if 'image' in request.files:
             file = request.files['image']
             if file and file.filename and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
+                # Create custom filename similar to upload route
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                title_slug = slugify(task.title)
+                timestamp = int(time.time())
+                custom_filename = f"{current_user.username}_{title_slug}_{timestamp}.{ext}"
+                filename = secure_filename(custom_filename)
+                
+                # Save the file
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 task.image = filename
-        
+                upload_logger.info(f"{current_user.username}, updated image for task {task.id} with file {filename}")
+
+        # Reset approval status if user is not admin/master
         if not (current_user.is_admin or current_user.is_master):
-            Todo.challenge.approved = False
+            task.approved = False  # Fixed: was Todo.challenge.approved
 
         try:
             db.session.commit()
@@ -858,10 +896,20 @@ def update(id):
             flash('Challenge updated successfully')
             return redirect(url_for('forum'))
         except Exception as e:
-            app.logger.error(f"Error updating challenge: {str(e)}")  # Debug logging
+            app.logger.error(f"Error updating challenge: {str(e)}")
             db.session.rollback()
             flash('There was an issue updating your challenge')
             return redirect(url_for('forum'))
+    else:
+        # Log form validation errors for debugging
+        if form.errors:
+            app.logger.warning(f"Form validation failed for update. Errors: {form.errors}")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f"{field}: {error}", 'error')
+    
+    # If form doesn't validate, render the form again with errors
+    return render_template('update.html', form=form, task=task, sub_questions=task.get_sub_questions_list(), delete=delete)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 @login_required
@@ -915,7 +963,7 @@ def upload_image():
             db.session.add(new_image)
             db.session.commit()
             upload_logger.info(f"{current_user} {current_user.username}, uploaded image {filename}")
-            return redirect('/uploadtoforum')
+        return redirect(url_for('/uploadtoforum'))
         
     return render_template('upload.html')
 

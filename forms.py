@@ -2,6 +2,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField # Removed FieldList, FormField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from flask_wtf.file import FileAllowed # Only FileAllowed is needed for validation here
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Length
+from flask_wtf.file import FileField, FileAllowed
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[DataRequired()])
@@ -31,34 +35,64 @@ class AdminEmailForm(FlaskForm):
 # We're removing the FieldList for subQuestion and FileField for image
 # because your HTML structure doesn't align with how WTForms automatically renders them.
 class UploadToForumForm(FlaskForm):
-    title = StringField(validators=[DataRequired(), Length(max=70)]) # Match HTML maxlength
-    description = StringField(validators=[DataRequired(), Length(max=100)]) # Match HTML maxlength
-    mainQuestion = StringField(validators=[DataRequired(), Length(max=60)]) # Match HTML maxlength
-    # subQuestion is *not* a FieldList in the form definition here.
-    # We will handle it as request.form.getlist('subQuestion[]') in the route.
-    # We'll still add a placeholder StringField for basic validation if needed,
-    # but the primary validation will be manual in the route or it'll pass
-    # if at least one 'subQuestion[]' is present.
-    # For a "required" check on subQuestions, we'll do it manually in the route.
-    subQuestion = StringField(validators=[]) # Placeholder for validation messages, not functional for FieldList
-    
-    endProduct = StringField(validators=[DataRequired()]) # No maxlength in HTML, consider adding one
-    categorie = StringField(validators=[DataRequired()]) # Select dropdown handles validation
+    title = TextAreaField("Titel", validators=[DataRequired(), Length(max=70)])
+    description = TextAreaField("Informatie", validators=[DataRequired(), Length(max=100)])
+    mainQuestion = TextAreaField("Hoofdvraag", validators=[DataRequired(), Length(max=60)])
+    # subQuestions handled manually in HTML — no need to define them here
+    endProduct = TextAreaField("Eindproduct", validators=[DataRequired()])
+    categorie = SelectField("Categorie", choices=[
+        ("Aardrijkskunde", "Aardrijkskunde"),
+        ("Biologie", "Biologie"),
+        ("Informatica", "Informatica"),
+        ("Economie", "Economie"),
+        ("Natuurkunde", "Natuurkunde"),
+        ("Maatschappijleer", "Maatschappijleer"),
+        ("Lichamelijke opvoeding", "Lichamelijke opvoeding"),
+        ("Kunst en Cultuur", "Kunst en Cultuur"),
+        ("Wiskunde", "Wiskunde"),
+        ("Geschiedenis", "Geschiedenis"),
+        ("Engels", "Engels"),
+        ("Spaans", "Spaans"),
+        ("Nederlands", "Nederlands"),
+        ("Frans", "Frans"),
+        ("Duits", "Duits"),
+        ("Handvaardigheid", "Handvaardigheid"),
+        ("Muziek", "Muziek"),
+        ("Scheikunde", "Scheikunde"),
+        ("Overig", "Overig"),
+    ], validators=[DataRequired()])
 
-    # No FileField here because you're using a direct <input type="file" name="image">
-    # We'll use FileAllowed validator manually in the route for the uploaded file.
-    # This dummy field allows passing `FileAllowed` validator errors to the template if you rendered them
-    # But for strict "no HTML changes", you'll need to flash messages for file errors.
-    image_dummy = StringField(validators=[FileAllowed(['png', 'jpg', 'jpeg', 'gif'], 'Images only! (PNG, JPG, JPEG, GIF)')])
+    image = FileField("Afbeelding", validators=[FileAllowed(["jpg", "jpeg", "png", "gif"], "Alleen afbeeldingen toegestaan")])
 
 class UploadForm(FlaskForm):
-    title = StringField(validators=[DataRequired()])
-    main_question = StringField(validators=[DataRequired()])
-    sub_questions = StringField(validators=[DataRequired()]) # This is just a single string field, not a list
-    description = StringField(validators=[DataRequired()])
-    end_product = StringField(validators=[DataRequired()])
-    category = StringField(validators=[DataRequired()])
-    
+    title = TextAreaField(validators=[DataRequired(), Length(max=30)])
+    mainQuestion = TextAreaField(validators=[DataRequired(), Length(max=60)])  # Fixed name
+    description = TextAreaField(validators=[DataRequired(), Length(max=100)])
+    endProduct = TextAreaField(validators=[DataRequired()])  # Fixed name
+    categorie = SelectField("Categorie", choices=[
+        ("", "Selecteer een categorie"),  # Added empty option
+        ("Aardrijkskunde", "Aardrijkskunde"),
+        ("Biologie", "Biologie"),
+        ("Informatica", "Informatica"),
+        ("Economie", "Economie"),
+        ("Natuurkunde", "Natuurkunde"),
+        ("Maatschappijleer", "Maatschappijleer"),
+        ("Lichamelijke opvoeding", "Lichamelijke opvoeding"),
+        ("Kunst en Cultuur", "Kunst en Cultuur"),
+        ("Wiskunde", "Wiskunde"),
+        ("Geschiedenis", "Geschiedenis"),
+        ("Engels", "Engels"),
+        ("Spaans", "Spaans"),
+        ("Nederlands", "Nederlands"),
+        ("Frans", "Frans"),
+        ("Duits", "Duits"),
+        ("Handvaardigheid", "Handvaardigheid"),
+        ("Muziek", "Muziek"),
+        ("Scheikunde", "Scheikunde"),
+        ("Overig", "Overig"),
+    ], validators=[DataRequired()])
+    # Fixed image field - this should match your HTML
+    image = FileField("Afbeelding", validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], "Alleen afbeeldingen toegestaan")])
 
 class LikeForm(FlaskForm):
     pass
