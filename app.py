@@ -24,6 +24,8 @@ import io
 from flask_wtf import CSRFProtect
 from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm
 
+UPLOAD_FOLDER = 'static/uploads'
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
@@ -83,7 +85,6 @@ error_logger.setLevel(logging.ERROR)
 error_logger.addHandler(error_handler)
 
 # change this folder to the actual folder off the upload folder 
-UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Max 2 MB upload
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
