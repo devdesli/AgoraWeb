@@ -8,6 +8,7 @@
 <div class="container">
   <h1>Send an e-mail to all accounts</h1>
   <form method="POST">
+    {{ csrf_token() }}
     <div class="form-group">
       <input type="text" name="subject" placeholder="subject" required>
       <textarea rows="15" name="input_text" class="input" placeholder="input email text" type="text" required></textarea>

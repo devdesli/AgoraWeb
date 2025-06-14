@@ -24,6 +24,7 @@
 
 <div class="forum">
   <form action="/uploadtoforum" method="POST" enctype="multipart/form-data">
+    {{ csrf_token() }}
     <!-- Titel -->
     <label for="title"><h3 class="title titleText">Titel</h3></label>
     <textarea

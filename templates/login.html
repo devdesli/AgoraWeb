@@ -8,6 +8,7 @@
   <h1>Login</h1>
 
   <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+    {{ csrf_token() }}
     <div class="form-group">
       <label for="username">Username or Email</label>
       <input

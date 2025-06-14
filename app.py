@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
 from flask_mail import Mail, Message
 from config import Config
+from extensions import csrf
 import time
 import os
 import secrets
@@ -38,6 +39,7 @@ app.config.from_object(Config)
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
+csrf.init_app(app)
 
 # --- Logging Setup ---
 if not os.path.exists('logs'):
