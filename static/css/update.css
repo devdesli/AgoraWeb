@@ -112,7 +112,7 @@ input[type="file"]:focus {
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
-  padding: 4px 8px;
+  padding: 8px 8px;
   border-radius: 100px;
   border: none;
   background-color: white;
@@ -247,6 +247,7 @@ label h3 {
 
 @media (max-width: 600px) {
   h1 {
+    margin-top: 50px;
     font-size: var(--font-size-2xl);
   }
 
@@ -255,7 +256,12 @@ label h3 {
     padding-left: 16px;
     padding-right: 16px;
   }
-
+  .add-subquestion-button {
+    width: 100%;
+  }
+  .remove-subquestion-button {
+    background: #721c24;
+  }
   label h3 {
     font-size: var(--font-size-base);
   }
@@ -273,10 +279,14 @@ label h3 {
   }
 
   .contact {
+    top: 100px;
     font-size: var(--font-size-xs);
   }
 
   .forum-button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     width: 180px;
     height: 36px;
     font-size: var(--font-size-sm);

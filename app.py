@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory, make_response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
@@ -18,10 +18,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 import uuid
 import string, random
-import re # For log parsing
-from flask import send_from_directory # For downloading logs
-
-
+import re
+from xhtml2pdf import pisa
+import io
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
@@ -169,6 +168,32 @@ def fullcard(id, slug):
         return redirect(url_for('forum'))
     return render_template('fullcard.html', task=task)
 
+@app.route('/challenge/download/<int:challenge_id>')
+@login_required
+def download_challenge_pdf(challenge_id):
+    challenge = Todo.query.get_or_404(challenge_id)
+
+    # Authorization: Only download if approved or owned by the user
+    if not challenge.approved and current_user.is_authenticated:
+        flash('You are not authorized to download this challenge.', 'error')
+        return redirect(url_for('forum'))
+
+    # Render HTML template with challenge data
+    html = render_template("challenge_pdf_template.html", challenge=challenge)
+
+    # Create PDF from HTML
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result)
+
+    if not pdf.err:
+        response = make_response(result.getvalue())
+        response.headers["Content-Type"] = "application/pdf"
+        response.headers["Content-Disposition"] = f"attachment; filename=challenge_{challenge.slug}_{challenge.id}.pdf"
+        return response
+    else:
+        flash("PDF generation failed.", "error")
+        return redirect(url_for('fullcard', id=challenge.id))
+    
 @app.route('/mychallenges')
 @login_required
 def my_challenges():
@@ -416,7 +441,7 @@ def admin_email():
 
         try:
             mail.send(msg)
-            app.logger.info(f"Email with header {msg} and text {msg.body} sended to all users")
+            app.logger.info(f"Email with header {msg} and text {msg.body} sended to all users by {current_user} {current_user.username}")
             flash("Email sucesfully sent to all users.")
         except Exception as e:
             flash(f"Sending email failed. Error: {str(e)}", 'error')
@@ -429,12 +454,12 @@ def admin_email():
 @login_required
 def approve_challenge(id):
     if not (current_user.is_master or current_user.is_admin):
-        activity_logger.info(f"{current_user}, tried to aprove challenge without master or admin role")
+        activity_logger.info(f"{current_user} {current_user.username}, tried to aprove challenge without master or admin role")
         return redirect(url_for('index'))
     challenge = Todo.query.get_or_404(id)
     challenge.approved = True
     db.session.commit()
-    app.logger.info(f"Admin approved challenge {challenge}")
+    app.logger.info(f"Admin approved challenge {challenge} {challenge.slug}")
     return redirect(url_for('admin'))
 
 @app.route('/admin/delete_challenge/<int:id>')
@@ -447,7 +472,7 @@ def delete_challenge(id):
     try:
         db.session.delete(challenge)
         db.session.commit()
-        app.logger.info(f"Admin deleted challenge {challenge}")
+        app.logger.info(f"Admin deleted challenge {challenge} {challenge.slug}")
     except Exception as e:
         flash("error deleting challenge")
         app.logger.error(f"Error deleting challenge {challenge} {e}")
@@ -468,8 +493,9 @@ def delete_user(id):
     try: 
       db.session.delete(user)
       db.session.commit()
+      activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
     except Exception as e:
-        app.logger.error(f"Error deleting user {user} {e}")
+        app.logger.error(f"Error deleting user {user} {user.username} {e}")
     return redirect(url_for('admin'))
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
@@ -543,7 +569,7 @@ def reset_password(token):
         user.reset_token = None # Clear the token after successful reset
         user.reset_token_expiration = None # Clear the expiration
         db.session.commit()
-        app.logger.info(f"Password for {user}, succesfully reset")
+        app.logger.info(f"Password for {user} {user.username}, succesfully reset")
         flash('Your password has been reset successfully!', 'success')
         return redirect(url_for('login'))
 
@@ -597,7 +623,7 @@ Maakplaats Team
     except Exception as e:
         db.session.rollback() # Rollback the token generation if email fails
         flash(f"Failed to send password reset email to '{user.username}'. Error: {str(e)}", 'error')
-        app.logger.error(f"Admin forced reset email error: {e}") # Log the error for debugging
+        error_logger(f"Admin or master {current_user.username} forced reset email error: {e}") # Log the error for debugging
 
     return redirect(url_for('admin'))
 
@@ -662,6 +688,7 @@ def upload():
             filename = secure_filename(custom_filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_filename = filename
+            upload_logger.info(f"{current_user.username}, uploaded file {filename}")
 
         # Create unique slug
         base_slug = slugify(title) or f"untitled-{uuid.uuid4().hex[:6]}"

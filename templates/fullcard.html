@@ -141,6 +141,13 @@ current_user.is_master or current_user.is_admin %}
         <i class="bx bx-edit"></i> Update
       </a>
       {% endif %}
+      <a
+        href="{{ url_for('download_challenge_pdf', challenge_id=task.id) }}"
+        class="forum-button"
+        target="_blank"
+      >
+        📄 Download as PDF
+      </a>
 
       <a href="{{ url_for('forum') }}" class="forum-button">
         <i class="bx bx-arrow-back"></i> Terug naar forum
