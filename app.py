@@ -153,7 +153,12 @@ def unauthorized():
         activity_logger.info(f"Unauthorized handler")
         flash('You need to be logged in to perform this action.', 'warning')
         return redirect(url_for('login', next=request.url))
-    
+
+
+@app.route('/google1234567890abcdef.html')
+def google_verification():
+    return app.send_static_file('google1234567890abcdef.html')
+
 @app.route('/card/<int:id>', defaults={'slug': None})
 @app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
 def fullcard(id, slug):
