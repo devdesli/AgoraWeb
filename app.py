@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
@@ -155,9 +155,9 @@ def unauthorized():
         return redirect(url_for('login', next=request.url))
 
 
-@app.route('/google1234567890abcdef.html')
+@app.route('/googleb81b129169642c35.html')
 def google_verification():
-    return app.send_static_file('google1234567890abcdef.html')
+    return send_from_directory('.', 'googleb81b129169642c35.html')
 
 @app.route('/card/<int:id>', defaults={'slug': None})
 @app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
