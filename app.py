@@ -290,7 +290,7 @@ def get_log_content(log_file_path, num_lines=None):
 @login_required
 def view_logs():
     # Security: Only allow master or admin users to view logs
-    if not (current_user.is_master):
+    if not (current_user.is_master or current_user.is_admin):
         flash('You are not authorized to this page.', 'error')
         activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to access logs without authorization.")
         return redirect(url_for('index'))
