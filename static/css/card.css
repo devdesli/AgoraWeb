@@ -134,7 +134,7 @@ select {
   position: absolute;
   left: 10px;
   top: 50px;
-  max-width: 225px;
+  max-width: 200px;
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;

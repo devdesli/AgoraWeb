@@ -237,9 +237,9 @@ def login():
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
 
-    if request.method == 'POST' and form.validate():
-        username_or_email = form.username.data.strip()
-        password = form.password.data.strip()
+    if form.validate_on_submit():  # this only checks CSRF token
+        username_or_email = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
         app.logger.info(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
         
         # Try to find user by username or email
@@ -266,14 +266,14 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = CSRFOnlyForm()
 
     if current_user.is_authenticated:
         app.logger.info(f"{current_user}, already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '')
@@ -593,12 +593,12 @@ def reset_password(token):
 
         if not password or not confirm_password:
             flash('Please enter both password and confirm password.', 'error')
-            return render_template('reset_password.html', token=token)
+            return render_template('reset_password.html', token=token, form=form)
 
         if password != confirm_password:
             app.logger.info(f"Passwords not matching for {user}")
             flash('Passwords do not match.', 'error')
-            return render_template('reset_password.html', token=token)
+            return render_template('reset_password.html', token=token, form=form)
 
         user.set_password(password)
         user.reset_token = None # Clear the token after successful reset
@@ -608,7 +608,7 @@ def reset_password(token):
         flash('Your password has been reset successfully!', 'success')
         return redirect(url_for('login'))
 
-    return render_template('reset.html', token=token)
+    return render_template('reset.html', token=token, form=form)
 
 @app.route('/reset_user_password/<int:id>', methods=['POST']) # Change to POST for better security
 @login_required
