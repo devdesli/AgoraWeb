@@ -74,7 +74,7 @@ current_user.is_master or current_user.is_admin %}
           {% if task.sub_questions %} {# This checks if the JSON string is not
           empty #}
           <ul>
-            {% for sub_question in task.get_sub_questions_list() %}    
+            {% for sub_question in task.get_sub_questions_list() %}
 
             <li>{{ sub_question }}</li>
             {% endfor %}
@@ -167,7 +167,7 @@ current_user.is_master or current_user.is_admin %}
         style="display: inline"
       >
         {{ likeform.hidden_tag() }}
-        <button type="submit" class="like-button">
+        <button type="submit" class="like-button" data-id="{{ task.id }}">
           <i
             class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"
           ></i>

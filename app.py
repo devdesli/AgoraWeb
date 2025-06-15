@@ -968,6 +968,7 @@ def upload_image():
     return render_template('upload.html')
 
 csrf.exempt(like)
+csrf.exempt(like_status)
 
 if __name__ == '__main__':
     with app.app_context():

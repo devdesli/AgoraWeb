@@ -143,8 +143,8 @@ select {
 .headquestion {
   position: absolute;
   top: 50px;
-  width: 200px;
-  right: 108px;
+  width: 185px;
+  right: 100px;
   justify-content: center;
   text-align: center;
   white-space: normal;
@@ -339,7 +339,8 @@ p.title {
 
   .like-count,
   .label-like-count {
-    bottom: 50px;
+    position: relative;
+    margin-bottom: 10px;
     font-size: 12px;
   }
 
@@ -379,7 +380,7 @@ p.title {
 
   .author {
     position: static;
-    margin-bottom: 0;
+    margin-bottom: -10px;
     font-size: 14px;
     opacity: 0.8;
     order: 2;

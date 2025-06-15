@@ -9,6 +9,13 @@ body {
   margin: 0 auto;
 }
 
+.button-section {
+  position: static;
+  top: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
 .btn {
   border: none;
   text-decoration: none;
@@ -26,6 +33,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-right: 10px;
 }
 
 .btn:hover {
@@ -173,7 +181,14 @@ td {
   .admin-container {
     padding: 20px;
   }
-
+  .button-section {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .btn {
+    margin-top: 5px;
+  }
   h1 {
     font-size: var(--font-size-3xl);
   }

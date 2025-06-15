@@ -22,15 +22,15 @@
   in messages %}
   <div class="flash-message">{{ message }}</div>
   {% endfor %} {% endif %} {% endwith %}
-  <div class="section">
+  <div class="section button-section">
   <button class="btn">
     <a href="{{ url_for('index') }}">Go to Home</a>
   </button>
   <button class="btn">
     <a href="{{url_for('admin_email')}}">Send email to all users</a>
   </button>
-  <button>    
-    <a href="{{ url_for('view_logs') }}" class="btn">View Application Logs</a>
+  <button class="btn">    
+    <a href="{{ url_for('view_logs') }}">View Application Logs</a>
   </button>
   </div>
   <div class="section" id="challenge-section">
