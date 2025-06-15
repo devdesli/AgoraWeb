@@ -35,67 +35,14 @@ class AdminEmailForm(FlaskForm):
 # We're removing the FieldList for subQuestion and FileField for image
 # because your HTML structure doesn't align with how WTForms automatically renders them.
 class UploadToForumForm(FlaskForm):
-    title = TextAreaField("Titel", validators=[DataRequired(), Length(max=70)])
-    description = TextAreaField("Informatie", validators=[DataRequired(), Length(max=100)])
-    mainQuestion = TextAreaField("Hoofdvraag", validators=[DataRequired(), Length(max=60)])
-    # subQuestions handled manually in HTML — no need to define them here
-    endProduct = TextAreaField("Eindproduct", validators=[DataRequired()])
-    categorie = SelectField("Categorie", choices=[
-        ("Aardrijkskunde", "Aardrijkskunde"),
-        ("Biologie", "Biologie"),
-        ("Informatica", "Informatica"),
-        ("Economie", "Economie"),
-        ("Natuurkunde", "Natuurkunde"),
-        ("Maatschappijleer", "Maatschappijleer"),
-        ("Lichamelijke opvoeding", "Lichamelijke opvoeding"),
-        ("Kunst en Cultuur", "Kunst en Cultuur"),
-        ("Wiskunde", "Wiskunde"),
-        ("Geschiedenis", "Geschiedenis"),
-        ("Engels", "Engels"),
-        ("Spaans", "Spaans"),
-        ("Nederlands", "Nederlands"),
-        ("Frans", "Frans"),
-        ("Duits", "Duits"),
-        ("Handvaardigheid", "Handvaardigheid"),
-        ("Muziek", "Muziek"),
-        ("Scheikunde", "Scheikunde"),
-        ("Overig", "Overig"),
-    ], validators=[DataRequired()])
-
-    image = FileField("Afbeelding", validators=[FileAllowed(["jpg", "jpeg", "png", "gif"], "Alleen afbeeldingen toegestaan")])
-
+    pass
 class UploadForm(FlaskForm):
-    title = TextAreaField(validators=[DataRequired(), Length(max=30)])
-    mainQuestion = TextAreaField(validators=[DataRequired(), Length(max=60)])  # Fixed name
-    description = TextAreaField(validators=[DataRequired(), Length(max=100)])
-    endProduct = TextAreaField(validators=[DataRequired()])  # Fixed name
-    categorie = SelectField("Categorie", choices=[
-        ("", "Selecteer een categorie"),  # Added empty option
-        ("Aardrijkskunde", "Aardrijkskunde"),
-        ("Biologie", "Biologie"),
-        ("Informatica", "Informatica"),
-        ("Economie", "Economie"),
-        ("Natuurkunde", "Natuurkunde"),
-        ("Maatschappijleer", "Maatschappijleer"),
-        ("Lichamelijke opvoeding", "Lichamelijke opvoeding"),
-        ("Kunst en Cultuur", "Kunst en Cultuur"),
-        ("Wiskunde", "Wiskunde"),
-        ("Geschiedenis", "Geschiedenis"),
-        ("Engels", "Engels"),
-        ("Spaans", "Spaans"),
-        ("Nederlands", "Nederlands"),
-        ("Frans", "Frans"),
-        ("Duits", "Duits"),
-        ("Handvaardigheid", "Handvaardigheid"),
-        ("Muziek", "Muziek"),
-        ("Scheikunde", "Scheikunde"),
-        ("Overig", "Overig"),
-    ], validators=[DataRequired()])
-    # Fixed image field - this should match your HTML
-    image = FileField("Afbeelding", validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], "Alleen afbeeldingen toegestaan")])
-
+    pass
 class LikeForm(FlaskForm):
     pass
 
 class ResetUserBtnForm(FlaskForm):
+    pass
+
+class CSRFOnlyForm(FlaskForm):
     pass

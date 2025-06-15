@@ -22,7 +22,7 @@ import re
 from xhtml2pdf import pisa
 import io
 from flask_wtf import CSRFProtect
-from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm
+from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
 from werkzeug.datastructures import CombinedMultiDict
 
 UPLOAD_FOLDER = 'static/uploads'
@@ -187,8 +187,8 @@ def google_verification():
 @app.route('/fullcard/<int:id>-<slug>', methods=['GET'])
 def fullcard(id, slug):
     task = Todo.query.get_or_404(id)
-    form = DeleteForm()
-    likeform = LikeForm()
+    likeform = CSRFOnlyForm()
+    form = CSRFOnlyForm
     if not task.approved and not (current_user.is_authenticated and current_user.is_master or current_user.is_admin):
         app.logger.info(f"{task}, Not approved yet")
         flash('This challenge is not approved yet')
@@ -230,14 +230,14 @@ def my_challenges():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = CSRFOnlyForm()
 
     if current_user.is_authenticated:
         app.logger.info(f"{current_user.username} already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         username_or_email = form.username.data.strip()
         password = form.password.data.strip()
         app.logger.info(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
@@ -316,7 +316,7 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
-    form = ResetUserBtnForm()
+    form = CSRFOnlyForm()
     if current_user.is_master or current_user.is_admin:
         challenges = Todo.query.all()
         app_status = app.config['APP_STATUS']
@@ -443,7 +443,7 @@ def download_log(log_file_name):
 @app.route('/admin/send-email/', methods=["POST", "GET"])
 @login_required
 def admin_email():
-    form = AdminEmailForm()
+    form = CSRFOnlyForm()
     # Authorization check FIRST
     if not (current_user.is_master or current_user.is_admin):
         activity_logger.info(f"{current_user} {current_user.username}, is trying to send an email without admin or master role")
@@ -533,11 +533,11 @@ def delete_user(id):
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
-    form = ForgotForm()
+    form = CSRFOnlyForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         email = request.form.get('email', '').strip().lower()
         user = User.query.filter_by(email=email).first()
 
@@ -574,7 +574,7 @@ If you did not make this request then simply ignore this email and no changes wi
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    form = ResetForm()
+    form = CSRFOnlyForm()
     if current_user.is_authenticated:
         app.logger.info(f"{current_user} {current_user.username}, already logged in")
         flash("already logged in")
@@ -587,7 +587,7 @@ def reset_password(token):
         flash('That is an invalid or expired token.', 'error')
         return redirect(url_for('forgot_password'))
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
@@ -668,8 +668,8 @@ def index():
 
 @app.route('/forum')
 def forum():
-    form = DeleteForm()
-    likeform = LikeForm()
+    form = CSRFOnlyForm()
+    likeform = CSRFOnlyForm()
     vakfilter = request.args.get('vakfilter', '')
     sortfilter = request.args.get('sortfilter', 'newest')
     username = current_user.username if current_user.is_authenticated else None
@@ -703,9 +703,9 @@ def forum():
 @app.route('/uploadtoforum', methods=['GET', 'POST'])
 @login_required
 def upload():
-    form = UploadToForumForm(CombinedMultiDict([request.form, request.files]))
+    form = CSRFOnlyForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         title = request.form.get('title', '').strip()
         main_question = request.form.get('mainQuestion', '').strip()
         sub_questions_list = request.form.getlist('subQuestion[]')
@@ -842,7 +842,7 @@ def update(id):
     from werkzeug.datastructures import CombinedMultiDict
     
     task = Todo.query.get_or_404(id)
-    form = UploadToForumForm(CombinedMultiDict([request.form, request.files]))  # Use UploadToForumForm instead
+    form = CSRFOnlyForm()
     delete = DeleteForm()
     
     # Check authorization
@@ -854,7 +854,7 @@ def update(id):
     if request.method == 'GET':
         return render_template('update.html', form=form, task=task, sub_questions=task.get_sub_questions_list(), delete=delete)
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
         print(f"Updating task {id} by user {current_user.username}")  # Debug log
         
         # Update task fields
