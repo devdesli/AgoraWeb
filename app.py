@@ -147,7 +147,13 @@ def load_tasks():
 def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
-
+        
+# redirect automaticly for http not configed now
+#@app.before_request
+#def force_https():
+    #if request.headers.get('X-Forwarded-Proto', 'http') == 'http':
+        #return redirect(request.url.replace('http://', 'https://', 1), code=301)
+    
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('File too large. Max size is 2MB.', 'error')

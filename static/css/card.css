@@ -268,7 +268,7 @@ p.title {
   .card {
     width: 95%;
     height: auto;
-    min-height: 350px;
+    min-height: 400px;
     height: 40vh;
     padding: 15px;
   }
@@ -288,9 +288,10 @@ p.title {
     font-size: 1.25rem;
   }
   .challenge-info {
-    max-width: 150px;
+    width: 150px;
     top: 70px;
     font-size: 14px;
+    max-width: 45%;
   }
 
   .headquestion {
@@ -305,6 +306,7 @@ p.title {
     top: 70px;
     text-align: right;
     overflow-wrap: break-word;
+    max-width: 45%;
   }
 
   .headquestion-info {
@@ -316,6 +318,7 @@ p.title {
     word-wrap: break-word;
     word-break: break-word;
     white-space: normal;
+    max-width: 45%;
   }
 
   .category {
