@@ -26,7 +26,7 @@ from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToF
 from werkzeug.datastructures import CombinedMultiDict
 
 UPLOAD_FOLDER = 'static/uploads'
-
+# upload folder
 # Call this before your routes
 
 app = Flask(__name__)
