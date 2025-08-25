@@ -62,7 +62,9 @@
     {% for task in tasks %}
         {% include 'components/card.html' %}
     {% else %}
+    <div class="no_posts">
         <p>Er zijn nog geen challenges geplaatst.</p>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
