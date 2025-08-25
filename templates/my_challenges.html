@@ -24,10 +24,14 @@
 </div>
 
 <div class="container">
-  {% for task in challenges %} {% include 'components/my_challlenge_card.html' %}
-  {% else %}
-  <p>Je hebt nog geen challenges geplaatst.</p>
-  <button><a href="{{ url_for('upload') }}">Upload een Challenge</a></button>
+  {% for task in challenges %} {% include 'components/my_challlenge_card.html'
+  %} {% else %}
+  <div class="post">
+    <p>Je hebt nog geen challenges geplaatst.</p>
+    <a class="upload_button" href="{{ url_for('upload') }}"
+      >Upload een Challenge</a
+    >
+  </div>
   {% endfor %}
 </div>
 
