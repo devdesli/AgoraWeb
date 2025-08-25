@@ -521,16 +521,28 @@ def delete_challenge(id):
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
+    
+    user = User.query.get_or_404(id)
+
+    if current_user.is_master:
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+        except Exception as e:
+            app.logger.error(f"Error deleting user {user} {user.username} {e}")
+        return redirect(url_for('admin'))
+    
     if not current_user.is_master or current_user.is_admin:
         activity_logger.info(f"{current_user} {current_user.username}, tried to delete user without admin or master role")
         return redirect(url_for('index'))
-    user = User.query.get_or_404(id)
     if user.is_admin and not current_user.is_admin:
-        flash('Cannot delete admin users')
-        activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
-        return redirect(url_for('admin'))
-    if current_user.is_master:
-        pass
+        if user.is_master:
+            pass
+        else:
+            flash('Cannot delete admin users')
+            activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
+            return redirect(url_for('admin'))
     try: 
       db.session.delete(user)
       db.session.commit()
