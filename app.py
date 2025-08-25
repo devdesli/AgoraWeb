@@ -529,6 +529,8 @@ def delete_user(id):
         flash('Cannot delete admin users')
         activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
         return redirect(url_for('admin'))
+    if current_user.is_master:
+        pass
     try: 
       db.session.delete(user)
       db.session.commit()
