@@ -484,7 +484,7 @@ def admin_email():
             flash("Email sucesfully sent to all users.")
         except Exception as e:
             flash(f"Sending email failed. Error: {str(e)}", 'error')
-            error_logger(f"Admin send email error: {e}")  # Log the error
+            error_logger.error(f"Admin send email error: {e}")  # Log the error
 
     return render_template('admin_email.html', form=form)
 
