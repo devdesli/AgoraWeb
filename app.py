@@ -364,8 +364,8 @@ def google_oauth_login():
 from flask_dance.contrib.azure import make_azure_blueprint, azure
 
 azure_bp = make_azure_blueprint(
-    client_id="YOUR_MICROSOFT_CLIENT_ID",
-    client_secret="YOUR_MICROSOFT_CLIENT_SECRET",
+    client_id="MICROSOFT_CLIENT_ID",
+    client_secret="MICROSOFT_CLIENT_SECRET",
     redirect_to="azure_login",
     tenant="common"
 )
@@ -1062,4 +1062,4 @@ csrf.exempt(like_status)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context=("cert.pem", "key.pem"))
+    app.run(host="0.0.0.0", port=5000, debug=False, ssl_context=("cert.pem", "key.pem"))
