@@ -24,7 +24,11 @@
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required />
     </div>
-
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <img src="{{ url_for('static', filename='pictures/logo.png') }}" alt="Google Logo" style="height: 24px; width: 24px;">
+      <a href="{{ url_for('google.login') }}">Login with Google</a>
+    </div>
+    <a href="{{ url_for('azure.login') }}">Login with Microsoft</a>
     <button type="submit" class="auth-button">Login</button>
   </form>
   <p><a href="{{ url_for('forgot_password') }}">Forgot your password?</a></p>
