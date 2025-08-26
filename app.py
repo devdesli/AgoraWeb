@@ -315,14 +315,13 @@ def register():
          app.logger.error(f"{user.username}, error while registering {e}")
     return render_template('register.html', form=form)
 
-from flask_dance.contrib.google import make_google_blueprint, google
-
 import os
+from dotenv import load_dotenv
 from flask_dance.contrib.google import make_google_blueprint, google
 
+load_dotenv()
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
-
 
 google_bp = make_google_blueprint(
     client_id=GOOGLE_CLIENT_ID,
@@ -330,7 +329,6 @@ google_bp = make_google_blueprint(
     scope=["profile", "email"],
     redirect_to="google_oauth_login"
 )
-
 app.register_blueprint(google_bp, url_prefix="/login")
 
 @app.route('/login/google')
@@ -347,16 +345,13 @@ def google_oauth_login():
     if not email or not username:
         flash("Google account missing email or username.", "error")
         return redirect(url_for("login"))
-    # Check if user exists by email
     user = User.query.filter_by(email=email).first()
     if not user:
-        # Ensure username is unique
         base_username = username
         count = 1
         while User.query.filter_by(username=username).first():
             username = f"{base_username}{count}"
             count += 1
-        # Create new user (no password for Google users)
         user = User(username=username, email=email)
         db.session.add(user)
         db.session.commit()
