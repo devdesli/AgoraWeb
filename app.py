@@ -323,12 +323,14 @@ from flask_dance.contrib.google import make_google_blueprint, google
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 
+
 google_bp = make_google_blueprint(
     client_id=GOOGLE_CLIENT_ID,
     client_secret=GOOGLE_CLIENT_SECRET,
     scope=["profile", "email"],
     redirect_to="google_oauth_login"
 )
+
 app.register_blueprint(google_bp, url_prefix="/login")
 
 @app.route('/login/google')
