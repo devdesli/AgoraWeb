@@ -361,6 +361,36 @@ def google_login():
     login_user(user)
     return redirect(url_for("index"))
 
+@app.route('/login/google/authenticated')
+def google_oauth_login():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        flash("Failed to fetch user info from Google.", "error")
+        return redirect(url_for("login"))
+    user_info = resp.json()
+    email = user_info.get("email")
+    username = user_info.get("name") or (email.split("@")[0] if email else None)
+    if not email or not username:
+        flash("Google account missing email or username.", "error")
+        return redirect(url_for("login"))
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        base_username = username
+        count = 1
+        while User.query.filter_by(username=username).first():
+            username = f"{base_username}{count}"
+            count += 1
+        user = User(username=username, email=email)
+        db.session.add(user)
+        db.session.commit()
+        flash(f"Account created for {username} via Google login.", "success")
+    else:
+        flash(f"Logged in as {user.username} via Google login.", "success")
+    login_user(user)
+    return redirect(url_for("index"))
+
 from flask_dance.contrib.azure import make_azure_blueprint, azure
 
 azure_bp = make_azure_blueprint(
