@@ -315,71 +315,253 @@ def register():
          app.logger.error(f"{user.username}, error while registering {e}")
     return render_template('register.html', form=form)
 
+# Replace your existing OAuth code with this complete implementation
+# Add this after your app configuration and before your routes
+
 import os
 from dotenv import load_dotenv
 from flask_dance.contrib.google import make_google_blueprint, google
-
-load_dotenv()
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
-
-google_bp = make_google_blueprint(
-    client_id=GOOGLE_CLIENT_ID,
-    client_secret=GOOGLE_CLIENT_SECRET,
-    scope=["profile", "email"],
-    redirect_to="google_oauth_login"
-)
-app.register_blueprint(google_bp, url_prefix="/login")
-
-@app.route('/login/google')
-def google_oauth_login():
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-    resp = google.get("/oauth2/v2/userinfo")
-    if not resp.ok:
-        flash("Failed to fetch user info from Google.", "error")
-        return redirect(url_for("login"))
-    user_info = resp.json()
-    email = user_info.get("email")
-    username = user_info.get("name") or (email.split("@")[0] if email else None)
-    if not email or not username:
-        flash("Google account missing email or username.", "error")
-        return redirect(url_for("login"))
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        base_username = username
-        count = 1
-        while User.query.filter_by(username=username).first():
-            username = f"{base_username}{count}"
-            count += 1
-        user = User(username=username, email=email)
-        db.session.add(user)
-        db.session.commit()
-        flash(f"Account created for {username} via Google login.", "success")
-    else:
-        flash(f"Logged in as {user.username} via Google login.", "success")
-    login_user(user)
-    return redirect(url_for("index"))
-
 from flask_dance.contrib.azure import make_azure_blueprint, azure
 
-azure_bp = make_azure_blueprint(
-    client_id="MICROSOFT_CLIENT_ID",
-    client_secret="MICROSOFT_CLIENT_SECRET",
-    redirect_to="azure_login",
-    tenant="common"
-)
-app.register_blueprint(azure_bp, url_prefix="/login")
+# Load environment variables
+load_dotenv()
 
-@app.route("/login/microsoft")
-def azure_login():
-    if not azure.authorized:
-        return redirect(url_for("azure.login"))
-    resp = azure.get("/v1.0/me")
-    user_info = resp.json()
-    # Use user_info["userPrincipalName"] to log in or register the user
-    # Implement user lookup/creation logic here
-    return redirect(url_for("index"))
+# Get OAuth credentials
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+MICROSOFT_CLIENT_ID = os.getenv("MICROSOFT_CLIENT_ID")
+MICROSOFT_CLIENT_SECRET = os.getenv("MICROSOFT_CLIENT_SECRET")
+
+# Create Google OAuth blueprint
+try:
+    google_bp = make_google_blueprint(
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
+        scope=["openid", "email", "profile"],
+        redirect_to="google_oauth_callback"
+    )
+    app.register_blueprint(google_bp, url_prefix="/login")
+except Exception as e:
+    app.logger.error(f"Failed to create Google OAuth blueprint: {e}")
+
+# Create Microsoft OAuth blueprint
+try:
+    azure_bp = make_azure_blueprint(
+        client_id=MICROSOFT_CLIENT_ID,
+        client_secret=MICROSOFT_CLIENT_SECRET,
+        tenant="common",
+        redirect_to="microsoft_oauth_callback"
+    )
+    app.register_blueprint(azure_bp, url_prefix="/login")
+except Exception as e:
+    app.logger.error(f"Failed to create Microsoft OAuth blueprint: {e}")
+
+def create_oauth_user(email, name, provider, provider_id):
+    """Helper function to create a user from OAuth data"""
+    try:
+        # Generate unique username
+        base_username = name.replace(" ", "_") if name else email.split("@")[0]
+        # Remove any non-alphanumeric characters except underscores
+        base_username = ''.join(c for c in base_username if c.isalnum() or c == '_')
+        
+        unique_username = base_username
+        count = 1
+        while User.query.filter_by(username=unique_username).first():
+            unique_username = f"{base_username}_{count}"
+            count += 1
+        
+        # Create new user
+        user = User(
+            username=unique_username,
+            email=email.lower(),
+            oauth_provider=provider,
+            oauth_id=str(provider_id)
+        )
+        
+        # Set a random password for OAuth users (they won't use it)
+        user.set_password(generate_random_password())
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        app.logger.info(f"Created new user {unique_username} via {provider} OAuth")
+        return user
+        
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error creating user from {provider} OAuth: {e}")
+        raise
+
+# Google OAuth Routes
+@app.route('/login/google')
+def google_login():
+    if current_user.is_authenticated:
+        flash('You are already logged in.', 'info')
+        return redirect(url_for('index'))
+    
+    if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        flash("Google login is not configured.", "error")
+        return redirect(url_for('login'))
+    
+    return redirect(url_for("google.login"))
+
+@app.route('/login/google/callback')
+def google_oauth_callback():
+    try:
+        # Check if user is already authenticated
+        if current_user.is_authenticated:
+            flash('You are already logged in.', 'info')
+            return redirect(url_for('index'))
+        
+        # Check if Google OAuth is authorized
+        if not google.authorized:
+            app.logger.warning("Google OAuth not authorized")
+            flash('Google authentication failed. Please try again.', 'error')
+            return redirect(url_for('login'))
+        
+        # Get user info from Google
+        resp = google.get("/oauth2/v2/userinfo")
+        if not resp.ok:
+            app.logger.error(f"Failed to fetch user info from Google: {resp.status_code}")
+            flash("Failed to fetch user info from Google.", "error")
+            return redirect(url_for("login"))
+        
+        user_info = resp.json()
+        email = user_info.get("email")
+        name = user_info.get("name")
+        google_id = user_info.get("id")
+        
+        # Validate required information
+        if not email:
+            app.logger.error("Google account missing email")
+            flash("Google account must have an email address.", "error")
+            return redirect(url_for("login"))
+        
+        # Check if user already exists by email
+        user = User.query.filter_by(email=email.lower()).first()
+        
+        if not user:
+            # Check if user exists by OAuth ID (in case they changed email)
+            user = User.query.filter_by(oauth_provider='google', oauth_id=str(google_id)).first()
+        
+        if not user:
+            # Create new user
+            user = create_oauth_user(email, name, 'google', google_id)
+            flash(f"Welcome {user.username}! Your account has been created.", "success")
+        else:
+            # Update OAuth info if needed
+            if not user.oauth_provider:
+                user.oauth_provider = 'google'
+                user.oauth_id = str(google_id)
+                db.session.commit()
+            
+            app.logger.info(f"User {user.username} logged in via Google OAuth")
+            flash(f"Welcome back, {user.username}!", "success")
+        
+        # Log the user in
+        login_user(user, remember=True)
+        activity_logger.info(f"{user.username} logged in via Google OAuth")
+        
+        # Redirect to next page or index
+        next_page = request.args.get('next')
+        return redirect(next_page or url_for('index'))
+        
+    except Exception as e:
+        app.logger.error(f"Unexpected error in Google OAuth callback: {e}")
+        error_logger.error(f"Google OAuth callback error: {e}")
+        flash("An unexpected error occurred during login. Please try again.", "error")
+        return redirect(url_for("login"))
+
+# Microsoft OAuth Routes
+@app.route('/login/microsoft')
+def microsoft_login():
+    if current_user.is_authenticated:
+        flash('You are already logged in.', 'info')
+        return redirect(url_for('index'))
+    
+    if not MICROSOFT_CLIENT_ID or not MICROSOFT_CLIENT_SECRET:
+        flash("Microsoft login is not configured.", "error")
+        return redirect(url_for('login'))
+    
+    return redirect(url_for("azure.login"))
+
+@app.route('/login/microsoft/callback')
+def microsoft_oauth_callback():
+    try:
+        # Check if user is already authenticated
+        if current_user.is_authenticated:
+            flash('You are already logged in.', 'info')
+            return redirect(url_for('index'))
+        
+        # Check if Microsoft OAuth is authorized
+        if not azure.authorized:
+            app.logger.warning("Microsoft OAuth not authorized")
+            flash('Microsoft authentication failed. Please try again.', 'error')
+            return redirect(url_for('login'))
+        
+        # Get user info from Microsoft
+        resp = azure.get("/v1.0/me")
+        if not resp.ok:
+            app.logger.error(f"Failed to fetch user info from Microsoft: {resp.status_code}")
+            flash("Failed to fetch user info from Microsoft.", "error")
+            return redirect(url_for("login"))
+        
+        user_info = resp.json()
+        email = user_info.get("userPrincipalName") or user_info.get("mail")
+        name = user_info.get("displayName")
+        microsoft_id = user_info.get("id")
+        
+        # Validate required information
+        if not email:
+            app.logger.error("Microsoft account missing email")
+            flash("Microsoft account must have an email address.", "error")
+            return redirect(url_for("login"))
+        
+        # Check if user already exists by email
+        user = User.query.filter_by(email=email.lower()).first()
+        
+        if not user:
+            # Check if user exists by OAuth ID (in case they changed email)
+            user = User.query.filter_by(oauth_provider='microsoft', oauth_id=str(microsoft_id)).first()
+        
+        if not user:
+            # Create new user
+            user = create_oauth_user(email, name, 'microsoft', microsoft_id)
+            flash(f"Welcome {user.username}! Your account has been created.", "success")
+        else:
+            # Update OAuth info if needed
+            if not user.oauth_provider:
+                user.oauth_provider = 'microsoft'
+                user.oauth_id = str(microsoft_id)
+                db.session.commit()
+            
+            app.logger.info(f"User {user.username} logged in via Microsoft OAuth")
+            flash(f"Welcome back, {user.username}!", "success")
+        
+        # Log the user in
+        login_user(user, remember=True)
+        activity_logger.info(f"{user.username} logged in via Microsoft OAuth")
+        
+        # Redirect to next page or index
+        next_page = request.args.get('next')
+        return redirect(next_page or url_for('index'))
+        
+    except Exception as e:
+        app.logger.error(f"Unexpected error in Microsoft OAuth callback: {e}")
+        error_logger.error(f"Microsoft OAuth callback error: {e}")
+        flash("An unexpected error occurred during login. Please try again.", "error")
+        return redirect(url_for("login"))
+
+# Error handler for OAuth-specific errors
+@app.errorhandler(Exception)
+def handle_oauth_exceptions(error):
+    error_str = str(error).lower()
+    if any(keyword in error_str for keyword in ['oauth', 'google', 'microsoft', 'azure']):
+        app.logger.error(f"OAuth error: {error}")
+        error_logger.error(f"OAuth system error: {error}")
+        flash("Authentication service temporarily unavailable. Please try again.", "error")
+        return redirect(url_for('login'))
+    raise error
 
 @app.route('/logout')
 @login_required
