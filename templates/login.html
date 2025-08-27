@@ -36,7 +36,7 @@
       <div class="oauth-buttons" style="margin-top: 20px">
         <a
           href="{{ url_for('google_login') }}"
-          class="btn btn-danger btn-block"
+          class="btn btn-danger btn-block margin-bottom: 20px;"
         >
           <i class="fab fa-google"></i> Continue with Google
         </a>
@@ -44,15 +44,15 @@
           href="{{ url_for('microsoft_login') }}"
           class="btn btn-primary btn-block"
         >
-          <i class="fab fa-microsoft"></i> Continue with Microsoft
+          <img
+            src="{{ url_for('static', filename='pictures/microsoft.png') }}"
+            alt="Google Logo"
+            style="height: 24px; width: 24px"
+          />
+          <i class="fab fa-microsoft" class="margin-bottom: 20px;"></i> Continue
+          with Microsoft
         </a>
       </div>
-
-      <div class="text-center my-3">
-        <span class="text-muted">or</span>
-      </div>
-
-      <!-- Your existing login form goes here -->
     </div>
     <button type="submit" class="auth-button">Login</button>
   </form>
