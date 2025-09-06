@@ -151,7 +151,7 @@ def save_tasks(tasks):
     with open('tasks.json', 'w') as f:
         json.dump(tasks, f)
         
-# redirect automaticly for http not configed now
+# redirect automaticly for http not configured yet
 #@app.before_request
 #def force_https():
     #if request.headers.get('X-Forwarded-Proto', 'http') == 'http':
