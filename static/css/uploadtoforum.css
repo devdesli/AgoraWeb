@@ -267,7 +267,7 @@ input[type="file"] {
 
 textarea:focus,
 select:focus,
-input[type="file"]:focus {+
+input[type="file"]:focus {
   outline: none;
   border-color: #22194d;
   background-color: #fff;
@@ -317,31 +317,28 @@ label h3 {
 }
 
 .forum-button {
-  position: absolute;
-  color: white;
-  right: 25px;
-  top: 20px;
-  border-radius: 12px;
+  padding: 14px 28px;
   border: none;
-  padding: 0;
-  height: 40px;
-  width: 200px;
-  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
-  font-family: var(--font-family-primary);
-  font-weight: var(--font-weight-medium);
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .forum-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
+  transform: translateY(-2px);
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 25px rgba(212, 43, 135, 0.3);
+  border-color: rgba(212, 43, 135, 0.5);
 }
 
-.forum-button a,
-.home-button a {
-  color: white;
+.forum-button a {
   text-decoration: none;
+  color: white;
   font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
 }
 
@@ -366,6 +363,55 @@ label h3 {
   box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
 }
 
+.module-container {
+  right: 25px;
+  position: fixed;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1001;
+  transition: all 1s ease;
+}
+
+.forum-button {
+  right: 5px;
+}
+
+.module-button {
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(#22194d, #afaeae);
+  transition: all 1s ease;
+  backdrop-filter: blur(10px);
+}
+
+.module-button:hover {
+  background: linear-gradient(#afaeae, #22194d);
+  transform: translateY(-2px);
+  transition: all 1s ease-out;
+}
+
+.module-button i {
+  color: #d42b87;
+  font-size: 24px;
+}
+
+.module-tekst {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
 .contact {
   position: absolute;
   color: white;

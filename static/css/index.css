@@ -156,6 +156,27 @@ td {
   font-weight: var(--font-weight-medium);
 }
 
+.home-button {
+  position: absolute;
+  color: white;
+  right: 25px;
+  top: 70px;
+  border-radius: 12px;
+  height: 40px;
+  width: 200px;
+  border: none;
+  padding: 0;
+  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(34, 25, 77, 0.3);
+}
+
 .top-color h1 {
   color: white;
   text-align: center;
