@@ -237,6 +237,18 @@ def my_challenges():
     challenges = Todo.query.filter_by(author_id=current_user.id).order_by(Todo.date_created.desc()).all()
     return render_template('my_challenges.html', challenges=challenges, form=form)
 
+@app.route('/api/admin/see-challenge/<int:user_id>')
+@login_required
+def api_admin_see_challenge(user_id):
+    # Check if the current user is an admin
+    if not current_user.is_admin or not current_user.is_master:
+        return "Unauthorized", 403
+    
+    # Get all challenges for the given user
+    challenges = Todo.query.filter_by(author_id=user_id).order_by(Todo.date_created.desc()).all()
+    return render_template('my_challenges.html', challenges=challenges)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = CSRFOnlyForm()
