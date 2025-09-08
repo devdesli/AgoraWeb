@@ -28,7 +28,7 @@ from werkzeug.datastructures import CombinedMultiDict
 UPLOAD_FOLDER = 'static/uploads'
 # upload folder
 # Call this before your routes
-
+# test comment
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
@@ -62,7 +62,7 @@ def ensure_upload_directory():
 
 # Call this before your routes
 ensure_upload_directory()
-
+# @root
 
 # --- Logging Setup ---
 if not os.path.exists('logs'):
