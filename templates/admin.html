@@ -102,22 +102,18 @@
           {% if current_user.is_admin or current_user.is_master %}
           <td>
             {% if current_user.is_master %}
-             
             <!-- Master can do anything -->
             {% if not user.is_master %}
-            <a
-              href="{{ url_for('delete_user', id=user.id) }}"
-              class="action-button delete-button"
-              onclick="return confirm('Are you sure you want to delete this user?')"
-            >
-              Delete
-            </a>
-                  <a
-              href="{{ url_for('api_admin_see_challenge', id=user.id) }}"
-              class="action-button delete-button"
-            >
-              See Challenges
-            </a>
+                 <!-- Admin can only delete regular users -->
+      <a href="{{ url_for('delete_user', id=user.id) }}"
+         class="action-button delete-button"
+         onclick="return confirm('Are you sure you want to delete this user?')">
+        Delete
+      </a>
+      <a href="{{ url_for('api_admin_see_challenge', user_id=user.id) }}"
+         class="action-button view-button">
+        See Challenges
+      </a>
             {% endif %}
         <form method="POST" action="{{ url_for('reset_user_password', id=user.id) }}" style="display:inline;">
           {{ form.hidden_tag() }}
