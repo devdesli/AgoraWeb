@@ -36,27 +36,28 @@
       <div class="oauth-buttons" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
         <a
           href="{{ url_for('google_login') }}"
-          class="btn btn-danger btn-block margin-bottom: 20px;"
+          class="btn btn-danger btn-block login-oauth margin-bottom: 20px;"
         >
-          <i class="fab fa-google"></i> Continue with Google
+          <i class="fab fa-google"></i> Google
         </a>
         <a
           href="{{ url_for('microsoft_login') }}"
-          class="btn btn-primary btn-block"
+          class="btn btn-primary btn-block login-oauth"
         >
           <img
             src="{{ url_for('static', filename='pictures/microsoft.png') }}"
             alt="Google Logo"
             style="height: 24px; width: 24px"
           />
-          <i class="fab fa-microsoft" class="margin-bottom: 20px;"></i> Continue
-          with Microsoft
+          <i class="fab fa-microsoft" class="margin-bottom: 20px;"></i> Microsoft
         </a>
       </div>
     </div>
     <button type="submit" class="auth-button">Login</button>
   </form>
-  <p><a href="{{ url_for('forgot_password') }}">Forgot your password?</a></p>
+    <p class="forgot-link">
+      <a href="{{ url_for('forgot_password') }}">Forgot your password?</a>
+    </p>
   <p class="auth-link">
     Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
   </p>
