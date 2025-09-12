@@ -84,6 +84,29 @@ a {
   letter-spacing: 0.025em;
 }
 
+.oauth-button {
+  display: flex;
+  flex-direction: row;
+  background-color: #22194d;
+  color: white;
+  border: none;
+  padding: 8px 115px;
+  border-radius: 12px;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.025em;
+  width: 100%;
+  border: 2px solid white;
+  border-radius: 20px;
+}
+
+.oauth-button a {
+  color: white;
+}
+
 .auth-button:hover {
   background-color: #1a1440;
   transform: translateY(-1px);
@@ -137,6 +160,7 @@ a {
 .auth-link a {
   text-decoration: underline !important;
 }
+
 .login-oauth {
   display: flex;
   flex-direction: row;
@@ -145,10 +169,6 @@ a {
   text-decoration: none;
 }
 
-.oauth-div {
-  background-color: grey;
-  border-radius: 12px;
-}
 
 @media (max-width: 600px) {
   .auth-container {

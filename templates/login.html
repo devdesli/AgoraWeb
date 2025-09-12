@@ -22,17 +22,30 @@
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" placeholder="Enter your password" id="password" name="password" required />
+      <input
+        type="password"
+        placeholder="Enter your password"
+        id="password"
+        name="password"
+        required
+      />
     </div>
     <div
       style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px"
     >
-      
-      <div class="oauth-buttons" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-        <div class="auth-button">
+      <div
+        class="oauth-buttons"
+        style="
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        "
+      >
+        <div class="oauth-button">
           <a
             href="{{ url_for('google_login') }}"
-            class="btn btn-danger btn-block login-oauth margin-bottom: 20px;"
+            class="btn btn-danger btn-block margin-bottom: 20px;"
           >
             <img
               src="{{ url_for('static', filename='pictures/google.png') }}"
@@ -42,26 +55,27 @@
             <i class="fab fa-google"></i> Google
           </a>
         </div>
-        <div class="auth-button">
+        <div class="oauth-button">
           <a
             href="{{ url_for('microsoft_login') }}"
-            class="btn btn-primary btn-block login-oauth"
+            class="btn btn-primary btn-block"
           >
             <img
               src="{{ url_for('static', filename='pictures/microsoft.png') }}"
               alt="Google Logo"
               style="height: 24px; width: 24px"
             />
-            <i class="fab fa-microsoft" class="margin-bottom: 20px;"></i> Microsoft
+            <i class="fab fa-microsoft" class="margin-bottom: 20px;"></i>
+            Microsoft
           </a>
         </div>
       </div>
     </div>
     <button type="submit" class="auth-button">Login</button>
   </form>
-    <p class="forgot-link">
-      <a href="{{ url_for('forgot_password') }}">Forgot your password?</a>
-    </p>
+  <p class="forgot-link">
+    <a href="{{ url_for('forgot_password') }}">Forgot your password?</a>
+  </p>
   <p class="auth-link">
     Don't have an account? <a href="{{ url_for('register') }}">Register here</a>
   </p>
