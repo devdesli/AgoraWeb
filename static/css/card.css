@@ -96,6 +96,7 @@ button {
 }
 
 .card-glow {
+
 }
 
 .card:hover {
@@ -162,8 +163,8 @@ select {
 
 .title {
   position: absolute;
-  left: 10px;
-  top: 5px;
+  left: 25px;
+  top: 15px;
   font-size: 25px;
   max-width: 97.5%;
   max-height: 100px;
@@ -175,6 +176,9 @@ select {
 }
 
 .delete-button {
+  display: flex;
+  text-align: center;
+  justify-content: center;
   position: relative;
   background-color: white;
   border: none;
@@ -182,6 +186,7 @@ select {
   border-radius: 2px;
   height: 20px;
   width: 60px;
+  padding: 10px; 
 }
 
 .delete-button i {
@@ -189,22 +194,20 @@ select {
 }
 
 .update-button {
+  display: flex;
+  text-align: center;
+  justify-content: center;
   position: relative;
   background-color: white;
   color: black;
   border: none;
   cursor: pointer;
   border-radius: 2px;
-  width: 60px;
-  height: 20px;
+  max-width: 60px;
+  max-height: 25px;
+  padding: 10px;
   margin-bottom: 2.5px;
   text-decoration: none;
-}
-
-.update-button i {
-  font-size: 18px;
-  height: 30px;
-  width: 100px;
 }
 
 p.title {
