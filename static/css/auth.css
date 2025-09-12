@@ -2,11 +2,6 @@
   text-decoration: underline;
 }
 
-.forgot-link {
-  text-align: center;
-  display: flex;
-}
-
 body {
   background: fixed linear-gradient(#afaeae, #22194d);
   font-family: var(--font-family-primary);
@@ -144,10 +139,15 @@ a {
 }
 .login-oauth {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 16px;
   margin-top: 24px;
   text-decoration: none;
+}
+
+.oauth-div {
+  background-color: grey;
+  border-radius: 12px;
 }
 
 @media (max-width: 600px) {
