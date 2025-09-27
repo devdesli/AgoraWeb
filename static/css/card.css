@@ -177,36 +177,25 @@ select {
 
 .update-button,
 .delete-button {
+  color: black;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
   display: flex;
   align-items: center;      /* Verticaal centreren */
   justify-content: center;  /* Horizontaal centreren */
   text-align: center;
-  width: 60px;
-  height: 30px;
+  width: 65px;
+  height: 20px;
   padding: 0;
   margin-bottom: 2.5px;
   font-size: 14px;
+  text-decoration: none;
 }
 
 .delete-button i {
   font-size: 18px;
-}
-
-.update-button {
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  position: relative;
-  background-color: white;
-  color: black;
-  border: none;
-  cursor: pointer;
-  border-radius: 2px;
-  max-width: 60px;
-  max-height: 25px;
-  padding: 10px;
-  margin-bottom: 2.5px;
-  text-decoration: none;
 }
 
 p.title {
