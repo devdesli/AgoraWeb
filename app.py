@@ -24,6 +24,9 @@ import io
 from flask_wtf import CSRFProtect
 from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
 from werkzeug.datastructures import CombinedMultiDict
+from flask_migrate import Migrate
+from models import db
+
 
 UPLOAD_FOLDER = 'static/uploads'
 # upload folder
@@ -46,6 +49,7 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
+
 app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
 
