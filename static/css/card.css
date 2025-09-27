@@ -175,18 +175,17 @@ select {
   font-weight: 600;
 }
 
+.update-button,
 .delete-button {
   display: flex;
+  align-items: center;      /* Verticaal centreren */
+  justify-content: center;  /* Horizontaal centreren */
   text-align: center;
-  justify-content: center;
-  position: relative;
-  background-color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 2px;
-  height: 20px;
   width: 60px;
-  padding: 10px; 
+  height: 30px;
+  padding: 0;
+  margin-bottom: 2.5px;
+  font-size: 14px;
 }
 
 .delete-button i {

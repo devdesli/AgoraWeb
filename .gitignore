@@ -26,3 +26,5 @@ instance/
 your_database.db
 instance/your_database.db
 logs/
+cert.pem
+key.pem
