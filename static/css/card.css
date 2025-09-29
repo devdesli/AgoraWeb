@@ -177,9 +177,9 @@ select {
 
 .update-button,
 .delete-button {
-  color: black;
-  background-color: white;
-  border: none;
+  color: whitesmoke;
+  background-color: transparent;
+  border: 0.5px solid white;
   cursor: pointer;
   border-radius: 2px;
   display: flex;
@@ -210,7 +210,7 @@ p.title {
 .headquestion-info {
   position: absolute;
   right: 0px;
-  top: 80px;
+  top: 50px;
   width: 200px;
   white-space: normal;
   word-wrap: break-word;
