@@ -2,10 +2,8 @@ We wanted inspiration, but where do you find it?
 That's why we created this forum to share with the community what we made how we made it and how you can do something like it.  
 
 
-V1.0.0 ALPHA CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
+V1.4-BETA CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
-ALPHA RELEASE IS CURRENTLY BEING DEVELLOPED 😊  
-AND ALMOST READY FOR PRODUCTION AND SHOULD BE RELEASED MONDAY
 
 📫 How to reach me: Send an email to agorawebapplication@gmail.com
 
