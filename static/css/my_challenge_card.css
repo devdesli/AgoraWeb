@@ -1,3 +1,21 @@
+.challenge-status {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.challenge-status-approved {
+  background-color: green;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.challenge-status-pending {
+  background-color: orange;
+  border-radius: 20px;
+  padding: 5px;
+}
+
 .like-button button {
   font-size: 32px;
   position: absolute;
@@ -96,6 +114,7 @@ button {
 }
 
 .card-glow {
+
 }
 
 .card:hover {
@@ -133,7 +152,7 @@ select {
 .challenge-info {
   position: absolute;
   left: 10px;
-  top: 50px;
+  top: 25px;
   max-width: 200px;
   word-wrap: break-word;
   white-space: normal;
@@ -142,7 +161,7 @@ select {
 
 .headquestion {
   position: absolute;
-  top: 50px;
+  top: 25px;
   width: 185px;
   right: 100px;
   justify-content: center;
@@ -163,7 +182,7 @@ select {
 .title {
   position: absolute;
   left: 10px;
-  top: 5px;
+  top: 15px;
   font-size: 25px;
   max-width: 97.5%;
   max-height: 100px;
@@ -174,55 +193,27 @@ select {
   font-weight: 600;
 }
 
-.challenge-status {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-
-.challenge-status-approved {
-  background-color: green;
-  border-radius: 20px;
-  padding: 5px;
-}
-
-.challenge-status-pending {
-  background-color: orange;
-  border-radius: 20px;
-  padding: 5px;
-}
-
+.update-button,
 .delete-button {
-  position: relative;
-  background-color: white;
-  border: none;
+  color: whitesmoke;
+  background-color: transparent;
+  border: 0.5px solid white;
   cursor: pointer;
   border-radius: 2px;
+  display: flex;
+  align-items: center;      /* Verticaal centreren */
+  justify-content: center;  /* Horizontaal centreren */
+  text-align: center;
+  width: 65px;
   height: 20px;
-  width: 60px;
+  padding: 0;
+  margin-bottom: 2.5px;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .delete-button i {
   font-size: 18px;
-}
-
-.update-button {
-  position: relative;
-  background-color: white;
-  color: black;
-  border: none;
-  cursor: pointer;
-  border-radius: 2px;
-  width: 60px;
-  height: 20px;
-  margin-bottom: 2.5px;
-  text-decoration: none;
-}
-
-.update-button i {
-  font-size: 18px;
-  height: 30px;
-  width: 100px;
 }
 
 p.title {
@@ -237,7 +228,7 @@ p.title {
 .headquestion-info {
   position: absolute;
   right: 0px;
-  top: 80px;
+  top: 50px;
   width: 200px;
   white-space: normal;
   word-wrap: break-word;
@@ -254,18 +245,14 @@ p.title {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    top: 40px;
+    top: 50px;
     width: 100%;
   }
-    .card {
+  .card {
     width: 95%;
+    justify-content: center;
     margin-left: 2.5%;
-    height: auto;
-    min-height: 350px;
-    height: 40vh;
-    padding: 15px;
   }
-
   .module-container {
     display: flex;
     position: fixed;
@@ -281,7 +268,7 @@ p.title {
     align-items: center;
     justify-content: center;
     position: relative;
-    top: 0px;
+    top: 75px;
     width: 100%;
   }
   .top-color a {
@@ -290,11 +277,9 @@ p.title {
   .card {
     width: 95%;
     height: auto;
-    min-height: 350px;
-    margin-left: 2.5%;
+    min-height: 400px;
     height: 40vh;
     padding: 15px;
-    justify-content: center;
   }
 
   .card::before {
@@ -311,7 +296,7 @@ p.title {
   .title {
     font-size: 1.25rem;
   }
-    .challenge-info {
+  .challenge-info {
     width: 150px;
     top: 70px;
     font-size: 14px;
@@ -366,7 +351,8 @@ p.title {
 
   .like-count,
   .label-like-count {
-    bottom: 50px;
+    position: relative;
+    margin-bottom: 10px;
     font-size: 12px;
   }
 
@@ -406,7 +392,7 @@ p.title {
 
   .author {
     position: static;
-    margin-bottom: 0;
+    margin-bottom: -10px;
     font-size: 14px;
     opacity: 0.8;
     order: 2;

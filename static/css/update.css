@@ -1,10 +1,14 @@
 body {
-  background: fixed linear-gradient(0.25turn, #afaeae, #22194d);
+  background: fixed linear-gradient(180deg, #afaeae, #22194db2);
   font-family: var(--font-family-primary);
   overflow-x: hidden;
   overflow-y: auto;
   margin: 0;
   padding: 0;
+}
+
+textarea {
+  resize: none;
 }
 
 .flash-message {
@@ -39,14 +43,12 @@ h1 {
   position: fixed;
   width: 100%;
   background-color: #22194d;
-  left: 0;
-  top: 0;
-  padding: 10px 5px;
-  height: 150px;
+  left: 0px;
+  top: 0px;
+  height: 120px;
   z-index: 1000;
-  box-sizing: border-box;
+  border-bottom: 2px solid white;
 }
-
 
 textarea,
 select,
@@ -62,7 +64,6 @@ input[type="file"] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   width: 100%;
   box-sizing: border-box;
-  resize: vertical;
 }
 
 textarea:focus,
@@ -142,7 +143,7 @@ input[type="file"]:focus {
 .contact {
   color: white;
   position: absolute;
-  top: 115px;
+  top: 90px;
   right: 25px;
   z-index: 1000;
   font-family: var(--font-family-primary);
@@ -167,7 +168,7 @@ input[type="file"]:focus {
   border-radius: 12px;
   height: 40px;
   width: 200px;
-  background: linear-gradient(135deg, #22194d 0%, #9198e5 100%);
+  background: linear-gradient(0deg, #22194d 0%, #9198e5 100%);
   border: none;
   cursor: pointer;
   font-family: var(--font-family-primary);
