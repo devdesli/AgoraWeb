@@ -62,6 +62,10 @@ class Todo(db.Model):
     image = db.Column(db.String(100), nullable=True)
     approved = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    is_approved = db.Column(db.Boolean, default=False, nullable=False)
+    is_flagged = db.Column(db.Boolean, default=False, nullable=False)
+    flag_reason = db.Column(db.String(255), nullable=True)
+    moderation_status = db.Column(db.String(50), default='pending')
     
     
     def get_sub_questions_list(self):
