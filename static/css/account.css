@@ -1,0 +1,13 @@
+.account-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+  background: fixed linear-gradient(#afaeae, #22194d);
+  font-family: var(--font-family-primary);
+}

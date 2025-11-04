@@ -58,7 +58,7 @@ def ensure_upload_directory():
     if not os.path.exists(upload_dir):
         try:
             os.makedirs(upload_dir, exist_ok=True)
-            print(f"Created upload directory: {upload_dir}")
+            print(f"Created upload directory: {upload_dir}") 
         except Exception as e:
             print(f"Error creating upload directory: {e}")
             raise
@@ -641,6 +641,39 @@ def delete_user(id):
         app.logger.error(f"Error deleting user {user} {user.username} {e}")
     return redirect(url_for('admin'))
 
+@app.route('/api/delete_user/<int:id>', methods=['POST'])
+@login_required
+def api_delete_user(id):
+    
+    user = User.query.get_or_404(id)
+
+    if current_user.username == user.username:
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+        except Exception as e:
+            app.logger.error(f"Error deleting user {user} {user.username} {e}")
+        return redirect(url_for('index'))
+    if not current_user.username == user.username:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to delete user without admin or master role")
+        return redirect(url_for('index'))
+    if not user.username == current_user.username:
+        try:
+            flash('Cannot delete users')
+            activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
+            return redirect(url_for('index'))
+        except Exception as e:
+            app.logger.error(f"Error deleting user {user} {user.username} {e}")
+            return redirect(url_for('index'))
+    try: 
+      db.session.delete(user)
+      db.session.commit()
+      activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+    except Exception as e:
+        app.logger.error(f"Error deleting user {user} {user.username} {e}")
+    return redirect(url_for('index'))
+
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     form = CSRFOnlyForm()
@@ -882,6 +915,13 @@ def upload():
     else:
         app.logger.warning(f"Form validation failed. Errors: {form.errors}")
     return render_template('uploadtoforum.html', form=form)
+
+@app.route('/account')
+@login_required
+def account():
+    # Provide a CSRF-only form for actions in the account template
+    form = CSRFOnlyForm()
+    return render_template('account.html', form=form)
 
 @app.route('/like/<int:id>', methods=['GET', 'POST'])
 @login_required

@@ -52,6 +52,9 @@
       <button class="forum-button">
         <a href="{{ url_for('my_challenges') }}">Mijn Challenges</a>
       </button>
+       <button class="forum-button">
+        <a href="{{ url_for('account') }}">Mijn account</a>
+      </button>
       {% if current_user.is_master %}
       <button class="forum-button master-button">
         <a href="{{ url_for('admin') }}">Master Panel</a>
