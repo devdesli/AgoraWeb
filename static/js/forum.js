@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (data.success) {
           likeCountElement.textContent = data.likes;
-          icon.classList.remove("bx-like", "bxs-like");
-          icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+          icon.classList.remove("bx-heart", "bxs-heart");
+          icon.classList.add(data.liked ? "bxs-heart" : "bx-heart");
         }
       });
   });
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (data.success) {
           likeCountElement.textContent = Math.max(0, data.likes);
-          icon.classList.remove("bxs-like", "bx-like");
-          icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+          icon.classList.remove("bxs-heart", "bx-heart");
+          icon.classList.add(data.liked ? "bxs-heart" : "bx-heart");
         } else {
           console.error("Server error:", data.error);
         }

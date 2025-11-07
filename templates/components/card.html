@@ -1,9 +1,17 @@
 <div class="card card-glow" onclick="handleCardClick(event, '{{ url_for('fullcard', id=task.id, slug=task.slug) }}')" >
-  <h2 class="title">{{ task.title }}</h2>
-  <div class="card-bottom">
-    <p class="author"><strong>Door:</strong> {{ task.name }}</p>
-    <p class="category"><strong>Categorie:</strong> {{ task.category }}</p>
+<div class="text">
+  <div class="top">
+      <h2 class="title" style="color: black;">{{ task.title }}</h2>
+  <div class="like-button" data-id="{{ task.id }}">
+  <button type="button">
+    <i class="bx {% if task.id in liked_tasks %}bxs-heart liked{% else %}bx-heart unliked{% endif %}"></i>
+  </button>
+  <div class="like-count-container">
+    <span class="like-count">{{ task.likes }}</span>
   </div>
+  </div>
+
+ </div>
   <div class="info-container">
   <p class="headquestion">
     <strong>Hoofdvraag:</strong><br />
@@ -13,8 +21,11 @@
     <strong>Beschrijving:</strong><br />
     {{ task.description }}
   </p>
+  <p class="author"><strong>Door:</strong> {{ task.name }}</p>
   </div>
-  {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
+  <div class="card-bottom">
+    <p class="category">{{ task.category }}</p>
+      {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
   <div class="button-container">
   <a href="{{ url_for('update', id=task.id) }}" class="update-button">Update</a>
   <form
@@ -26,16 +37,9 @@
     <button class="delete-button" type="submit">Verwijder</button>
   </form>
   </div>
-{% endif %}
-   <div class="like-button" data-id="{{ task.id }}">
-  <button type="button">
-    <i class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"></i>
-  </button>
-  <div class="like-count-container">
-    <label class="label-like-count">Likes:</label>
-    <span class="like-count">{{ task.likes }}</span>
   </div>
- </div>
+{% endif %}
+</div>
 </div>
 
 <!-- JavaScript -->
@@ -80,8 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
           likeCountElement.textContent = Math.max(0, data.likes);
 
           // Update icon
-          icon.classList.remove("bxs-like", "bx-like");
-          icon.classList.add(data.liked ? "bxs-like" : "bx-like");
+          icon.classList.remove("bxs-heart", "bx-heart");
+          icon.classList.add(data.liked ? "bxs-heart" : "bx-heart");
 
           // Optional: add class for styling (liked/unliked)
           icon.classList.toggle("liked", data.liked);

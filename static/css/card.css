@@ -1,13 +1,22 @@
 .like-button button {
   font-size: 32px;
-  position: absolute;
-  bottom: 70px;
-  right: 5px;
   cursor: pointer;
   border: none;
   background: transparent;
-  color: white;
+  color: black;
   transition: transform 0.2s ease;
+}
+
+.card h2,
+.card p,
+.card a,
+.card h3,
+.card h4,
+.card h5,
+.card h6,
+.card span,
+.card div {
+  color: black;
 }
 
 button {
@@ -15,33 +24,39 @@ button {
 }
 
 .like-count {
-  color: white;
+  color: black;
   font-size: 15px;
 }
 
 .label-like-count {
   font-size: 15px;
-  color: white;
+  color: black;
 }
 
 .like-count-container {
-  position: absolute;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: 0px;
-  bottom: 35px;
-  right: 10px;
   width: 80px;
+}
+
+.liked {
+  color: red;
+}
+
+.like-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
 }
 
 .button-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 5px;
-  position: absolute;
-  bottom: 5px;
-  right: 175px;
 }
 
 .container {
@@ -58,30 +73,31 @@ button {
 
 .card {
   position: relative;
-  background-color: #22194d;
-  color: white;
+  background-color: white;
+  color: black;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 15px;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 0.5px solid white;
+  border: 0.5px solid black;
   padding: 20px;
   min-height: 250px;
   max-height: 300px;
   box-sizing: border-box;
   cursor: pointer;
+  overflow-x: hidden;
 }
 
 .card::before {
   content: "";
   position: absolute;
-  bottom: 60px;
-  width: 90%;
-  right: 5%;
-  height: 2.5px;
+  top: 0;
+  width: 100%;
+  right: 0;
+  height: 62px;
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(58, 55, 55, 0.167);
 }
 
 .card::after {
@@ -95,7 +111,9 @@ button {
   background-color: #2d2267;
 }
 
-.card-glow {
+.top {
+  display: flex;
+  flex-direction: row;
 
 }
 
@@ -105,21 +123,22 @@ button {
   cursor: pointer;
 }
 
+.text {
+  margin-top: 60px;
+  background-color: white;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .info-container {
-  position: relative;
-  margin-top: 20px;
-  width: 100%;
-  height: 50vh;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .author {
   font-size: 12px;
   opacity: 0.8;
-  position: absolute;
-  bottom: 0px;
-  right: 10px;
-  max-width: 300px;
   word-wrap: break-word;
 }
 
@@ -132,59 +151,63 @@ select {
 }
 
 .challenge-info {
-  position: absolute;
-  left: 10px;
-  top: 25px;
-  max-width: 200px;
   word-wrap: break-word;
   white-space: normal;
   overflow: visible;
 }
 
 .headquestion {
-  position: absolute;
-  top: 25px;
-  width: 185px;
-  right: 100px;
-  justify-content: center;
-  text-align: center;
-  white-space: normal;
-  word-wrap: break-word;
   word-break: break-word;
-  text-align: right;
 }
 
 .category {
-  position: absolute;
-  left: 10px;
-  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
   font-size: 12.5px;
+  width: 75px;
+  height: 25px;
+  border-radius: 10px;
+  background-color: #f3f4f6;
+  color: #374151;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
 }
 
-.title {
-  position: absolute;
-  left: 10px;
-  top: 15px;
-  font-size: 25px;
-  max-width: 97.5%;
-  max-height: 100px;
-  overflow: hidden;
+.card-bottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.card .title {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  overflow: visible !important;
+  font-size: 18px;
   white-space: normal;
   word-wrap: break-word;
+  color: #000 !important;
   font-family: "Inter", sans-serif;
   font-weight: 600;
+  margin: 0;
+  padding: 0;
+  display: block;
+  z-index: 2;
+  max-width: 80%;
 }
 
 .update-button,
 .delete-button {
-  color: whitesmoke;
+  color: black;
   background-color: transparent;
-  border: 0.5px solid white;
+  border: 0.5px solid black;
   cursor: pointer;
   border-radius: 2px;
   display: flex;
-  align-items: center;      /* Verticaal centreren */
-  justify-content: center;  /* Horizontaal centreren */
+  align-items: center; /* Verticaal centreren */
+  justify-content: center; /* Horizontaal centreren */
   text-align: center;
   width: 65px;
   height: 20px;
@@ -208,16 +231,9 @@ p.title {
 }
 
 .headquestion-info {
-  position: absolute;
-  right: 0px;
-  top: 50px;
-  width: 200px;
   white-space: normal;
   word-wrap: break-word;
   word-break: break-word;
-  height: auto;
-  max-height: 100px;
-  overflow-y: auto;
 }
 
 @media (max-width: 950px) {
@@ -275,48 +291,6 @@ p.title {
     background-color: rgba(255, 255, 255, 0.3);
   }
 
-  .title {
-    font-size: 1.25rem;
-  }
-  .challenge-info {
-    width: 150px;
-    top: 70px;
-    font-size: 14px;
-    max-width: 45%;
-  }
-
-  .headquestion {
-    position: absolute;
-    width: 35%;
-    max-width: none;
-    word-wrap: break-word;
-    word-break: break-word;
-    white-space: normal;
-    font-size: 14px;
-    right: 10px;
-    top: 70px;
-    text-align: right;
-    overflow-wrap: break-word;
-    max-width: 45%;
-  }
-
-  .headquestion-info {
-    position: absolute;
-    right: 10px;
-    top: 87.5px;
-    width: 35%;
-    font-size: 14px;
-    word-wrap: break-word;
-    word-break: break-word;
-    white-space: normal;
-    max-width: 45%;
-  }
-
-  .category {
-    bottom: 0px;
-    font-size: 14px;
-  }
-
   .update-button,
   .delete-button {
     bottom: 10px;
@@ -359,28 +333,5 @@ p.title {
     padding: 0 10px 10px 10px;
     box-sizing: border-box;
     padding-bottom: 20px;
-  }
-
-  .category {
-    position: static;
-    margin-bottom: -10px;
-    font-size: 14px;
-    order: 1;
-    flex: 1 1 0;
-    text-align: left;
-    white-space: normal;
-    word-break: break-word;
-  }
-
-  .author {
-    position: static;
-    margin-bottom: -10px;
-    font-size: 14px;
-    opacity: 0.8;
-    order: 2;
-    flex: 1 1 0;
-    text-align: right;
-    white-space: normal;
-    word-break: break-word;
   }
 }

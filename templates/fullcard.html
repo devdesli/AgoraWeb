@@ -169,7 +169,7 @@ current_user.is_master or current_user.is_admin %}
         {{ likeform.hidden_tag() }}
         <button type="submit" class="like-button" data-id="{{ task.id }}">
           <i
-            class="bx {% if task.id in liked_tasks %}bxs-like liked{% else %}bx-like unliked{% endif %}"
+            class="bx {% if task.id in liked_tasks %}bxs-heart liked{% else %}bx-heart unliked{% endif %}"
           ></i>
         </button>
       </form>

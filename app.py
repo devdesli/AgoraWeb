@@ -26,13 +26,6 @@ from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToF
 from werkzeug.datastructures import CombinedMultiDict
 from flask_migrate import Migrate
 from models import db
-from moderation import (
-    content_scanner,
-    scan_challenge_content,
-    get_moderation_status,
-    setup_moderation_routes,
-    setup_moderation_logging
-)
 
 UPLOAD_FOLDER = 'static/uploads'
 # upload folder
@@ -55,11 +48,6 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
-
-setup_moderation_logging(app)
-
-# Setup moderation routes
-setup_moderation_routes(app)
 app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
 
