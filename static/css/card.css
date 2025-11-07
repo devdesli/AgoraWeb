@@ -87,6 +87,7 @@ button {
   box-sizing: border-box;
   cursor: pointer;
   overflow-x: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
 }
 
 .card::before {
@@ -118,7 +119,7 @@ button {
 }
 
 .card:hover {
-  transform: scale(1.05);
+  transform: translateY(-4px); 
   box-shadow: 0 1px 1px rgba(212, 43, 135, 0.6);
   cursor: pointer;
 }
@@ -195,7 +196,7 @@ select {
   padding: 0;
   display: block;
   z-index: 2;
-  max-width: 80%;
+  max-width: 85%;
 }
 
 .update-button,
