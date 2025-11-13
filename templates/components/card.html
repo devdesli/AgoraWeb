@@ -18,12 +18,12 @@
     <div class="headquestion-info">{{ task.main_question }}</div>
   </p>
   <p class="challenge-info">
-    <strong>Beschrijving:</strong><br />
+    <strong>Beschrijving:</strong><br/>
     {{ task.description }}
   </p>
-  <p class="author"><strong>Door:</strong> {{ task.name }}</p>
   </div>
   <div class="card-bottom">
+    <p class="author"><strong>Door:</strong> {{ task.name }}</p>
     <p class="category">{{ task.category }}</p>
       {% if current_user.is_authenticated and (current_user.id == task.author_id or current_user.is_admin) %}
   <div class="button-container">
