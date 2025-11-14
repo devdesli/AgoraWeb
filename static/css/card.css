@@ -30,7 +30,7 @@ button {
 .top .like-button {
   position: absolute;
   right: 16px;
-  top: 100px;
+  top: 30%;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -71,14 +71,15 @@ button {
 
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 450px);
+  grid-template-columns: repeat(auto-fit, 425px);
   justify-content: center; /* center when fewer items */
   gap: 30px;
-  padding: 20px;
-  margin-top: 125px;
-  min-width: 100%;
+  padding-top: 0px;
+  margin-top: 135px;
+  width: 110%;
   max-width: 1350px;
   margin-left: auto;
+  margin-right: auto;
 }
 
 .card {
@@ -88,6 +89,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 0.5px solid black;
