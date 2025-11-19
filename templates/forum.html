@@ -55,8 +55,7 @@
           <option value="likes" {% if request.args.get('sortfilter') == 'likes' %}selected{% endif %}>Meest geliked</option>
         </select>
       </form>
-    </div>
-    
+</div>
 </div>
 <div class="container">
     {% for task in tasks %}
