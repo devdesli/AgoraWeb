@@ -28,3 +28,4 @@ instance/your_database.db
 logs/
 cert.pem
 key.pem
+QUADRAAM_TENET_SETUP.md
