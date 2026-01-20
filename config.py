@@ -15,3 +15,8 @@ class Config:
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_USERNAME')  # This is crucial!
     APP_STATUS = os.getenv('APP_STATUS')
+    
+    # Microsoft 365 / Azure AD Configuration for Quadraam Tenet
+    AZURE_OAUTH_CLIENT_ID = os.getenv('AZURE_OAUTH_CLIENT_ID')
+    AZURE_OAUTH_CLIENT_SECRET = os.getenv('AZURE_OAUTH_CLIENT_SECRET')
+    AZURE_OAUTH_TENANT = os.getenv('AZURE_OAUTH_TENANT', 'common')

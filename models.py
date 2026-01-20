@@ -17,7 +17,12 @@ class User(UserMixin, db.Model):
     is_master = db.Column(db.Boolean, default=False)
     challenges = db.relationship('Todo', backref='author', lazy=True, cascade='all, delete-orphan')
     reset_token = db.Column(db.String(128), nullable=True)
-    reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True) 
+    reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True)
+    
+    # OAuth provider info
+    oauth_provider = db.Column(db.String(50), nullable=True)  # 'microsoft', 'google', etc.
+    oauth_id = db.Column(db.String(255), nullable=True)  # Unique ID from OAuth provider
+    is_oauth_user = db.Column(db.Boolean, default=False)  # True if user logs in via OAuth 
 
     def set_reset_token(self):
         self.reset_token = secrets.token_urlsafe(32)
