@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean, default=False)
     is_master = db.Column(db.Boolean, default=False)
-    challenges = db.relationship('Todo', backref='author', lazy=True, cascade='all, delete-orphan')
+    challenges = db.relationship('Todo', backref='author', lazy=True)  # Removed cascade to allow anonymization
     reset_token = db.Column(db.String(128), nullable=True)
     reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True)
     
@@ -66,7 +66,9 @@ class Todo(db.Model):
     category = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String(100), nullable=True)
     approved = db.Column(db.Boolean, default=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Made nullable for anonymized challenges
+    is_anonymized = db.Column(db.Boolean, default=False)
+    anonymized_at = db.Column(db.DateTime(timezone=True), nullable=True)
     
     
     def get_sub_questions_list(self):
@@ -76,6 +78,12 @@ class Todo(db.Model):
         except json.JSONDecodeError:
             # Fallback for malformed JSON or if it's just a plain string
             return [self.sub_questions] if self.sub_questions else []
+
+    def anonymize(self):
+        """Anonymize this challenge by removing author reference and marking as anonymous"""
+        self.author_id = None
+        self.is_anonymized = True
+        self.anonymized_at = datetime.now(timezone.utc)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -87,8 +95,8 @@ class Todo(db.Model):
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    todo_id = db.Column(db.Integer, db.ForeignKey('todo.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    todo_id = db.Column(db.Integer, db.ForeignKey('todo.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)

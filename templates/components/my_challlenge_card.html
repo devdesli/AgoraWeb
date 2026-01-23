@@ -22,31 +22,33 @@
         <div class="headquestion-info">{{ task.main_question }}</div>
       </div>
 
-      <p class="challenge-info">
-        {{ task.description }}
-      </p>
+      <p class="challenge-info">{{ task.description }}</p>
     </div>
 
     <div class="card-bottom">
-      <p class="author"><strong>Door:</strong> {{ task.name }}</p>
+      <p class="author">
+        <strong>Door:</strong>
+        {% if task.is_anonymized %} Anoniem {% else %} {{ task.name }} {% endif
+        %}
+      </p>
       <p class="category">{{ task.category }}</p>
     </div>
-      {% if current_user.is_authenticated and (current_user.id == task.author_id
-      or current_user.is_master or current_user.is_admin) %}
-      <div class="button-container">
-        <a href="{{ url_for('update', id=task.id) }}" class="update-button"
-          >Update</a
-        >
-        <form
-          action="{{ url_for('delete', id=task.id) }}"
-          method="POST"
-          onsubmit="return confirm('Are you sure you want to delete this task?');"
-        >
-          {{ form.hidden_tag() }}
-          <button class="delete-button" type="submit">Verwijder</button>
-        </form>
-      </div>
-      {% endif %}
+    {% if current_user.is_authenticated and (current_user.id == task.author_id
+    or current_user.is_master or current_user.is_admin) %}
+    <div class="button-container">
+      <a href="{{ url_for('update', id=task.id) }}" class="update-button"
+        >Update</a
+      >
+      <form
+        action="{{ url_for('delete', id=task.id) }}"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete this task?');"
+      >
+        {{ form.hidden_tag() }}
+        <button class="delete-button" type="submit">Verwijder</button>
+      </form>
+    </div>
+    {% endif %}
     <!-- /.card-bottom -->
   </div>
   <!-- /.text -->

@@ -8,9 +8,24 @@
 <div class="account-container">
   <h1>Account Settings</h1>
   <div class="form-group">
-    <label for="username">Username:</label>
-    <p>{{ current_user.username}}</p>
+    <label for="username" class="username">Username:</label>
+    <p class="username">{{ current_user.username}}</p>
   </div>
+    <form
+    method="POST"
+    action="{{ url_for('api_delete_user_anonimize', id=current_user.id) }}"
+    style="display: inline"
+  >
+    {{ form.hidden_tag() }}
+    <button
+      type="submit"
+      class="action-button delete-button"
+      onclick="return confirm('Weet je zeker dat je je account wil verwijderen en data wil Anonimiseren? Alleen challenges en likes worden behouden en geanonimiseerd.');"
+    >
+      Verwijder account en Anonimiseer alle data
+    </button>
+  </form>
+  <br/><br/>
   <form
     method="POST"
     action="{{ url_for('api_delete_user', id=current_user.id) }}"
@@ -20,9 +35,9 @@
     <button
       type="submit"
       class="action-button delete-button"
-      onclick="return confirm('Are you sure you want to delete your account?')"
+      onclick="return confirm('Weet je zeker dat je je account en alle data wilt verwijderen? Dit is niet terug te draaien!');"
     >
-      Delete Account
+      Verwijder je account en alle data
     </button>
   </form>
   {% endblock %}

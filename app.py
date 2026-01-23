@@ -699,16 +699,18 @@ def delete_challenge(id):
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
-    
+    """Admin delete user - permanently deletes user and all their data"""
     user = User.query.get_or_404(id)
 
     if current_user.is_master:
         try:
             db.session.delete(user)
             db.session.commit()
-            activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+            activity_logger.info(f"{current_user.username}, deleted user {user.username} (admin full delete)")
+            flash(f'User {user.username} and all their data have been permanently deleted.', 'success')
         except Exception as e:
             app.logger.error(f"Error deleting user {user} {user.username} {e}")
+            flash('Error deleting user', 'error')
         return redirect(url_for('admin'))
     
     if not current_user.is_master or current_user.is_admin:
@@ -724,43 +726,80 @@ def delete_user(id):
     try: 
       db.session.delete(user)
       db.session.commit()
-      activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+      activity_logger.info(f"{current_user.username}, deleted user {user.username} (admin full delete)")
+      flash(f'User {user.username} and all their data have been permanently deleted.', 'success')
     except Exception as e:
         app.logger.error(f"Error deleting user {user} {user.username} {e}")
+        flash('Error deleting user', 'error')
     return redirect(url_for('admin'))
 
 @app.route('/api/delete_user/<int:id>', methods=['POST'])
 @login_required
 def api_delete_user(id):
-    
+    """User self-deletes account - permanently deletes user and all their data"""
     user = User.query.get_or_404(id)
 
-    if current_user.username == user.username:
-        try:
-            db.session.delete(user)
-            db.session.commit()
-            activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
-        except Exception as e:
-            app.logger.error(f"Error deleting user {user} {user.username} {e}")
+    # Only allow user to delete their own account
+    if current_user.username != user.username:
+        activity_logger.info(f"{current_user.username} tried to delete {user.username} without permission")
+        flash('You can only delete your own account.', 'error')
         return redirect(url_for('index'))
-    if not current_user.username == user.username:
-        activity_logger.info(f"{current_user} {current_user.username}, tried to delete user without admin or master role")
-        return redirect(url_for('index'))
-    if not user.username == current_user.username:
-        try:
-            flash('Cannot delete users')
-            activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
-            return redirect(url_for('index'))
-        except Exception as e:
-            app.logger.error(f"Error deleting user {user} {user.username} {e}")
-            return redirect(url_for('index'))
-    try: 
-      db.session.delete(user)
-      db.session.commit()
-      activity_logger.info(f"{current_user.username}, deleted user {user.userame}")
+
+    try:
+        # Permanently delete user and all their data (challenges, likes)
+        db.session.delete(user)
+        db.session.commit()
+        
+        activity_logger.info(f"User {user.username} (ID: {user.id}) permanently deleted their account and all data.")
+        flash('Your account and all your data have been permanently deleted.', 'success')
+        
     except Exception as e:
-        app.logger.error(f"Error deleting user {user} {user.username} {e}")
+        db.session.rollback()
+        app.logger.error(f"Error deleting user {user.username}: {str(e)}")
+        flash('An error occurred while deleting your account. Please try again.', 'error')
+        activity_logger.error(f"Error deleting user {user.username}: {str(e)}")
+        return redirect(url_for('index'))
+    
+    logout_user()
     return redirect(url_for('index'))
+
+@app.route('/api/delete_user_anonimize/<int:id>', methods=['POST'])
+@login_required
+def api_delete_user_anonimize(id):
+    """User self-deletes account but anonymizes challenges - keeps contributions on platform"""
+    user = User.query.get_or_404(id)
+
+    # Only allow user to delete their own account
+    if current_user.username != user.username:
+        activity_logger.info(f"{current_user.username} tried to delete {user.username} without permission")
+        flash('You can only delete your own account.', 'error')
+        return redirect(url_for('index'))
+
+    try:
+        # Anonymize all challenges belonging to this user (keeps them on platform)
+        challenges = Todo.query.filter_by(author_id=user.id).all()
+        challenge_count = len(challenges)
+        for challenge in challenges:
+            challenge.anonymize()
+            activity_logger.info(f"Anonymized challenge '{challenge.title}' (ID: {challenge.id}) from deleted user {user.username}")
+        
+        # Delete the user account (likes are automatically deleted via CASCADE foreign key)
+        db.session.delete(user)
+        db.session.commit()
+        
+        activity_logger.info(f"User {user.username} (ID: {user.id}) deleted their account with anonymization. {challenge_count} challenges anonymized.")
+        flash(f'Your account has been deleted. Your {challenge_count} challenges remain on the platform as anonymous contributions.', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error deleting user {user.username}: {str(e)}")
+        flash('An error occurred while deleting your account. Please try again.', 'error')
+        activity_logger.error(f"Error deleting user {user.username}: {str(e)}")
+        return redirect(url_for('index'))
+    
+    logout_user()
+    return redirect(url_for('index'))
+
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
