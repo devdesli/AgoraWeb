@@ -2,7 +2,7 @@ We wanted inspiration, but where do you find it?
 That's why we created this forum to share with the community what we made how we made it and how you can do something like it.  
 
 
-V1.4-BETA CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
+V-APLHA CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
 
 
 📫 How to reach me: Send an email to agorawebapplication@gmail.com
@@ -24,4 +24,4 @@ This automaticly starts the server on all adresses if your machine has firewall 
 
 
 You can make an account through the website.
-Log in, Register, Post, and See
+Log in, Register, Post, and See Challenges from other users and like them!
