@@ -27,8 +27,8 @@
     <div class="card-bottom">
       <p class="author">
         <strong>Door:</strong>
-        {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{ task.name }} {% endif
-        %}
+        {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{
+        task.name }} {% endif %}
       </p>
       <p class="category">{{ task.category }}</p>
     </div>
@@ -76,6 +76,9 @@
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
         },
       })
         .then((response) => {

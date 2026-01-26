@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   // 1. Fetch current like states from backend on page load
-  document.querySelectorAll(".like-button").forEach(button => {
+  document.querySelectorAll(".like-button").forEach((button) => {
     const todoId = button.getAttribute("data-id");
 
     fetch(`/like_status/${todoId}`, {
-      headers: { "X-Requested-With": "XMLHttpRequest" }
+      headers: { "X-Requested-With": "XMLHttpRequest" },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const icon = button.querySelector("i");
         const likeCountElement = button.querySelector(".like-count");
 
@@ -37,12 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       headers: {
         "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": document
+          .querySelector('meta[name="csrf-token"]')
+          .getAttribute("content"),
       },
     })
       .then((response) => {
         if (response.status === 401) {
           alert("You must be logged in to like challenges.");
-          window.location.href = "/login?next=" + encodeURIComponent(window.location.pathname);
+          window.location.href =
+            "/login?next=" + encodeURIComponent(window.location.pathname);
           return;
         }
         return response.json();

@@ -1,6 +1,7 @@
 from slugify import slugify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from werkzeug.datastructures import CombinedMultiDict
 from datetime import datetime, timezone 
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
@@ -26,6 +27,9 @@ from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToF
 from werkzeug.datastructures import CombinedMultiDict
 from flask_migrate import Migrate
 from models import db
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 
 UPLOAD_FOLDER = 'static/uploads'
 # upload folder
@@ -35,9 +39,9 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
+# app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
 app.config.update(
-    SESSION_COOKIE_SAMESITE='None',
+    #SESSION_COOKIE_SAMESITE='None', disabled only needed for iframe
     SESSION_COOKIE_SECURE=True
 )
 
@@ -50,6 +54,8 @@ migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
 app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
+
+limiter = Limiter(get_remote_address, app=app)
 
 def ensure_upload_directory():
     upload_dir = app.config.get('UPLOAD_FOLDER', 'static/uploads')
@@ -251,7 +257,7 @@ def api_admin_see_challenge(user_id):
     challenges = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all()
     return render_template('my_challenges.html', challenges=challenges, form=form)
 
-
+@limiter.limit("5/minute")
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = CSRFOnlyForm()
@@ -264,7 +270,7 @@ def login():
     if form.validate_on_submit():  # this only checks CSRF token
         username_or_email = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
-        app.logger.info(f"Login attempt - Username/Email: {username_or_email}")  # Debug log
+        app.logger.info(f"Login attempt - Username/Email")  # Debug log
         
         # Try to find user by username or email
         user = User.query.filter(
@@ -273,27 +279,29 @@ def login():
         ).first()
         
         if user:
-            print(f"User found in database")  # Debug log
+            #print(f"User found in database")  # Debug log
             if user.check_password(password):
                 login_user(user)
                 next_page = request.args.get('next')
-                app.logger.info(f"{username_or_email}, logged in succesfully")
+                app.logger.info(f"user, logged in succesfully")
                 return redirect(next_page or url_for('index'))
             else:
-                app.logger.error(f"Password incorrect for {username_or_email}")  # Debug log
-                flash('Invalid password', "error")
+                app.logger.error(f"Password incorrect for user")  # Debug log
+                flash("Invalid username/email or password", "error")
         else:
-            app.logger.error(f"User not found {username_or_email}")  # Debug log
-            flash('No account found with that username or email', "error")
+            app.logger.error(f"User not found ")  # Debug log
+            flash("Invalid username/email or password", "error")
+
     
     return render_template('login.html', form=form)
 
+@limiter.limit("5/minute")
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = CSRFOnlyForm()
 
     if current_user.is_authenticated:
-        app.logger.info(f"{current_user}, already logged in")
+        app.logger.info(f"user already logged in")
         flash('You are already logged in.', "succes")
         return redirect(url_for('index'))
     
@@ -304,30 +312,33 @@ def register():
         confirm_password = request.form.get('confirm_password', '')
         
         if password != confirm_password:
-            app.logger.error(f"Passwords for {username}, do not match")
+            app.logger.error(f"Passwords do not match")
             flash('Passwords do not match', "error")
             return redirect(url_for('register', form=form))
         
         if User.query.filter_by(username=username).first():
-            app.logger.error(f"username {username} already exists")
-            flash('Username already exists', "error")
+            app.logger.error(f"username already exists")
+            flash("Registration failed. Please try again.", "error")
             return redirect(url_for('register', form=form))
         
         if User.query.filter_by(email=email).first():
-            app.logger.error(f"email {email} already registered")
-            flash('Email already registered', "error")
+            app.logger.error(f"email already registered")
+            flash("Registration failed. Please try again.", "error")
             return redirect(url_for('register', form=form))
         
         user = User(username=username, email=email)
         try: 
+          if len(password) < 10:
+            flash("Password must be at least 10 characters.", "error")
+            return redirect(url_for('register', form=form))
           user.set_password(password)
           db.session.add(user)
           db.session.commit()
-          app.logger.info(f"{user} {user.username}, succesfully registered")
+          app.logger.info(f"User succesfully registered")
           flash('Registration successful! Please log in.', "succes")
           return redirect(url_for('login'))
         except Exception as e:
-         app.logger.error(f"{user.username}, error while registering {e}")
+         app.logger.error(f"error while registering user {e}")
     return render_template('register.html', form=form)
 
 import os
@@ -346,6 +357,7 @@ google_bp = make_google_blueprint(
 
 app.register_blueprint(google_bp, url_prefix="/login")
 
+@limiter.limit("5/minute")
 @app.route('/login/google')
 def google_login():
     if not google.authorized:
@@ -397,6 +409,7 @@ azure_bp = make_azure_blueprint(
 )
 app.register_blueprint(azure_bp, url_prefix="/login")
 
+@limiter.limit("5/minute")
 @app.route("/login/microsoft")
 def microsoft_login():
     """
@@ -490,6 +503,7 @@ def microsoft_login():
         flash("An error occurred during Microsoft 365 login. Please try again.", "error")
         return redirect(url_for("login"))
 
+@limiter.limit("5/minute")
 @app.route('/logout')
 @login_required
 def logout():
@@ -594,7 +608,7 @@ def view_logs():
         num_lines=num_lines_str,
         all_log_types=['app_log', 'upload_log', 'activity_log', 'error_log'])
 
-
+@limiter.limit("5/minute")
 @app.route('/admin/logs/download/<log_file_name>')
 @login_required
 def download_log(log_file_name):
@@ -623,7 +637,8 @@ def download_log(log_file_name):
         flash(f"An error occurred during download: {str(e)}", 'error')
         error_logger.critical(f"Error downloading log file {log_file_name}: {e}")
         return redirect(url_for('view_logs'))
-    
+
+@limiter.limit("5/minute")
 @app.route('/admin/send-email/', methods=["POST", "GET"])
 @login_required
 def admin_email():
@@ -666,7 +681,7 @@ def admin_email():
 
     return render_template('admin_email.html', form=form)
 
-    
+@limiter.limit("5/minute")
 @app.route('/admin/approve_challenge/<int:id>')
 @login_required
 def approve_challenge(id):
@@ -679,6 +694,7 @@ def approve_challenge(id):
     app.logger.info(f"Admin approved challenge {challenge} {challenge.slug}")
     return redirect(url_for('admin'))
 
+@limiter.limit("5/minute")
 @app.route('/admin/delete_challenge/<int:id>')
 @login_required
 def delete_challenge(id):
@@ -696,6 +712,7 @@ def delete_challenge(id):
 
     return redirect(url_for('admin'))
 
+@limiter.limit("5/minute")
 @app.route('/admin/delete_user/<int:id>')
 @login_required
 def delete_user(id):
@@ -733,6 +750,7 @@ def delete_user(id):
         flash('Error deleting user', 'error')
     return redirect(url_for('admin'))
 
+@limiter.limit("5/minute")
 @app.route('/api/delete_user/<int:id>', methods=['POST'])
 @login_required
 def api_delete_user(id):
@@ -763,6 +781,7 @@ def api_delete_user(id):
     logout_user()
     return redirect(url_for('index'))
 
+@limiter.limit("5/minute")
 @app.route('/api/delete_user_anonimize/<int:id>', methods=['POST'])
 @login_required
 def api_delete_user_anonimize(id):
@@ -800,7 +819,7 @@ def api_delete_user_anonimize(id):
     logout_user()
     return redirect(url_for('index'))
 
-
+@limiter.limit("5/minute")
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     form = CSRFOnlyForm()
@@ -842,6 +861,7 @@ If you did not make this request then simply ignore this email and no changes wi
     
     return render_template('forgot.html', form=form)
 
+@limiter.limit("5/minute")
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     form = CSRFOnlyForm()
@@ -880,6 +900,7 @@ def reset_password(token):
 
     return render_template('reset.html', token=token, form=form)
 
+@limiter.limit("5/minute")
 @app.route('/reset_user_password/<int:id>', methods=['POST']) # Change to POST for better security
 @login_required
 def reset_user_password(id):
@@ -970,6 +991,26 @@ def forum():
     tasks = query.all()
     return render_template('forum.html', likeform=likeform, form=form, tasks=tasks, sortfilter=sortfilter)
 
+
+def is_real_image(file):
+    file.seek(0)
+    # Check by file signature (magic bytes)
+    header = file.read(12)
+    file.seek(0)
+    
+    # JPEG: FF D8 FF
+    if header[:3] == b'\xff\xd8\xff':
+        return True
+    # PNG: 89 50 4E 47
+    if header[:4] == b'\x89PNG':
+        return True
+    # GIF: 47 49 46
+    if header[:3] == b'GIF':
+        return True
+    
+    return False
+
+@limiter.limit("2/minute")
 @app.route('/uploadtoforum', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -988,7 +1029,7 @@ def upload():
         image_filename = None
         if 'image' in request.files:
           file = request.files['image']
-          if file and allowed_file(file.filename):
+          if file and allowed_file(file.filename) and is_real_image(file):
             ext = file.filename.rsplit('.', 1)[1].lower()
             title_slug = slugify(title)
             timestamp = int(time.time())
@@ -998,6 +1039,9 @@ def upload():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_filename = filename
             upload_logger.info(f"{current_user.username}, uploaded file {filename}")
+        else: 
+            abort(400)
+            flash('Invalid image', 'error')
 
         # Create unique slug
         base_slug = slugify(title) or f"untitled-{uuid.uuid4().hex[:6]}"
@@ -1050,7 +1094,8 @@ def account():
     form = CSRFOnlyForm()
     return render_template('account.html', form=form)
 
-@app.route('/like/<int:id>', methods=['GET', 'POST'])
+@limiter.limit("5/minute")
+@app.route('/like/<int:id>', methods=['POST'])
 @login_required
 def like(id):
     try:
@@ -1105,7 +1150,8 @@ def like(id):
         app.logger.error(f"Error processing like {e}")
         return redirect(url_for('forum'))
 
-@app.route("/like_status/<int:todo_id>")
+@limiter.limit("5/minute")
+@app.route("/like_status/<int:todo_id>", methods=['GET'])
 @login_required
 def like_status(todo_id):
     liked = Like.query.filter_by(todo_id=todo_id, user_id=current_user.id).first() is not None
@@ -1113,10 +1159,10 @@ def like_status(todo_id):
     
     return jsonify(success=True, liked=liked, likes=like_count)
 
+@limiter.limit("5/minute")
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 @login_required
 def update(id):
-    from werkzeug.datastructures import CombinedMultiDict
     
     task = Todo.query.get_or_404(id)
     form = CSRFOnlyForm()
@@ -1149,7 +1195,7 @@ def update(id):
         # Handle image upload
         if 'image' in request.files:
             file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
+            if file and allowed_file(file.filename) and is_real_image(file):
                 # Create custom filename similar to upload route
                 ext = file.filename.rsplit('.', 1)[1].lower()
                 title_slug = slugify(task.title)
@@ -1226,7 +1272,7 @@ def delete(id):
 def upload_image():
     if request.method == 'POST':
         file = request.files['image']
-        if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename) and is_real_image(file):
             original_filename = secure_filename(file.filename)
             timestamp = int(time.time())
             
@@ -1244,8 +1290,8 @@ def upload_image():
         
     return render_template('upload.html')
 
-csrf.exempt(like)
-csrf.exempt(like_status)
+#csrf.exempt(like)
+#csrf.exempt(like_status)
 
 if __name__ == '__main__':
     with app.app_context():
