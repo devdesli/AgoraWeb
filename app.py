@@ -302,6 +302,7 @@ def register():
         return redirect(url_for('index'))
     
     if request.method == 'POST' and form.validate():
+        real_name = request.form.get('real_name', '').strip()
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '')
@@ -322,7 +323,8 @@ def register():
             flash("Registration failed. Please try again.", "error")
             return redirect(url_for('register', form=form))
         
-        user = User(username=username, email=email)
+        user = User(username=username, email=email, real_name=real_name)
+        
         try: 
           if len(password) < 10:
             flash("Password must be at least 10 characters.", "error")
@@ -362,6 +364,27 @@ def admin():
     
     if not current_user.is_master or not current_user.is_admin:
         activity_logger.info(f"{current_user} {current_user.username}, tried to acces admin without permission")
+        flash('You are not authorized to view this page.')
+        return redirect(url_for('index'))
+    return redirect(url_for('index'))
+
+@app.route('/coach')
+@login_required
+def coach():
+    form = CSRFOnlyForm()
+    if current_user.is_master or current_user.is_admin or current_user.is_coach:
+        challenges = Todo.query.all()
+        app_status = app.config['APP_STATUS']
+        users = User.query.all()
+        return render_template('coach.html', challenges=challenges, users=users, app_status=app_status, form=form)
+    
+    if not current_user.is_authenticated:
+        activity_logger.info(f"trying to acces coach panel without logging in")
+        flash('Please log in first.')
+        return redirect(url_for('login'))
+    
+    if not current_user.is_master and not current_user.is_admin and not current_user.is_coach:
+        activity_logger.info(f"{current_user} {current_user.username}, tried to acces coach panel without permission")
         flash('You are not authorized to view this page.')
         return redirect(url_for('index'))
     return redirect(url_for('index'))
@@ -634,20 +657,23 @@ def api_delete_user_anonimize(id):
         challenge_count = len(challenges)
         for challenge in challenges:
             challenge.anonymize()
-            activity_logger.info(f"Anonymized challenge '{challenge.title}' (ID: {challenge.id}) from deleted user {user.username}")
-        
+            activity_logger.info(f"Anonymized challenge '{challenge.title}' (ID: {challenge.id}) from deleted user")
+          # Anonymize user account instead of deleting
+        user.is_deleted = True
+        user.username = f"deleted_user_{user.id}"
+        user.real_name = "[Deleted User]"
+        user.email = f"deleted_email_{user.id}"
         # Delete the user account (likes are automatically deleted via CASCADE foreign key)
-        db.session.delete(user)
         db.session.commit()
         
-        activity_logger.info(f"User {user.username} (ID: {user.id}) deleted their account with anonymization. {challenge_count} challenges anonymized.")
+        activity_logger.info(f"User with (ID: {user.id}) deleted their account with anonymization. {challenge_count} challenges anonymized.")
         flash(f'Your account has been deleted. Your {challenge_count} challenges remain on the platform as anonymous contributions.', 'success')
         
     except Exception as e:
         db.session.rollback()
-        app.logger.error(f"Error deleting user {user.username}: {str(e)}")
+        app.logger.error(f"Error deleting user: {str(e)}")
         flash('An error occurred while deleting your account. Please try again.', 'error')
-        activity_logger.error(f"Error deleting user {user.username}: {str(e)}")
+        activity_logger.error(f"Error deleting user: {str(e)}")
         return redirect(url_for('index'))
     
     logout_user()

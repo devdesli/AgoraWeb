@@ -33,38 +33,6 @@
 
     <button type="submit" class="auth-button">Login</button>
 
-    <div
-      class="oauth-buttons"
-      style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px"
-    >
-      <p style="text-align: center; color: #666; margin: 10px 0">
-        Of login met:
-      </p>
-
-      <div class="oauth-button">
-        <a
-          href="{{ url_for('google_login') }}"
-          class="btn btn-danger btn-block"
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-          "
-        >
-          <i class="fab fa-google"></i> Google
-        </a>
-      </div>
-
-      <div class="oauth-button">
-        <a
-          href="{{ url_for('microsoft_login') }}"
-          class="btn btn-primary btn-block"
-        >
-          <i class="fab fa-microsoft"></i> Microsoft / Quadraam
-        </a>
-      </div>
-    </div>
   </form>
   <p class="forgot-link">
     <a href="{{ url_for('forgot_password') }}">Wachtwoord vergeten?</a>

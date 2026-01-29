@@ -8,7 +8,10 @@
   rel="stylesheet"
 />
 <script src="{{url_for('static', filename='js/home.js') }}"></script>
-<meta name="google-site-verification" content="IIlrpaWmmvclRrKhC4o-ppmjYU1qJm3A3LPaQMgVnZU" />
+<meta
+  name="google-site-verification"
+  content="IIlrpaWmmvclRrKhC4o-ppmjYU1qJm3A3LPaQMgVnZU"
+/>
 {% endblock %} {% block body %}
 <div class="top-color">
   <h1>Maakplaats</h1>
@@ -52,7 +55,7 @@
       <button class="forum-button">
         <a href="{{ url_for('my_challenges') }}">Mijn Challenges</a>
       </button>
-       <button class="forum-button">
+      <button class="forum-button">
         <a href="{{ url_for('account') }}">Mijn account</a>
       </button>
       {% if current_user.is_master %}
@@ -62,6 +65,10 @@
       {% endif %} {% if current_user.is_admin and not current_user.is_master %}
       <button class="forum-button">
         <a href="{{ url_for('admin') }}">Admin Panel</a>
+      </button>
+      {% endif %} {% if current_user.is_coach and not current_user.is_master or current_user.is_amin%}
+      <button class="forum-button coach-button">
+        <a href="{{ url_for('coach') }}">Coach Panel</a>
       </button>
       {% endif %} {% if current_user.is_authenticated%}
       <button class="forum-button">

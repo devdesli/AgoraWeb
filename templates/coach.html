@@ -1,0 +1,110 @@
+{% extends 'base.html' %} {% block head %} {{super()}}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin.css') }}"
+/>
+{% endblock %} {% block body %}
+<div class="admin-container">
+  {% if current_user.is_authenticated and (current_user.is_admin or
+  current_user.is_master) %}
+  <div class="admin-message">
+    <p>"With great power comes great responsibility." - Uncle Ben 🕷️</p>
+  </div>
+  {% endif %} {% if current_user.is_master %}
+  <h1>You're on the coach panel master</h1>
+  {% endif %} {% if current_user.is_admin and not current_user.is_master %}
+  <h1>You're on the coach panel admin</h1>
+  {% endif %} {% with messages = get_flashed_messages() %} {% if messages %} {%
+  for message in messages %}
+  <div class="flash-message">{{ message }}</div>
+  {% endfor %} {% endif %} {% endwith %}
+  <div class="section button-section">
+    <button class="btn">
+      <a href="{{ url_for('index') }}">Go to Home</a>
+    </button>
+  </div>
+  <div class="section" id="challenge-section">
+    <h2>Challenges</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date Created</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for challenge in challenges %}
+        <tr>
+          <td>{{ challenge.title }}</td>
+          <td>{{ challenge.author.username }}</td>
+          <td>{{ challenge.date_created.strftime('%Y-%m-%d') }}</td>
+          <td>
+            {% if challenge.approved %}Approved{% else %}Pending{% endif %}
+          </td>
+          <td>
+            {% if not challenge.approved %}
+            <a
+              href="{{ url_for('approve_challenge', id=challenge.id) }}"
+              class="action-button approve-button"
+              >Approve</a
+            >
+            {% endif %}
+            <a href="{{ url_for('fullcard', id=challenge.id) }}"
+              >See challenge</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div id="user-section" class="section">
+    <h2>Users</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Real Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.real_name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            {% if user.is_master %} Master {% elif user.is_admin %} Admin {%
+            elif user.is_coach %} Coach {% else %} User {% endif %}
+          </td>
+          {% if current_user.is_admin or current_user.is_master %}
+          <td>
+            <a
+              href="{{ url_for('api_admin_see_challenge', user_id=user.id) }}"
+              class="action-button delete-button"
+            >
+              See Challenges
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="section">
+    {% if app_status == 'production' %}
+    <div class="status-banner production">Running in Production</div>
+    {% else %}
+    <div class="status-banner dev">Development Mode</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
