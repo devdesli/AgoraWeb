@@ -2,10 +2,8 @@ Update path of Maakplaats
 
 Security
 Running a pen test on the site 
-Updating packages to latest safest version
 
 Functionality 
-Be able to optionally delete challenges on account deletion or delete all like normal 
 Register and login through Quadraam Tenet
 Login / and register with Microsoft 365
 
