@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block head %} {{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/my_challenges.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/my_challenge_card.css') }}"
+/>
+<link
+  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+  rel="stylesheet"
+/>
+<script src="{{ url_for('static', filename='js/forum.js') }}"></script>
+{% endblock %} {% block body %}
+<div class="top-color position-fixed">
+  <h1>{{ current_user.username }}'s challenge's</h1>
+  <div class="module-container">
+    <a href="{{url_for('index')}}" class="module-button">
+      <p class="module-tekst">Home</p>
+    </a>
+  </div>
+</div>
+
+<div class="container">
+  {% for task in challenges %} {% include 'components/my_challlenge_card.html'
+  %} {% else %}
+  <div class="post">
+    <p>Je hebt nog geen challenges geplaatst.</p>
+    <a class="upload_button" href="{{ url_for('upload') }}"
+      >Upload een Challenge</a
+    >
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

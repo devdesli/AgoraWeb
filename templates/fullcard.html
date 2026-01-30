@@ -50,10 +50,12 @@ current_user.is_master or current_user.is_admin %}
 <div class="content">
   <div class="card-header">
     <h2 class="title">{{ task.title }}</h2>
-    <p class="author">
-      Door: {% if task.is_anonymized %} Anoniem {% else %} {{ task.name }} {%
-      endif %}
-    </p>
+    <a href="{{ url_for('user_profile', username=task.author.username) }}" class="author-link">
+      <p class="author">
+        Door: {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{
+        task.name }} {% endif %}
+      </p>
+    </a>
   </div>
 
   <div class="main-content">

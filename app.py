@@ -1,35 +1,37 @@
-from slugify import slugify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
-from werkzeug.datastructures import CombinedMultiDict
-from datetime import datetime, timezone 
-from flask_migrate import Migrate
-from werkzeug.utils import secure_filename
+from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
 from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory, make_response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Todo, Like, Image
+from werkzeug.datastructures import CombinedMultiDict
 from flask_mail import Mail, Message
+from slugify import slugify
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from werkzeug.datastructures import CombinedMultiDict
+from logging.handlers import RotatingFileHandler
+from datetime import datetime, timezone 
+from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 from config import Config
 import time
 import os
 import secrets
 import json
 import logging
-from logging.handlers import RotatingFileHandler
 import uuid
 import string, random
 import re
 from xhtml2pdf import pisa
 import io
 from flask_wtf import CSRFProtect
-from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
-from werkzeug.datastructures import CombinedMultiDict
 from flask_migrate import Migrate
 from models import db
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_socketio import SocketIO
 
+socketio = SocketIO()
 
 UPLOAD_FOLDER = 'static/uploads'
 # upload folder
@@ -55,6 +57,9 @@ migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
 app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
+socketio.init_app(app)
+
+
 
 limiter = Limiter(get_remote_address, app=app)
 
@@ -240,6 +245,17 @@ def my_challenges():
     form = DeleteForm()
     challenges = Todo.query.filter_by(author_id=current_user.id).order_by(Todo.date_created.desc()).all()
     return render_template('my_challenges.html', challenges=challenges, form=form)
+
+@app.route('/<username>/challenges')
+@login_required
+def user_profile(username):
+    form = DeleteForm()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash("User not found.", "error")
+        return redirect(url_for('forum'))
+    challenges = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all()
+    return render_template('user_profile.html', challenges=challenges, form=form)
 
 # see challenges off a user from admin panel
 @app.route('/api/admin/see-challenge/<int:user_id>')
@@ -660,8 +676,8 @@ def api_delete_user_anonimize(id):
             activity_logger.info(f"Anonymized challenge '{challenge.title}' (ID: {challenge.id}) from deleted user")
           # Anonymize user account instead of deleting
         user.is_deleted = True
-        user.username = f"deleted_user_{user.id}"
-        user.real_name = "[Deleted User]"
+        user.username = f"deleted_user"
+        user.real_name = f"[Deleted User {user.id}]"
         user.email = f"deleted_email_{user.id}"
         # Delete the user account (likes are automatically deleted via CASCADE foreign key)
         db.session.commit()
@@ -1156,4 +1172,4 @@ def upload_image():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    socketio.run(app, port=5000, debug=False)

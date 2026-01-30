@@ -8,6 +8,7 @@ import secrets
 
 db = SQLAlchemy()
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -108,3 +109,4 @@ class Image(db.Model):
 
     def __repr__(self):
         return f'<Image {self.filename}>'
+

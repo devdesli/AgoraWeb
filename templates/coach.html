@@ -39,7 +39,12 @@
         {% for challenge in challenges %}
         <tr>
           <td>{{ challenge.title }}</td>
-          <td>{{ challenge.author.username }}</td>
+          <td>
+            {% if challenge.author and not challenge.author.is_deleted %} {{
+            challenge.author.username }} {% else %}
+            <em>[deleted user]</em>
+            {% endif %}
+          </td>
           <td>{{ challenge.date_created.strftime('%Y-%m-%d') }}</td>
           <td>
             {% if challenge.approved %}Approved{% else %}Pending{% endif %}

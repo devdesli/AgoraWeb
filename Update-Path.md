@@ -3,18 +3,63 @@ Update path of Maakplaats
 Security
 Running a pen test on the site 
 
+samenwerking van gebruikers op challenge's? 
+Goedkeuring op samen werken via e-mail? 
+Rechten aan uit 
+Jouw'n project contributor invite 
+Zelfde principe als GitHub 
+
+Comments Advice Tips etc. 
+
+
+Bijzondere persoonsgegevens bij minderjarige 
+Bvb naam en locatie 
+
+communicatie via de site 
+E-Mails sturen 
+Beveiligings check erop 
+
+Comments of communicatie over een challenge 
+Verstuurd via de applicatie 
+Comments openbaar eronder 
+Of E-Mailen heen en weer 
+
+Chatplatform voor challenge comments of E-Mails 
+
+
+Microsoft Learn 
+
++Google en Microsoft OAuth weglaten 
+
+Echte Naam en Gebruikersnaam apart opslaan 
+Gewoon normaal account laten en met gebruikersnamen werken. 
+
+Privacy beleid 
+Admins en Scholen kunnen het recht hebben om gebruikers te laten verwijderen. 
+
++En Docenten rol toevoegen 
+
++Password hashing security before DB
+
+
+Wellicht succesvol lokaal runnen op Eduroam met local DNS
+
++User anonimisation changes 
+
+Necessities 
+Pop up asking for data collection permission on registration
+
+
+
 Functionality 
+# not needed for now 
 Register and login through Quadraam Tenet
 Login / and register with Microsoft 365
 
 Be able to approve users except when registered through Quadraam Tenet
 Or automatically with certain checks ( will see in furseen future )
 Best idea in my mind only be able to user Quadraam so it's secured and only accesible for the Quadraam foundation and its Workers and Students
-
-Necessities 
-Pop up asking for data collection permission on registration
-
-
+#
 
 Microsoft login with Quadraam now gives this 
 
