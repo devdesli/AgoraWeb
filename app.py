@@ -2,18 +2,25 @@ from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToF
 from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory, make_response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, Todo, Like, Image
 from werkzeug.datastructures import CombinedMultiDict
-from flask_mail import Mail, Message
-from slugify import slugify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
-from werkzeug.datastructures import CombinedMultiDict
+from flask_limiter.util import get_remote_address
 from logging.handlers import RotatingFileHandler
-from datetime import datetime, timezone 
-from flask_migrate import Migrate
+from models import db, User, Todo, Like, Image
 from werkzeug.utils import secure_filename
+from sqlalchemy.exc import IntegrityError
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
+from flask_mail import Mail, Message
+from flask_socketio import SocketIO
+from flask_migrate import Migrate
+from flask_wtf import CSRFProtect
+from flask_migrate import Migrate
+from flask_limiter import Limiter
+from api.rest_api import api_bp
+from xhtml2pdf import pisa
+from slugify import slugify
 from config import Config
+from models import db
 import time
 import os
 import secrets
@@ -22,14 +29,7 @@ import logging
 import uuid
 import string, random
 import re
-from xhtml2pdf import pisa
 import io
-from flask_wtf import CSRFProtect
-from flask_migrate import Migrate
-from models import db
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_socketio import SocketIO
 
 socketio = SocketIO()
 
@@ -59,9 +59,20 @@ app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
 socketio.init_app(app)
 
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    storage_uri="memory://",
+    strategy="moving-window"
+)
 
-
-limiter = Limiter(get_remote_address, app=app)
+# Register Flask-RESTful blueprint (minimal API)
+try:
+    from api.rest_api import api_bp
+    app.register_blueprint(api_bp)
+except Exception:
+    # Import may fail if Flask-RESTful isn't installed yet; ignore until deps are installed
+    pass
 
 def ensure_upload_directory():
     upload_dir = app.config.get('UPLOAD_FOLDER', 'static/uploads')
@@ -942,10 +953,42 @@ def upload():
             slug=slug
         )
 
+        # Optional contributor: accept email or username from the form
+        contributor_identifier = (request.form.get('contributor_email') or request.form.get('contributor_username') or '').strip()
+        contributor_user = None
+        if contributor_identifier:
+            if '@' in contributor_identifier:
+                contributor_user = User.query.filter_by(email=contributor_identifier.lower()).first()
+            else:
+                contributor_user = User.query.filter_by(username=contributor_identifier).first()
+
+            if contributor_user:
+                token = secrets.token_urlsafe(32)
+                new_task.contributor_id = contributor_user.id
+                new_task.contributor_approved = False
+                new_task.contributor_approval_token = token
+            else:
+                flash('Contributor not found (username or email). Challenge will be created without contributor.', 'warning')
+
         try:
             db.session.add(new_task)
             db.session.commit()
             upload_logger.info(f"{current_user} {current_user.username}, uploaded new task {new_task}")
+
+            # If a contributor was set, send approval email
+            if contributor_user and new_task.contributor_approval_token:
+                try:
+                    approval_url = url_for('api.contributorapprove', token=new_task.contributor_approval_token, _external=True)
+                    msg = Message(
+                        subject=f"You've been added as contributor to '{new_task.title}'",
+                        sender=app.config.get('MAIL_USERNAME'),
+                        recipients=[contributor_user.email]
+                    )
+                    msg.body = f"Hello {contributor_user.username},\n\nYou were added as a contributor to the challenge '{new_task.title}'. To accept and have your name displayed on the challenge, click the link:\n\n{approval_url}\n\nIf you do not want to be a contributor, ignore this message."
+                    mail.send(msg)
+                    app.logger.info(f"Sent contributor approval email to {contributor_user.email} for challenge id {new_task.id}")
+                except Exception as e:
+                    app.logger.error(f"Failed to send contributor approval email: {e}")
             if not (current_user.is_master or current_user.is_admin):
                 app.logger.info(f"{current_user} {current_user.username}'s challenge {title}, is waiting for approval")
                 flash("When your challenge gets approved, you'll see it here.", "info")

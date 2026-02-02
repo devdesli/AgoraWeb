@@ -19,7 +19,9 @@ class User(UserMixin, db.Model):
     is_master = db.Column(db.Boolean, default=False)
     is_coach = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False)  # True when user account is deleted
-    challenges = db.relationship('Todo', backref='author', lazy=True)  # Removed cascade to allow anonymization
+    # Explicitly specify foreign_keys to disambiguate author vs contributor relationships
+    challenges = db.relationship('Todo', backref='author', lazy=True, foreign_keys='Todo.author_id')  # Removed cascade to allow anonymization
+    contributions = db.relationship('Todo', backref='contributor', lazy=True, foreign_keys='Todo.contributor_id')
     reset_token = db.Column(db.String(128), nullable=True)
     reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True)
     
@@ -71,8 +73,12 @@ class Todo(db.Model):
     image = db.Column(db.String(100), nullable=True)
     approved = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Made nullable for anonymized challenges
+    contributor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     is_anonymized = db.Column(db.Boolean, default=False)
     anonymized_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    # Contributor workflow
+    contributor_approved = db.Column(db.Boolean, default=False)
+    contributor_approval_token = db.Column(db.String(128), nullable=True)
     
     
     def get_sub_questions_list(self):

@@ -17,11 +17,11 @@
       <a href="mailto:agorawebapplication@gmail.com">admin@gmail.com</a>
     </p>
   </div>
-    <div class="module-container">
-        <a href="{{url_for('index')}}" class="module-button">
-            <p class="module-tekst">Home</p>
-        </a>
-    </div>
+  <div class="module-container">
+    <a href="{{url_for('index')}}" class="module-button">
+      <p class="module-tekst">Home</p>
+    </a>
+  </div>
 </div>
 
 <div class="forum">
@@ -37,7 +37,7 @@
       maxlength="70"
       placeholder="Vul de titel van jouw challenge in"
     ></textarea>
-        <!-- Beschrijving -->
+    <!-- Beschrijving -->
     <label for="description" class="challengeinfo challengeinfoText"
       ><h3>Informatie</h3></label
     >
@@ -120,12 +120,33 @@
     </select>
     <br />
 
+    <!-- Contributor (optional) - keep styling consistent with existing inputs -->
+    <label for="contributor" class="challengeinfo challengeinfoText"
+      ><h3>Contributor (optioneel)</h3></label
+    >
+    <div>
+      <input
+        type="email"
+        class="challengeinfo"
+        name="contributor_email"
+        maxlength="120"
+        placeholder="Email van contributor (optioneel)"
+      />
+      <input
+        type="text"
+        class="challengeinfo"
+        name="contributor_username"
+        maxlength="80"
+        placeholder="Of username van contributor (optioneel)"
+      />
+    </div>
+
     <script>
       // Script for dynamic sub-question input fields
       document.addEventListener("DOMContentLoaded", function () {
         const addSubQuestionButton = document.getElementById("addSubQuestion");
         const subQuestionsContainer = document.getElementById(
-          "subQuestionsContainer"
+          "subQuestionsContainer",
         );
 
         addSubQuestionButton.addEventListener("click", function () {
