@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 from flask_limiter.util import get_remote_address
 from logging.handlers import RotatingFileHandler
-from models import db, User, Todo, Like, Image
+from models import db, User, Todo, Like, Image, TodoContributor
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
 from flask_sqlalchemy import SQLAlchemy
@@ -235,7 +235,8 @@ def download_challenge_pdf(challenge_id):
         return redirect(url_for('forum'))
 
     # Render HTML template with challenge data
-    html = render_template("challenge_pdf_template.html", challenge=challenge)
+    # The template expects a `task` variable; provide both `challenge` and `task`.
+    html = render_template("challenge_pdf_template.html", challenge=challenge, task=challenge)
 
     # Create PDF from HTML
     result = io.BytesIO()
@@ -953,42 +954,56 @@ def upload():
             slug=slug
         )
 
-        # Optional contributor: accept email or username from the form
-        contributor_identifier = (request.form.get('contributor_email') or request.form.get('contributor_username') or '').strip()
-        contributor_user = None
-        if contributor_identifier:
-            if '@' in contributor_identifier:
-                contributor_user = User.query.filter_by(email=contributor_identifier.lower()).first()
-            else:
-                contributor_user = User.query.filter_by(username=contributor_identifier).first()
+        # Optional contributors: accept multiple contributor fields from the form
+        # Support names: 'contributor[]', 'contributor', 'contributor_email', 'contributor_username'
+        contributor_inputs = request.form.getlist('contributor[]') or request.form.getlist('contributor') or []
+        # fallback single-value fields
+        single_email = request.form.get('contributor_email')
+        single_username = request.form.get('contributor_username')
+        if single_email:
+            contributor_inputs.append(single_email.strip())
+        if single_username:
+            contributor_inputs.append(single_username.strip())
 
-            if contributor_user:
-                token = secrets.token_urlsafe(32)
-                new_task.contributor_id = contributor_user.id
-                new_task.contributor_approved = False
-                new_task.contributor_approval_token = token
+        contributor_users = []
+        for identifier in contributor_inputs:
+            identifier = (identifier or '').strip()
+            if not identifier:
+                continue
+            if '@' in identifier:
+                user = User.query.filter_by(email=identifier.lower()).first()
             else:
-                flash('Contributor not found (username or email). Challenge will be created without contributor.', 'warning')
+                user = User.query.filter_by(username=identifier).first()
+            if user:
+                contributor_users.append(user)
+            else:
+                upload_logger.info(f"Contributor not found: {identifier}")
 
         try:
             db.session.add(new_task)
             db.session.commit()
             upload_logger.info(f"{current_user} {current_user.username}, uploaded new task {new_task}")
 
-            # If a contributor was set, send approval email
-            if contributor_user and new_task.contributor_approval_token:
+            # If contributors were provided, create association rows and send approval emails
+            for user in contributor_users:
                 try:
-                    approval_url = url_for('api.contributorapprove', token=new_task.contributor_approval_token, _external=True)
-                    msg = Message(
-                        subject=f"You've been added as contributor to '{new_task.title}'",
-                        sender=app.config.get('MAIL_USERNAME'),
-                        recipients=[contributor_user.email]
-                    )
-                    msg.body = f"Hello {contributor_user.username},\n\nYou were added as a contributor to the challenge '{new_task.title}'. To accept and have your name displayed on the challenge, click the link:\n\n{approval_url}\n\nIf you do not want to be a contributor, ignore this message."
-                    mail.send(msg)
-                    app.logger.info(f"Sent contributor approval email to {contributor_user.email} for challenge id {new_task.id}")
+                    token = secrets.token_urlsafe(32)
+                    assoc = TodoContributor(todo=new_task, user=user, approved=(current_user.is_admin or current_user.is_master), approval_token=(None if (current_user.is_admin or current_user.is_master) else token))
+                    db.session.add(assoc)
+                    db.session.commit()
+
+                    if assoc.approval_token:
+                        approval_url = url_for('api.contributorapprove', token=assoc.approval_token, _external=True)
+                        msg = Message(
+                            subject=f"You've been added as contributor to '{new_task.title}'",
+                            sender=app.config.get('MAIL_USERNAME'),
+                            recipients=[user.email]
+                        )
+                        msg.body = f"Hello {user.username},\n\nYou were added as a contributor to the challenge '{new_task.title}'. To accept and have your name displayed on the challenge, click the link:\n\n{approval_url}\n\nIf you do not want to be a contributor, ignore this message."
+                        mail.send(msg)
+                        app.logger.info(f"Sent contributor approval email to {user.email} for challenge id {new_task.id}")
                 except Exception as e:
-                    app.logger.error(f"Failed to send contributor approval email: {e}")
+                    app.logger.error(f"Failed to create/send contributor invite for {user}: {e}")
             if not (current_user.is_master or current_user.is_admin):
                 app.logger.info(f"{current_user} {current_user.username}'s challenge {title}, is waiting for approval")
                 flash("When your challenge gets approved, you'll see it here.", "info")

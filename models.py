@@ -19,9 +19,10 @@ class User(UserMixin, db.Model):
     is_master = db.Column(db.Boolean, default=False)
     is_coach = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False)  # True when user account is deleted
-    # Explicitly specify foreign_keys to disambiguate author vs contributor relationships
+    # Explicitly specify foreign_keys to disambiguate author relationship
     challenges = db.relationship('Todo', backref='author', lazy=True, foreign_keys='Todo.author_id')  # Removed cascade to allow anonymization
-    contributions = db.relationship('Todo', backref='contributor', lazy=True, foreign_keys='Todo.contributor_id')
+    # contributed tasks via association model (TodoContributor)
+    contributed_tasks = db.relationship('TodoContributor', back_populates='user', lazy=True)
     reset_token = db.Column(db.String(128), nullable=True)
     reset_token_expiration = db.Column(db.DateTime(timezone=True), nullable=True)
     
@@ -73,12 +74,10 @@ class Todo(db.Model):
     image = db.Column(db.String(100), nullable=True)
     approved = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Made nullable for anonymized challenges
-    contributor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     is_anonymized = db.Column(db.Boolean, default=False)
     anonymized_at = db.Column(db.DateTime(timezone=True), nullable=True)
-    # Contributor workflow
-    contributor_approved = db.Column(db.Boolean, default=False)
-    contributor_approval_token = db.Column(db.String(128), nullable=True)
+    # relationship to contributor association rows
+    contributors = db.relationship('TodoContributor', back_populates='todo', cascade='all, delete-orphan', lazy=True)
     
     
     def get_sub_questions_list(self):
@@ -88,6 +87,10 @@ class Todo(db.Model):
         except json.JSONDecodeError:
             # Fallback for malformed JSON or if it's just a plain string
             return [self.sub_questions] if self.sub_questions else []
+
+    @property
+    def approved_contributors(self):
+        return [assoc.user for assoc in self.contributors if assoc.approved]
 
     def anonymize(self):
         """Anonymize this challenge by removing author reference and marking as anonymous"""
@@ -115,4 +118,23 @@ class Image(db.Model):
 
     def __repr__(self):
         return f'<Image {self.filename}>'
+
+
+class TodoContributor(db.Model):
+    __tablename__ = 'todo_contributor'
+    id = db.Column(db.Integer, primary_key=True)
+    todo_id = db.Column(db.Integer, db.ForeignKey('todo.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    approved = db.Column(db.Boolean, default=False)
+    approval_token = db.Column(db.String(128), nullable=True)
+    invited_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    # relationships
+    todo = db.relationship('Todo', back_populates='contributors')
+    user = db.relationship('User', back_populates='contributed_tasks')
+
+    def __repr__(self):
+        return f'<TodoContributor todo_id={self.todo_id} user_id={self.user_id} approved={self.approved}>'
+
+# (approved_contributors property is defined on the Todo class)
 

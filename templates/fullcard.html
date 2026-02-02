@@ -59,12 +59,14 @@ current_user.is_master or current_user.is_admin %}
         task.name }} {% endif %}
         </h3>
     </a>
-    {% if task.contributor_id and task.contributor_approved %}
-    <p class="author" style="color: white;">
-      <p>Medewerker:</p>
-      {{ task.contributor.username }}
-    </p>
-    {% endif %}
+      {% if task.approved_contributors %}
+      <p class="contributor">
+        <strong>Medewerkers:</strong>
+        {% for u in task.approved_contributors %}
+          {{ u.username }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
   </div>
 
   <div class="main-content">

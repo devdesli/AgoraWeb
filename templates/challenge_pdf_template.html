@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -57,7 +57,18 @@
   </head>
   <body>
     <h1>{{ challenge.title }}</h1>
-    <p class="author"><strong>By:</strong> {{ challenge.author.username }}</p>
+    <h3 class="author">
+      Door: {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{
+      task.name }} {% endif %}
+    </h3>
+    {% if task.approved_contributors %}
+    <p class="author">
+      <strong>Medewerkers:</strong>
+      {% for u in task.approved_contributors %}
+        {{ u.username }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {% endif %}
     <p>
       <strong>Date Created:</strong> {{
       challenge.date_created.strftime('%Y-%m-%d') }}

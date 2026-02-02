@@ -120,28 +120,53 @@
     </select>
     <br />
 
-    <!-- Contributor (optional) - keep styling consistent with existing inputs -->
-    <label for="contributor" class="challengeinfo challengeinfoText"
+    <label for="contributor" class="subquestions subquestionsText"
       ><h3>Contributor (optioneel)</h3></label
     >
-    <div>
-      <input
-        type="email"
-        class="challengeinfo"
-        name="contributor_email"
-        maxlength="120"
-        placeholder="Email van contributor (optioneel)"
-      />
-      <input
-        type="text"
-        class="challengeinfo"
-        name="contributor_username"
-        maxlength="80"
-        placeholder="Of username van contributor (optioneel)"
-      />
+    <div id="contributorContainer">
+      <textarea
+        rows="1"
+        class="subquestions"
+        name="contributor[]"
+        maxlength="150"
+        placeholder="Voeg samenwerkers toe! E-Mail of Username"
+      ></textarea>
     </div>
+    <button type="button" id="addContributor" class="add-subquestion-button">
+      Voeg contributor toe
+    </button>
 
     <script>
+      // Script for dynamic contributor input fields
+      document.addEventListener("DOMContentLoaded", function () {
+        const addContributorButton = document.getElementById("addContributor");
+        const contributorContainer = document.getElementById(
+          "contributorContainer",
+        );
+
+        addContributorButton.addEventListener("click", function () {
+          const newTextArea = document.createElement("textarea");
+          newTextArea.rows = "1";
+          newTextArea.className = "new-contributor";
+          newTextArea.name = "contributor[]"; // Array name for multiple inputs
+          newTextArea.maxLength = "150";
+          newTextArea.placeholder = "Vul hier een contributor in";
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "remove-subquestion-button";
+          removeButton.innerHTML = "&times;"; // 'x' icon
+          removeButton.addEventListener("click", function () {
+            contributorContainer.removeChild(newTextArea);
+            contributorContainer.removeChild(removeButton);
+          });
+
+          contributorContainer.appendChild(newTextArea);
+          contributorContainer.appendChild(removeButton);
+          newTextArea.focus(); // Focus on the new input
+        });
+      });
+
       // Script for dynamic sub-question input fields
       document.addEventListener("DOMContentLoaded", function () {
         const addSubQuestionButton = document.getElementById("addSubQuestion");

@@ -1,8 +1,9 @@
 from flask import Blueprint, current_app, redirect, url_for
 from flask_login import current_user
 from flask_restful import Api, Resource
-from models import User, User, db, Todo
+from models import User, db, Todo, TodoContributor
 import requests as request
+
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 api = Api(api_bp)
 
@@ -15,20 +16,20 @@ class Hello(Resource):
 class ContributorApprove(Resource):
     def get(self, token):
         """Approve contributor for a challenge using the approval token."""
-        todo = Todo.query.filter_by(contributor_approval_token=token).first()
-        if not todo:
+        assoc = TodoContributor.query.filter_by(approval_token=token).first()
+        if not assoc:
             return {'error': 'Invalid or expired token'}, 404
 
-        todo.contributor_approved = True
-        todo.contributor_approval_token = None
-        db.session.add(todo)
+        assoc.approved = True
+        assoc.approval_token = None
+        db.session.add(assoc)
         db.session.commit()
 
         # Redirect to the challenge page (if frontend exists) or return JSON
         try:
-            return redirect(url_for('fullcard', id=todo.id, slug=todo.slug))
+            return redirect(url_for('fullcard', id=assoc.todo_id, slug=assoc.todo.slug))
         except Exception:
-            return {'message': 'Contributor approved', 'todo_id': todo.id}
+            return {'message': 'Contributor approved', 'todo_id': assoc.todo_id}
 
 class Admin_Stats(Resource):
     def get(self):
@@ -38,7 +39,7 @@ class Admin_Stats(Resource):
             total_users = User.query.count()
             total_todos = Todo.query.count()
             total_likes = db.session.query(db.func.sum(Todo.likes)).scalar() or 0
-            pending_contributors = Todo.query.filter_by(contributor_approved=False).count()
+            pending_contributors = db.session.query(TodoContributor).filter_by(approved=False).count()
             code_size = request.get(link).text
             return {
                 'total_users': total_users,

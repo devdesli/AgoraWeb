@@ -222,6 +222,18 @@ hr {
   top: 195px;
 }
 
+.contributor-label {
+  position: absolute;
+  top: 350px;
+  left: 650px;
+}
+
+.contributorContainer {
+  position: absolute;
+  top: 50px;
+  left: 650px;
+}
+
 .image {
   position: relative;
   top: -75px;
