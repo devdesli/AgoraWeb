@@ -1,9 +1,5 @@
 We wanted inspiration, but where do you find it?  
-That's why we created this forum to share with the community what we made how we made it and how you can do something like it.  
-
-
-V-APLHA CURRENTLY RUNNING AT [agorawebapp.pythonanywhere](https://agorawebapp.pythonanywhere.com/)
-
+That's why we created this forum to share with the community what we made, how we made it and how you can do something like it.  
 
 📫 How to reach me: Send an email to agorawebapplication@gmail.com
 
