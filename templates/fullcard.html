@@ -54,14 +54,14 @@ current_user.is_master or current_user.is_admin %}
       href="{{ url_for('user_profile', username=task.author.username) }}"
       class="author-link"
     >
-      <p class="author">
+      <h3 class="author">
         Door: {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{
         task.name }} {% endif %}
-      </p>
+        </h3>
     </a>
     {% if task.contributor_id and task.contributor_approved %}
-    <p class="contributor">
-      <strong>Medewerker:</strong>
+    <p class="author" style="color: white;">
+      <p>Medewerker:</p>
       {{ task.contributor.username }}
     </p>
     {% endif %}
