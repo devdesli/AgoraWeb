@@ -9,6 +9,11 @@
 
 .new-contributor {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -20; 
+  padding: 17.5px;
 }
 
 .contributorText {
@@ -23,7 +28,7 @@
   border: none;
   cursor: pointer;
   background-color: white;
-  margin-top: 20px;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 
