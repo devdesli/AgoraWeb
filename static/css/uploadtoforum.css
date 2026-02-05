@@ -158,7 +158,8 @@ hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  left: 350px;
+  top: 280.5px;
+  left: 600px;
   font-size: 1.5em;
   box-shadow: 0 1px 4px rgba(34, 25, 77, 0.08);
   transition: background 0.2s;
@@ -188,20 +189,6 @@ hr {
   background-color: white;
 }
 
-.remove-subquestion-button {
-  position: relative;
-  top: 282.5px;
-  left: 605px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-  padding: 4px 8px;
-  border-radius: 100px;
-  border: none;
-  background-color: white;
-  cursor: pointer;
-}
-
 .challengeinfo {
   position: absolute;
   top: 325px;
@@ -220,18 +207,6 @@ hr {
 
 .endproductText {
   top: 195px;
-}
-
-.contributor-label {
-  position: absolute;
-  top: 350px;
-  left: 650px;
-}
-
-.contributorContainer {
-  position: absolute;
-  top: 50px;
-  left: 650px;
 }
 
 .image {

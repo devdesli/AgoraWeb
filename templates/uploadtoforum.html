@@ -3,6 +3,7 @@
   rel="stylesheet"
   href="{{url_for('static', filename='css/uploadtoforum.css') }}"
 />
+<link rel="stylesheet" href="{{url_for('static', filename='css/test.css') }}" />
 <link
   href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
   rel="stylesheet"
@@ -120,21 +121,21 @@
     </select>
     <br />
 
-    <label for="contributor" class="subquestions subquestionsText"
-      ><h3>Contributor (optioneel)</h3></label
-    >
-    <div id="contributorContainer">
+    <div id="contributorContainer" class="contributorContainer">
+      <label for="contributor" class="contributor contributorText"
+        ><h3>Contributor (optioneel)</h3></label
+      >
       <textarea
         rows="1"
-        class="subquestions"
+        class="new-contributor"
         name="contributor[]"
         maxlength="150"
-        placeholder="Voeg samenwerkers toe! E-Mail of Username"
+        placeholder="Voeg samenwerkers toe E-Mail of Username"
       ></textarea>
+      <button type="button" id="addContributor" class="addContributor-button">
+        Voeg contributor toe
+      </button>
     </div>
-    <button type="button" id="addContributor" class="add-subquestion-button">
-      Voeg contributor toe
-    </button>
 
     <script>
       // Script for dynamic contributor input fields
@@ -152,17 +153,18 @@
           newTextArea.maxLength = "150";
           newTextArea.placeholder = "Vul hier een contributor in";
 
-          const removeButton = document.createElement("button");
-          removeButton.type = "button";
-          removeButton.className = "remove-subquestion-button";
-          removeButton.innerHTML = "&times;"; // 'x' icon
-          removeButton.addEventListener("click", function () {
+          const removecontributorButton =
+            document.createElement("contributor-button");
+          removecontributorButton.type = "button";
+          removecontributorButton.className = "remove-contributor-button";
+          removecontributorButton.innerHTML = "&times;"; // 'x' icon
+          removecontributorButton.addEventListener("click", function () {
             contributorContainer.removeChild(newTextArea);
-            contributorContainer.removeChild(removeButton);
+            contributorContainer.removeChild(removecontributorButton);
           });
 
           contributorContainer.appendChild(newTextArea);
-          contributorContainer.appendChild(removeButton);
+          contributorContainer.appendChild(removecontributorButton);
           newTextArea.focus(); // Focus on the new input
         });
       });

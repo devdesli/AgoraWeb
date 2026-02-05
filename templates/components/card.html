@@ -31,7 +31,7 @@
         task.name }} {% endif %}
       </p>
       {% if task.approved_contributors %}
-      <p class="contributor">
+      <p class="author">
         <strong>Medewerkers:</strong>
         {% for u in task.approved_contributors %} {{ u.username }}{% if not
         loop.last %}, {% endif %} {% endfor %}
