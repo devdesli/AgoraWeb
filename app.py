@@ -267,7 +267,7 @@ def user_profile(username):
         flash("User not found.", "error")
         return redirect(url_for('forum'))
     challenges = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all()
-    return render_template('user_profile.html', challenges=challenges, form=form)
+    return render_template('user_profile.html', challenges=challenges, form=form, username=user.username)
 
 # see challenges off a user from admin panel
 @app.route('/api/admin/see-challenge/<int:user_id>')
@@ -1103,7 +1103,7 @@ def update(id):
     delete = DeleteForm()
     
     # Check authorization
-    if not (current_user.id == task.author_id or current_user.is_admin):
+    if not (current_user.id == task.author_id or current_user.is_admin or current_user.is_master):
         activity_logger.info(f"Someone not authorized tried to update {task}")
         flash('You are not authorized to edit this challenge')
         return redirect(url_for('forum'))
