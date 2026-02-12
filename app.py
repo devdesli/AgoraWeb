@@ -263,11 +263,22 @@ def my_challenges():
 def user_profile(username):
     form = DeleteForm()
     user = User.query.filter_by(username=username).first()
+    likes = Like.query.filter_by(user_id=user.id).all() if user else []
+    challengesnumber = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all() if user else []
+    contributionsnumber = TodoContributor.query.filter_by(user_id=user.id).all() if user else []
     if not user:
         flash("User not found.", "error")
         return redirect(url_for('forum'))
     challenges = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all()
-    return render_template('user_profile.html', challenges=challenges, form=form, username=user.username)
+    # Join Todo table to order by date_created
+    contributions = (TodoContributor.query
+        .join(Todo)
+        .filter(TodoContributor.user_id == user.id)
+        .order_by(Todo.date_created.desc())
+        .all())
+    
+    contributed_challenges = [contrib.todo for contrib in contributions]
+    return render_template('user_profile.html', challenges=challenges, form=form, username=user.username, likes=likes, challengesnumber=challengesnumber, contributions=contributionsnumber, contributed_challenges=contributed_challenges)
 
 # see challenges off a user from admin panel
 @app.route('/api/admin/see-challenge/<int:user_id>')

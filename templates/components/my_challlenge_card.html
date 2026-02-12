@@ -24,13 +24,19 @@
 
       <p class="challenge-info">{{ task.description }}</p>
     </div>
-
     <div class="card-bottom">
       <p class="author">
         <strong>Door:</strong>
-        {% if task.is_anonymized %} Anoniem {% else %} {{ task.name }} {% endif
-        %}
+        {% if task.is_anonymized %} Verwijderde gebruiker {% else %} {{
+        task.name }} {% endif %}
       </p>
+      {% if task.approved_contributors %}
+      <p class="author">
+        <strong>Medewerkers:</strong>
+        {% for u in task.approved_contributors %} {{ u.username }}{% if not
+        loop.last %}, {% endif %} {% endfor %}
+      </p>
+      {% endif %}
       <p class="category">{{ task.category }}</p>
     </div>
     {% if current_user.is_authenticated and (current_user.id == task.author_id
@@ -77,6 +83,9 @@
         method: "POST",
         headers: {
           "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content"),
         },
       })
         .then((response) => {

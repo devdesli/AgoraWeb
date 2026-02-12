@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block head %} {{ super() }}
 <link
   rel="stylesheet"
-  href="{{ url_for('static', filename='css/my_challenges.css') }}"
+  href="{{ url_for('static', filename='css/user_profile.css') }}"
 />
 <link
   rel="stylesheet"
@@ -12,9 +12,27 @@
   rel="stylesheet"
 />
 <script src="{{ url_for('static', filename='js/forum.js') }}"></script>
+<style>
+  .container {
+  /* flex wrap testen */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 450px);
+  justify-content: center; /* center when fewer items */
+  gap: 30px;
+  padding: 20px;
+  margin-top: 125px;
+  min-width:75%;
+  max-width: 75%;
+  margin-left: 25px;
+}
+
+</style>
 {% endblock %} {% block body %}
 <div class="top-color position-fixed">
   <h1>{{ username }}'s challenge's</h1>
+  <p>Total Likes: {{ likes|length }}</p>
+  <p>Posted challenges: {{ challengesnumber|length }}</p>
+  <p>Contributed challenges: {{ contributions|length }}</p>
   <div class="module-container">
     <a href="{{url_for('index')}}" class="module-button">
       <p class="module-tekst">Home</p>
@@ -26,10 +44,20 @@
   {% for task in challenges %} {% include 'components/my_challlenge_card.html'
   %} {% else %}
   <div class="post">
+    {% if current_user.username == username %}
     <p>Je hebt nog geen challenges geplaatst.</p>
     <a class="upload_button" href="{{ url_for('upload') }}"
       >Upload een Challenge</a
     >
+  </div>
+  {% else %}
+  <p>{{ username }} heeft nog geen challenges geplaatst.</p>
+  {% endif %}
+  {% endfor %}
+  {% for task in contributed_challenges %} {% include 'components/my_challlenge_card.html'
+  %} {% else %}
+  <div class="post">
+    <p>{{ username }} heeft nog geen contributed challenges.</p>
   </div>
   {% endfor %}
 </div>
