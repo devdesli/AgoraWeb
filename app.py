@@ -965,7 +965,6 @@ def upload():
             slug=slug
         )
 
-        # Optional contributors: accept multiple contributor fields from the form
         # Support names: 'contributor[]', 'contributor', 'contributor_email', 'contributor_username'
         contributor_inputs = request.form.getlist('contributor[]') or request.form.getlist('contributor') or []
         # fallback single-value fields
@@ -1137,6 +1136,31 @@ def update(id):
         task.end_product = request.form.get('endProduct', '').strip()
         task.category = request.form.get('categorie', '').strip()
 
+        # Optional contributors: accept multiple contributor fields from the form
+        # Support names: 'contributor[]', 'contributor', 'contributor_email', 'contributor_username'
+        contributor_inputs = request.form.getlist('contributor[]') or request.form.getlist('contributor') or []
+        # fallback single-value fields
+        single_email = request.form.get('contributor_email')
+        single_username = request.form.get('contributor_username')
+        if single_email:
+            contributor_inputs.append(single_email.strip())
+        if single_username:
+            contributor_inputs.append(single_username.strip())
+
+        contributor_users = []
+        for identifier in contributor_inputs:
+            identifier = (identifier or '').strip()
+            if not identifier:
+                continue
+            if '@' in identifier:
+                user = User.query.filter_by(email=identifier.lower()).first()
+            else:
+                user = User.query.filter_by(username=identifier).first()
+            if user:
+                contributor_users.append(user)
+            else:
+                upload_logger.info(f"Contributor not found: {identifier}")
+
         # Handle image upload
         if 'image' in request.files:
             file = request.files['image']
@@ -1162,6 +1186,27 @@ def update(id):
             db.session.commit()
             upload_logger.info(f"{current_user} {current_user.username}, updated challenge {task}")
             flash('Challenge updated successfully')
+            # If contributors were provided, create association rows and send approval emails
+            for user in contributor_users:
+                try:
+                    task = Todo.query.get_or_404(id)
+                    token = secrets.token_urlsafe(32)
+                    assoc = TodoContributor(todo=task, user=user, approved=(current_user.is_admin or current_user.is_master), approval_token=(None if (current_user.is_admin or current_user.is_master) else token))
+                    db.session.add(assoc)
+                    db.session.commit()
+
+                    if assoc.approval_token:
+                        approval_url = url_for('api.contributorapprove', token=assoc.approval_token, _external=True)
+                        msg = Message(
+                            subject=f"You've been added as contributor to '{task.title}'",
+                            sender=app.config.get('MAIL_USERNAME'),
+                            recipients=[user.email]
+                        )
+                        msg.body = f"Hello {user.username},\n\nYou were added as a contributor to the challenge '{task.title}'. To accept and have your name displayed on the challenge, click the link:\n\n{approval_url}\n\nIf you do not want to be a contributor, ignore this message."
+                        mail.send(msg)
+                        app.logger.info(f"Sent contributor approval email to {user.email} for challenge id {task.id}")
+                except Exception as e:
+                    app.logger.error(f"Failed to create/send contributor invite for {user}: {e}")
             return redirect(url_for('forum'))
         except Exception as e:
             app.logger.error(f"Error updating challenge: {str(e)}")

@@ -16,7 +16,9 @@
   <div class="contact">
     <p>
       Heb je een vraag of wil je een probleem melden?
-      <a href="mailto:agorawebapplication@gmail.com">klik hier om te mailen naar admin@gmail.com</a>
+      <a href="mailto:agorawebapplication@gmail.com"
+        >klik hier om te mailen naar admin@gmail.com</a
+      >
     </p>
   </div>
   <button class="forum-button">
@@ -43,23 +45,25 @@
     <label for="subQuestions" class="subquestions subquestionsText"
       ><h3>Deelvragen</h3></label
     >
-  <div id="subQuestionsContainer">
-  {% for subq in sub_questions %}
-    <div class="subquestion-row">
-      <textarea
-        rows="1"
-        class="subquestions"
-        name="subQuestion[]"
-        required
-        maxlength="150"
-        placeholder="Vul hier jouw deelvraag in"
-      >{{ subq }}</textarea>
-      {% if not loop.first %}
-      <button type="button" class="remove-subquestion-button">&times;</button>
-      {% endif %}
+    <div id="subQuestionsContainer">
+      {% for subq in sub_questions %}
+      <div class="subquestion-row">
+        <textarea
+          rows="1"
+          class="subquestions"
+          name="subQuestion[]"
+          required
+          maxlength="150"
+          placeholder="Vul hier jouw deelvraag in"
+        >
+{{ subq }}</textarea
+        >
+        {% if not loop.first %}
+        <button type="button" class="remove-subquestion-button">&times;</button>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-</div>
     <button type="button" id="addSubQuestion" class="add-subquestion-button">
       Voeg deelvraag toe
     </button>
@@ -99,6 +103,35 @@
       <option value="Overig" {% if task.category == "Overig" %}selected{% endif %}>Overig</option>
     </select>
 
+    <div id="contributorContainer" class="contributorContainer">
+      <label for="contributor" class="contributor contributorText"
+        ><h3>Contributor (optioneel)</h3></label
+      >
+      {% for contributor in task.contributors %}
+      <div class="contributor-row">
+        <textarea
+          rows="1"
+          class="new-contributor"
+          name="contributor[]"
+          maxlength="150"
+          placeholder="Voeg samenwerkers toe E-Mail of Username"
+        >
+{{ contributor.user.username }}</textarea
+        >
+        <button type="button" class="remove-contributor-button">&times;</button>
+      </div>
+      {% endfor %}
+      <textarea
+        rows="1"
+        class="new-contributor"
+        name="contributor[]"
+        maxlength="150"
+        placeholder="Voeg samenwerkers toe E-Mail of Username"
+      ></textarea>
+      <button type="button" id="addContributor" class="addContributor-button">
+        Voeg contributor toe
+      </button>
+    </div>
 
     <label><h3>Huidige afbeelding</h3></label>
     {% if task.image %}
@@ -121,7 +154,9 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const addSubQuestionButton = document.getElementById("addSubQuestion");
-    const subQuestionsContainer = document.getElementById("subQuestionsContainer");
+    const subQuestionsContainer = document.getElementById(
+      "subQuestionsContainer",
+    );
 
     // Delegate remove button clicks for all subquestion rows
     subQuestionsContainer.addEventListener("click", function (e) {
@@ -155,6 +190,47 @@
       newTextArea.focus();
     });
   });
+
+  // Script for dynamic contributor input fields
+  document.addEventListener("DOMContentLoaded", function () {
+    const addContributorButton = document.getElementById("addContributor");
+    const contributorContainer = document.getElementById(
+      "contributorContainer",
+    );
+
+    // Delegate remove button clicks for existing contributor rows
+    contributorContainer.addEventListener("click", function (e) {
+      if (e.target.classList.contains("remove-contributor-button")) {
+        const rows = contributorContainer.querySelectorAll(".contributor-row");
+        if (rows.length > 0) {
+          e.target.parentElement.remove();
+        }
+      }
+    });
+
+    addContributorButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      const row = document.createElement("div");
+      row.className = "contributor-row";
+      const newTextArea = document.createElement("textarea");
+      newTextArea.rows = "1";
+      newTextArea.className = "new-contributor";
+      newTextArea.name = "contributor[]";
+      newTextArea.maxLength = "150";
+      newTextArea.placeholder = "Voeg samenwerkers toe E-Mail of Username";
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "remove-contributor-button";
+      removeButton.innerHTML = "&times;";
+
+      row.appendChild(newTextArea);
+      row.appendChild(removeButton);
+      contributorContainer.insertBefore(row, addContributorButton);
+      newTextArea.focus();
+    });
+  });
+
   document
     .getElementById("imageInput")
     .addEventListener("change", function (event) {

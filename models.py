@@ -87,6 +87,14 @@ class Todo(db.Model):
         except json.JSONDecodeError:
             # Fallback for malformed JSON or if it's just a plain string
             return [self.sub_questions] if self.sub_questions else []
+        
+    def get_contributors_list(self):
+        try:
+            # Safely loads the JSON string into a Python list
+            return json.loads(self.contributors) if self.contributors else []
+        except json.JSONDecodeError:
+            # Fallback for malformed JSON or if it's just a plain string
+            return [self.contributors] if self.contributors else []
 
     @property
     def approved_contributors(self):
