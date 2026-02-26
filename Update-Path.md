@@ -3,7 +3,21 @@ Update path of Maakplaats
 Security
 Running a pen test on the site 
 
-samenwerking van gebruikers op challenge's? 
+Rollen kunnen toekennen in Admin Portal 
+
+Global Admin
+Coaches kunnen alle gegevens van leerlingen uit een klas zien
+Klassencode dat je een klas kan joinen
+
+Beveiligings groepen
+Toegangsbeheer dus weghalen 
+En vervangen door Tenant
+
+2 sterke punten 
+Rekening houden met een virtuele omgeving 
+De ontwikkeling hand in hand met alle security vereisten en met behulp van ai dat te doen.
+
++-samenwerking van gebruikers op challenge's? 
 Goedkeuring op samen werken via e-mail? 
 Rechten aan uit 
 Jouw'n project contributor invite 
