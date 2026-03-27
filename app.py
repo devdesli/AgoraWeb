@@ -51,7 +51,7 @@ limiter.init_app(app)
 
 # Login manager setup
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'auth_login'
 login_manager.login_message_category = 'warning'
 
 # Logging
@@ -141,18 +141,43 @@ def unauthorized():
     else:
         activity_logger.info(f"Unauthorized handler")
         flash('You need to be logged in to perform this action.', 'warning')
-        return redirect(url_for('login', next=request.url))
+        return redirect(url_for('auth_login', next=request.url))
 
 @app.before_request
 def store_request_response():
-    """Make request/response available for Auth0 SDK"""
+    """Make request/response available for Auth0 SDK and require login by default."""
     g.store_options = {"request": request}
+
+    allowed_endpoints = {
+        'auth_login', 'auth_callback', 'auth_logout', 'auth_profile',
+        'register', 'logout',
+        'forgot_password', 'reset_password', 'google_verification',
+        'static', 'favicon', 'request_entity_too_large',
+        'not_found_error', 'internal_error'
+    }
+
+    # Allow static files and endpoint exceptions
+    if request.endpoint in allowed_endpoints or request.path.startswith('/static/'):
+        return
+
+    # Allow logged-in users
+    if current_user.is_authenticated:
+        return
+
+    # Redirect guests to Auth0 login
+    return redirect(url_for('auth_login', next=request.url))
 
 @app.route('/auth/login')
 async def auth_login():
     """Redirect to Auth0 login"""
     authorization_url = await auth0.start_interactive_login({}, g.store_options)
     return redirect(authorization_url)
+
+@app.route('/register')
+def register():
+    """Redirect register attempts to Auth0 login for unified auth flow."""
+    flash('Registration is handled by Auth0. Please sign in via Auth0.', 'info')
+    return redirect(url_for('auth_login'))
 
 @app.route('/auth/callback')
 async def auth_callback():
@@ -236,7 +261,7 @@ async def auth_logout():
         app.logger.error(f"Auth0 logout error: {e}")
         logout_user()
         flash('Logged out successfully', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('auth_login'))
 
 @app.route('/googleb81b129169642c35.html')
 def google_verification():
@@ -336,7 +361,7 @@ def admin():
     if not current_user.is_authenticated:
         activity_logger.info(f"trying to acces admin panel without logging in")
         flash('Please log in first.')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_login'))
     
     if not current_user.is_master or not current_user.is_admin:
         activity_logger.info(f"{current_user} {current_user.username}, tried to acces admin without permission")
@@ -357,7 +382,7 @@ def coach():
     if not current_user.is_authenticated:
         activity_logger.info(f"trying to acces coach panel without logging in")
         flash('Please log in first.')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_login'))
     
     if not current_user.is_master and not current_user.is_admin and not current_user.is_coach:
         activity_logger.info(f"{current_user} {current_user.username}, tried to acces coach panel without permission")
@@ -693,7 +718,7 @@ If you did not make this request then simply ignore this email and no changes wi
             flash('If an account with that email exists, a password reset link has been sent.', 'info')
             app.logger.info(f"Reset link sent to {email}")
         
-        return redirect(url_for('login', form=form))
+        return redirect(url_for('auth_login'))
     
     return render_template('forgot.html', form=form)
 
@@ -732,7 +757,7 @@ def reset_password(token):
         db.session.commit()
         app.logger.info(f"Password for {user} {user.username}, succesfully reset")
         flash('Your password has been reset successfully!', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_login'))
 
     return render_template('reset.html', token=token, form=form)
 
