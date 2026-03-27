@@ -169,7 +169,6 @@ async def auth_callback():
         oauth_id = user_info.get('sub')
         email = user_info.get('email')
         name = user_info.get('name', '')
-        print(f"{oauth_id}, {email}, {name}") #debug log 
         if not oauth_id or not email:
             return "Incomplete user info from Auth0", 400
         
