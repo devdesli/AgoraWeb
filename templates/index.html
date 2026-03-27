@@ -72,7 +72,7 @@
       </button>
       {% endif %} {% if current_user.is_authenticated%}
       <button class="forum-button">
-        <a href="{{ url_for('logout') }}">Uitloggen</a>
+        <a href="{{ url_for('auth_logout') }}">Uitloggen</a>
       </button>
 
       {% endif %} {% else %}
@@ -80,10 +80,7 @@
         <a href="{{ url_for('forum') }}">Challenges Bekijken</a>
       </button>
       <button class="forum-button">
-        <a href="{{ url_for('login') }}">Inloggen</a>
-      </button>
-      <button class="forum-button">
-        <a href="{{ url_for('register') }}">Registreren</a>
+        <a href="{{ url_for('auth_login') }}">Inloggen</a>
       </button>
       {% endif %}
     </div>

@@ -1,5 +1,14 @@
 Update path of Maakplaats
 
+
+HOSTING 
+VERSION CONTROL 
+PLANNING 
+TENANT INTEGRATION 
+OAUTH 
+
+
+
 Security
 Running a pen test on the site 
 

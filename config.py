@@ -20,3 +20,13 @@ class Config:
     AZURE_OAUTH_CLIENT_ID = os.getenv('AZURE_OAUTH_CLIENT_ID')
     AZURE_OAUTH_CLIENT_SECRET = os.getenv('AZURE_OAUTH_CLIENT_SECRET')
     AZURE_OAUTH_TENANT = os.getenv('AZURE_OAUTH_TENANT', 'common')
+    
+    # OAuth Configuration
+    AUTHORITY = os.getenv('AUTHORITY')
+    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+    REDIRECT_URI = os.getenv('REDIRECT_URI')
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:5000').split(',')
+    # Flask Session Configuration
+    SESSION_TYPE = 'sqlalchemy'
+    SESSION_SQLALCHEMY_TABLE = 'flask_sessions'

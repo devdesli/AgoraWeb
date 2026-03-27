@@ -1,133 +1,81 @@
-from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
-from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory, make_response
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+# app.py
+import os, secrets, json, logging, uuid, string, random, re, io, time
+from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash, abort, send_from_directory, make_response, g
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
-from flask_limiter.util import get_remote_address
-from logging.handlers import RotatingFileHandler
-from models import db, User, Todo, Like, Image, TodoContributor
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
-from flask_mail import Mail, Message
-from flask_socketio import SocketIO
+from flask_mail import Message
 from flask_migrate import Migrate
-from flask_wtf import CSRFProtect
-from flask_migrate import Migrate
-from flask_limiter import Limiter
-from api.rest_api import api_bp
-from xhtml2pdf import pisa
+from identity.flask import Auth
 from slugify import slugify
+from xhtml2pdf import pisa
 from config import Config
-from models import db
-import time
-import os
-import secrets
-import json
-import logging
-import uuid
-import string, random
-import re
-import io
+from models import User, Todo, Like, Image, TodoContributor
+from forms import LoginForm, RegisterForm, AdminEmailForm, UploadForm, UploadToForumForm, LikeForm, ResetForm, ForgotForm, DeleteForm, ResetUserBtnForm, CSRFOnlyForm
+from api.rest_api import api_bp
+from auth import auth0
 
-socketio = SocketIO()
-
+# Import extension instances
+from extensions import db, migrate, csrf, mail, socketio, login_manager, limiter
+from logging_config import activity_logger, upload_logger, error_logger, setup_logging
 UPLOAD_FOLDER = 'static/uploads'
-# upload folder
-# Call this before your routes
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
+app.secret_key_auth = os.getenv('AUTH0_SECRET')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_ECHO'] = True  # Enable SQL logging
-
-app.config.update(
-    #SESSION_COOKIE_SAMESITE='None', disabled only needed for iframe
-    SESSION_COOKIE_SECURE=True
-)
-
-# config from config.py
-app.config.from_object(Config)
-
-# Initialize extensions
-db.init_app(app)
-migrate = Migrate(app, db)
-csrf = CSRFProtect(app)
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['WTF_CSRF_CHECK_DEFAULT'] = True
 app.config['WTF_CSRF_ENABLED'] = True
-socketio.init_app(app)
-
-limiter = Limiter(
-    key_func=get_remote_address,
-    app=app,
-    storage_uri="memory://",
-    strategy="moving-window"
+app.config.update(
+    SESSION_COOKIE_SECURE=True,  # Changed to True for HTTPS
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
 )
+app.config['SESSION_SQLALCHEMY'] = db
+app.config.from_object(Config)
 
-# Register Flask-RESTful blueprint (minimal API)
+# Initialize all extensions against the app
+db.init_app(app)
+migrate.init_app(app, db)
+csrf.init_app(app)
+mail.init_app(app)
+socketio.init_app(app)
+limiter.init_app(app)
+
+# Login manager setup
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'warning'
+
+# Logging
+setup_logging(app)
+
+# M365 / OAuth
+#if app.config.get("AUTHORITY") and app.config.get("CLIENT_ID") and app.config.get("CLIENT_SECRET") and app.config.get("REDIRECT_URI"):
+#    auth = Auth(
+#        app,
+#        authority=app.config["AUTHORITY"],
+#        client_id=app.config["CLIENT_ID"],
+#        client_credential=app.config["CLIENT_SECRET"],
+#        redirect_uri=app.config["REDIRECT_URI"]
+#    )
+#else:
+#    app.logger.warning("OAuth configuration incomplete. Auth features will not be available.")
+#    auth = None
+
+# Blueprints
 try:
-    from api.rest_api import api_bp
     app.register_blueprint(api_bp)
 except Exception:
-    # Import may fail if Flask-RESTful isn't installed yet; ignore until deps are installed
     pass
-
-def ensure_upload_directory():
-    upload_dir = app.config.get('UPLOAD_FOLDER', 'static/uploads')
-    if not os.path.exists(upload_dir):
-        try:
-            os.makedirs(upload_dir, exist_ok=True)
-            print(f"Created upload directory: {upload_dir}") 
-        except Exception as e:
-            print(f"Error creating upload directory: {e}")
-            raise
-    return upload_dir
-
-# Call this before your routes
-ensure_upload_directory()
-# @root
-
-# --- Logging Setup ---
-if not os.path.exists('logs'):
-    os.mkdir('logs')
-
-formatter = logging.Formatter(
-    '%(asctime)s [%(levelname)s] in %(module)s: %(message)s'
-)
-
-# General app log (INFO and above)
-file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=3)
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
-app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.INFO)
-
-# Upload log (INFO and above)
-upload_handler = RotatingFileHandler('logs/upload.log', maxBytes=10240, backupCount=3)
-upload_handler.setLevel(logging.INFO)
-upload_handler.setFormatter(formatter)
-upload_logger = logging.getLogger('upload_logger')
-upload_logger.setLevel(logging.INFO)
-upload_logger.addHandler(upload_handler)
-
-activity_handler = RotatingFileHandler('logs/activity.log', maxBytes=10240, backupCount=3, delay=True)
-activity_handler.setLevel(logging.INFO)
-activity_handler.setFormatter(formatter)
-activity_logger = logging.getLogger('activity_logger')
-activity_logger.setLevel(logging.INFO)
-activity_logger.addHandler(activity_handler)
-
-# Optional: if you want errors to also be logged separately
-error_handler = RotatingFileHandler('logs/error.log', maxBytes=10240, backupCount=3)
-error_handler.setLevel(logging.ERROR)
-error_handler.setFormatter(formatter)
-error_logger = logging.getLogger('error_logger')
-error_logger.setLevel(logging.ERROR)
-error_logger.addHandler(error_handler)
-
-# change this folder to the actual folder off the upload folder 
+ 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # Max 2 MB upload
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -135,18 +83,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# initialize flask mail
-mail = Mail(app)
-
-# Initialize Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
-login_manager.login_message_category = "warning"
- 
-# debug 
-# import inspect
-# print("Path to User model:", inspect.getfile(User))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -207,6 +143,101 @@ def unauthorized():
         flash('You need to be logged in to perform this action.', 'warning')
         return redirect(url_for('login', next=request.url))
 
+@app.before_request
+def store_request_response():
+    """Make request/response available for Auth0 SDK"""
+    g.store_options = {"request": request}
+
+@app.route('/auth/login')
+async def auth_login():
+    """Redirect to Auth0 login"""
+    authorization_url = await auth0.start_interactive_login({}, g.store_options)
+    return redirect(authorization_url)
+
+@app.route('/auth/callback')
+async def auth_callback():
+    """Handle Auth0 callback after login"""
+    try:
+        result = await auth0.complete_interactive_login(str(request.url), g.store_options)
+        
+        # Get user info from Auth0
+        user_info = await auth0.get_user(g.store_options)
+        if not user_info:
+            return "Failed to get user info from Auth0", 400
+        
+        # Find or create user
+        oauth_id = user_info.get('sub')
+        email = user_info.get('email')
+        name = user_info.get('name', '')
+        print(f"{oauth_id}, {email}, {name}") #debug log 
+        if not oauth_id or not email:
+            return "Incomplete user info from Auth0", 400
+        
+        # Check if user exists by oauth_id
+        user = User.query.filter_by(oauth_id=oauth_id).first()
+        if not user:
+            # Check by email if oauth_id not found
+            user = User.query.filter_by(email=email).first()
+            if user:
+                # Update existing user with oauth_id
+                user.oauth_id = oauth_id
+                user.is_oauth_user = True
+            else:
+                # Create new user
+                base_username = email.split('@')[0]
+                username = base_username
+                counter = 1
+                while User.query.filter_by(username=username).first():
+                    username = f"{base_username}_{counter}"
+                    counter += 1
+                user = User(
+                    email=email,
+                    real_name=name,
+                    oauth_id=oauth_id,
+                    is_oauth_user=True,
+                    username=username
+                )
+                db.session.add(user)
+        
+        db.session.commit()
+        
+        # Log the user in
+        login_user(user)
+        
+        return redirect(url_for('index'))
+    except Exception as e:
+        app.logger.error(f"Auth callback error: {e}")
+        return f"Authentication error: {str(e)}", 400
+
+@app.route('/auth/profile')
+async def auth_profile():
+    """Protected route - shows user profile"""
+    user = await auth0.get_user(g.store_options)
+    
+    if not user:
+        return redirect(url_for('auth_login'))
+    
+    return render_template('profile.html', user=user)
+
+@app.route('/auth/logout')
+async def auth_logout():
+    """Logout and redirect to Auth0 logout"""
+    try:
+        logout_user()  # Log out from Flask first
+        
+        # Build logout options with return_to URL
+        logout_options = {
+            'return_to': request.base_url.rstrip('/'),  # Redirect to home after Auth0 logout
+        }
+        
+        # Get logout URL from Auth0
+        logout_url = await auth0.logout(logout_options, g.store_options)
+        return redirect(logout_url)
+    except Exception as e:
+        app.logger.error(f"Auth0 logout error: {e}")
+        logout_user()
+        flash('Logged out successfully', 'success')
+        return redirect(url_for('index'))
 
 @app.route('/googleb81b129169642c35.html')
 def google_verification():
@@ -250,7 +281,8 @@ def download_challenge_pdf(challenge_id):
     else:
         flash("PDF generation failed.", "error")
         return redirect(url_for('fullcard', id=challenge.id))
-    
+
+ 
 @app.route('/mychallenges')
 @login_required
 def my_challenges():
@@ -291,100 +323,6 @@ def api_admin_see_challenge(user_id):
     user = User.query.get_or_404(user_id)
     challenges = Todo.query.filter_by(author_id=user.id).order_by(Todo.date_created.desc()).all()
     return render_template('my_challenges.html', challenges=challenges, form=form)
-
-@limiter.limit("5/minute")
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = CSRFOnlyForm()
-
-    if current_user.is_authenticated:
-        app.logger.info(f"{current_user.username} already logged in")
-        flash('You are already logged in.', "succes")
-        return redirect(url_for('index'))
-
-    if form.validate_on_submit():  # this only checks CSRF token
-        username_or_email = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
-        app.logger.info(f"Login attempt - Username/Email")  # Debug log
-        
-        # Try to find user by username or email
-        user = User.query.filter(
-            (User.username == username_or_email) | 
-            (User.email == username_or_email)
-        ).first()
-        
-        if user:
-            #print(f"User found in database")  # Debug log
-            if user.check_password(password):
-                login_user(user)
-                next_page = request.args.get('next')
-                app.logger.info(f"user, logged in succesfully")
-                return redirect(next_page or url_for('index'))
-            else:
-                app.logger.error(f"Password incorrect for user")  # Debug log
-                flash("Invalid username/email or password", "error")
-        else:
-            app.logger.error(f"User not found ")  # Debug log
-            flash("Invalid username/email or password", "error")
-
-    
-    return render_template('login.html', form=form)
-
-@limiter.limit("5/minute")
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = CSRFOnlyForm()
-
-    if current_user.is_authenticated:
-        app.logger.info(f"user already logged in")
-        flash('You are already logged in.', "succes")
-        return redirect(url_for('index'))
-    
-    if request.method == 'POST' and form.validate():
-        real_name = request.form.get('real_name', '').strip()
-        username = request.form.get('username', '').strip()
-        email = request.form.get('email', '').strip().lower()
-        password = request.form.get('password', '')
-        confirm_password = request.form.get('confirm_password', '')
-        
-        if password != confirm_password:
-            app.logger.error(f"Passwords do not match")
-            flash('Passwords do not match', "error")
-            return redirect(url_for('register', form=form))
-        
-        if User.query.filter_by(username=username).first():
-            app.logger.error(f"username already exists")
-            flash("Registration failed. Please try again.", "error")
-            return redirect(url_for('register', form=form))
-        
-        if User.query.filter_by(email=email).first():
-            app.logger.error(f"email already registered")
-            flash("Registration failed. Please try again.", "error")
-            return redirect(url_for('register', form=form))
-        
-        user = User(username=username, email=email, real_name=real_name)
-        
-        try: 
-          if len(password) < 10:
-            flash("Password must be at least 10 characters.", "error")
-            return redirect(url_for('register', form=form))
-          user.set_password(password)
-          db.session.add(user)
-          db.session.commit()
-          app.logger.info(f"User succesfully registered")
-          flash('Registration successful! Please log in.', "succes")
-          return redirect(url_for('login'))
-        except Exception as e:
-         app.logger.error(f"error while registering user {e}")
-    return render_template('register.html', form=form)
-
-@limiter.limit("5/minute")
-@app.route('/logout')
-@login_required
-def logout():
-    activity_logger.info(f"{current_user} {current_user.username}, logged out")
-    logout_user()
-    return redirect(url_for('index'))
 
 @app.route('/admin')
 @login_required
@@ -1286,4 +1224,4 @@ def upload_image():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    socketio.run(app, port=5000, debug=False)
+    socketio.run(app, port=5000, debug=False, ssl_context='adhoc')

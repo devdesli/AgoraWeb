@@ -1,12 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from slugify import slugify
 import json
 import secrets
-
-db = SQLAlchemy()
 
 
 class User(UserMixin, db.Model):
@@ -146,3 +144,16 @@ class TodoContributor(db.Model):
 
 # (approved_contributors property is defined on the Todo class)
 
+class Auth0State(db.Model):
+    __tablename__ = 'auth0_state'
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(255), unique=True, nullable=False)
+    value = db.Column(db.LargeBinary, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+class Auth0Transaction(db.Model):
+    __tablename__ = 'auth0_transaction'
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(255), unique=True, nullable=False)
+    value = db.Column(db.LargeBinary, nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
