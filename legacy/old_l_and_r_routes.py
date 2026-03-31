@@ -225,3 +225,9 @@ Maakplaats Team
         error_logger(f"Admin or master {current_user.username} forced reset email error: {e}") # Log the error for debugging
 
     return redirect(url_for('admin'))
+
+@app.route('/register')
+def register():
+    """Redirect register attempts to Auth0 login for unified auth flow."""
+    flash('Registration is handled by Auth0. Please sign in via Auth0.', 'info')
+    return redirect(url_for('auth_login'))

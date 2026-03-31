@@ -173,11 +173,9 @@ async def auth_login():
     authorization_url = await auth0.start_interactive_login({}, g.store_options)
     return redirect(authorization_url)
 
-@app.route('/register')
-def register():
-    """Redirect register attempts to Auth0 login for unified auth flow."""
-    flash('Registration is handled by Auth0. Please sign in via Auth0.', 'info')
-    return redirect(url_for('auth_login'))
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/auth/callback')
 async def auth_callback():
@@ -684,10 +682,6 @@ def api_delete_user_anonimize(id):
     
     logout_user()
     return redirect(url_for('index'))
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/forum')
 def forum():
