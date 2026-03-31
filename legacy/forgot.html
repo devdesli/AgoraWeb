@@ -3,7 +3,7 @@
   rel="stylesheet"
   href="{{ url_for('static', filename='css/auth.css') }}"
 />
-{% endblock %} {% block body %} 
+{% endblock %} {% block body %}
 <div class="auth-container">
   <h2>Forgot Your Password?</h2>
   <form method="POST" class="auth-form">
@@ -15,7 +15,8 @@
     <button type="submit" class="auth-button">Request Reset Link</button>
   </form>
   <p>
-    Remembered your password? <a href="{{ url_for('auth_login') }}">Login here</a>
+    Remembered your password?
+    <a href="{{ url_for('auth_login') }}">Login here</a>
   </p>
 </div>
 {% endblock %}
