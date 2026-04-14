@@ -1,3 +1,4 @@
+from datetime import timezone, datetime
 from flask import Blueprint, current_app, redirect, url_for
 from flask_login import current_user
 from flask_restful import Api, Resource
@@ -5,10 +6,30 @@ from models import User, db, Todo, TodoContributor
 import requests
 from flask import Blueprint, jsonify
 import requests as request
+from dotenv import load_dotenv
+import os
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 api = Api(api_bp)
 
+load_dotenv()
+
+def get_user_access_token(user):
+    if user.access_token and (not user.token_expires_at or user.token_expires_at > datetime.now(timezone.utc)):
+        return user.access_token
+    # If token is expired, you might need to refresh it
+    return None
+
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+class auth_profile(Resource):
+    def get(self):
+        token = get_user_access_token(current_user)
+        if not token:
+            return {'error': 'No valid access token'}, 401
+        
+        headers = {'Authorization': f'Bearer {token}'}
+        response = requests.get(f"https://{AUTH0_DOMAIN}/userinfo", headers=headers)
+        return response.json()
 
 class Hello(Resource):
     def get(self):
@@ -53,3 +74,4 @@ class Admin_Stats(Resource):
 api.add_resource(Admin_Stats, '/admin/stats', endpoint='adminstats')
 api.add_resource(Hello, '/hello')
 api.add_resource(ContributorApprove, '/contributor/approve/<string:token>', endpoint='contributorapprove')
+api.add_resource(auth_profile, '/profile', endpoint='profile')

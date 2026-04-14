@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from flask_mail import Message
 from flask_migrate import Migrate
 from identity.flask import Auth
@@ -70,7 +70,7 @@ setup_logging(app)
 #    app.logger.warning("OAuth configuration incomplete. Auth features will not be available.")
 #    auth = None
 
-# Blueprints
+# Blueprints 
 try:
     app.register_blueprint(api_bp)
 except Exception:
@@ -82,7 +82,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -151,7 +150,7 @@ def store_request_response():
     allowed_endpoints = {
         'auth_login', 'auth_callback', 'auth_logout', 'auth_profile',
         'index', 'logout',
-        'forgot_password', 'reset_password', 'google_verification',
+        'forgot_password', 'google_verification',
         'static', 'favicon', 'request_entity_too_large',
         'not_found_error', 'internal_error'
     }
@@ -169,9 +168,16 @@ def store_request_response():
 
 @app.route('/auth/login')
 async def auth_login():
-    """Redirect to Auth0 login"""
-    authorization_url = await auth0.start_interactive_login({}, g.store_options)
-    return redirect(authorization_url)
+    try:   
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
+        """Redirect to Auth0 login"""
+        authorization_url = await auth0.start_interactive_login({}, g.store_options)
+        return redirect(authorization_url)
+    except Exception as e: 
+        app.logger.error(f"Auth login error: {e}")
+        flash('An error occurred during login. Please try again.', 'error')
+        return redirect(url_for('index'))
 
 @app.route('/')
 def index():
@@ -182,7 +188,10 @@ async def auth_callback():
     """Handle Auth0 callback after login"""
     try:
         result = await auth0.complete_interactive_login(str(request.url), g.store_options)
-        
+
+        access_token = result.get('access_token')
+        expires_in = result.get('expires_in')  # Optional: token lifetime
+
         # Get user info from Auth0
         user_info = await auth0.get_user(g.store_options)
         if not user_info:
@@ -196,6 +205,8 @@ async def auth_callback():
             return "Incomplete user info from Auth0", 400
         
         # Check if user exists by oauth_id
+        
+        # change to check also for non oauth user with same email 
         user = User.query.filter_by(oauth_id=oauth_id).first()
         if not user:
             # Check by email if oauth_id not found
@@ -221,6 +232,11 @@ async def auth_callback():
                 )
                 db.session.add(user)
         
+        # Store the access token
+        user.access_token = access_token
+        if expires_in:
+            user.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=expires_in)
+        
         db.session.commit()
         
         # Log the user in
@@ -229,7 +245,7 @@ async def auth_callback():
         return redirect(url_for('index'))
     except Exception as e:
         app.logger.error(f"Auth callback error: {e}")
-        return f"Authentication error: {str(e)}", 400
+        return url_for('index')
 
 @app.route('/account')
 async def account():
@@ -240,11 +256,6 @@ async def account():
         return redirect(url_for('auth_login'))
     form = CSRFOnlyForm()
     return render_template('account.html', user=user, form=form)
-
-AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-@app.route('/auth/profile')
-async def auth_profile():
-    return redirect("https://dev-4gapsvte4yvv4pf1.eu.auth0.com/me/")
 
 @app.route('/auth/logout')
 async def auth_logout():
@@ -402,103 +413,6 @@ def get_log_content(log_file_path, num_lines=None):
             return lines[-num_lines:] # Get the last N lines
         return lines
 
-@app.route('/admin/logs')
-@login_required
-def view_logs():
-    # Security: Only allow master or admin users to view logs
-    if not (current_user.is_master or current_user.is_admin):
-        flash('You are not authorized to this page.', 'error')
-        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to access logs without authorization.")
-        return redirect(url_for('index'))
-
-    log_type = request.args.get('log_type', 'app_log') # Default to app_log
-    filter_text = request.args.get('filter_text', '').strip()
-    num_lines_str = request.args.get('num_lines', '50') # Default to 50 lines
-    
-    try:
-        num_lines = int(num_lines_str) if num_lines_str else None
-        if num_lines is not None and num_lines <= 0:
-            num_lines = None # Treat non-positive as no limit
-    except ValueError:
-        num_lines = None # Invalid input, treat as no limit
-        flash("Invalid number of lines specified. Showing all/default.", 'warning')
-
-    log_file = None
-    log_name = ""
-
-    if log_type == 'app_log':
-        log_file = 'logs/app.log'
-        log_name = 'Application Log'
-    elif log_type == 'upload_log':
-        log_file = 'logs/upload.log'
-        log_name = 'Upload Log'
-    elif log_type == 'activity_log':
-        log_file = 'logs/activity.log'
-        log_name = 'Activity Log'
-    elif log_type == 'error_log':
-        log_file = 'logs/error.log'
-        log_name = 'Error Log'
-    else:
-        flash('Invalid log type specified.', 'error')
-        log_type = 'app_log' # Reset to default
-        log_file = 'logs/app.log'
-        log_name = 'Application Log'
-        
-    full_log_path = os.path.join(app.root_path, log_file)
-    
-    log_lines = get_log_content(full_log_path, num_lines)
-    
-    # Filter log lines
-    filtered_log_lines = []
-    if filter_text:
-        search_pattern = re.compile(re.escape(filter_text), re.IGNORECASE) # Case-insensitive search
-        for line in log_lines:
-            if search_pattern.search(line):
-                filtered_log_lines.append(line)
-    else:
-        filtered_log_lines = log_lines
-
-    # Log access for auditing
-    activity_logger.info(f"{current_user.username} (ID: {current_user.id}) accessed {log_name} with filter '{filter_text}' and lines '{num_lines_str}'.")
-
-    return render_template('admin_logs.html',
-        log_lines=filtered_log_lines,
-        log_name=log_name,
-        log_type=log_type,
-        filter_text=filter_text,
-        num_lines=num_lines_str,
-        all_log_types=['app_log', 'upload_log', 'activity_log', 'error_log'])
-
-@limiter.limit("5/minute")
-@app.route('/admin/logs/download/<log_file_name>')
-@login_required
-def download_log(log_file_name):
-    if not (current_user.is_master or current_user.is_admin):
-        flash('You are not authorized to download logs.', 'error')
-        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to download logs without authorization.")
-        return redirect(url_for('index'))
-
-    # Security: Ensure only valid log files can be downloaded
-    allowed_log_files = ['app.log', 'upload.log', 'activity.log', 'error.log']
-    if log_file_name not in allowed_log_files:
-        flash('Invalid log file specified for download.', 'error')
-        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to download invalid log file: {log_file_name}")
-        return redirect(url_for('view_logs'))
-
-    log_directory = os.path.join(app.root_path, 'logs')
-    
-    try:
-        activity_logger.info(f"{current_user.username} (ID: {current_user.id}) downloaded log file: {log_file_name}")
-        return send_from_directory(directory=log_directory, path=log_file_name, as_attachment=True)
-    except FileNotFoundError:
-        flash(f"Log file '{log_file_name}' not found.", 'error')
-        error_logger.error(f"Download request for non-existent log file: {log_file_name}")
-        return redirect(url_for('view_logs'))
-    except Exception as e:
-        flash(f"An error occurred during download: {str(e)}", 'error')
-        error_logger.critical(f"Error downloading log file {log_file_name}: {e}")
-        return redirect(url_for('view_logs'))
-
 @limiter.limit("5/minute")
 @app.route('/admin/send-email/', methods=["POST", "GET"])
 @login_required
@@ -580,8 +494,18 @@ def delete_user(id):
     """Admin delete user - permanently deletes user and all their data"""
     user = User.query.get_or_404(id)
 
-    if current_user.is_master:
+    if current_user.is_master or current_user.is_admin:
         try:
+            if user.is_admin and not current_user.is_admin:
+                if user.is_master:
+                    pass
+            else:
+                flash('Cannot delete admin users')
+                activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
+                return redirect(url_for('admin'))
+            if user.id == current_user.id:
+                flash("You cannot delete yourself")
+                return redirect(url_for('admin'))
             db.session.delete(user)
             db.session.commit()
             activity_logger.info(f"{current_user.username}, deleted user {user.username} (admin full delete)")
@@ -591,25 +515,9 @@ def delete_user(id):
             flash('Error deleting user', 'error')
         return redirect(url_for('admin'))
     
-    if not current_user.is_master or current_user.is_admin:
+    if not current_user.is_admin or current_user.is_master:
         activity_logger.info(f"{current_user} {current_user.username}, tried to delete user without admin or master role")
         return redirect(url_for('index'))
-    if user.is_admin and not current_user.is_admin:
-        if user.is_master:
-            pass
-        else:
-            flash('Cannot delete admin users')
-            activity_logger.info(f"{current_user} {current_user.username}, tried deleting {user}, and doesnt have permission")
-            return redirect(url_for('admin'))
-    try: 
-      db.session.delete(user)
-      db.session.commit()
-      activity_logger.info(f"{current_user.username}, deleted user {user.username} (admin full delete)")
-      flash(f'User {user.username} and all their data have been permanently deleted.', 'success')
-    except Exception as e:
-        app.logger.error(f"Error deleting user {user} {user.username} {e}")
-        flash('Error deleting user', 'error')
-    return redirect(url_for('admin'))
 
 @limiter.limit("5/minute")
 @app.route('/api/delete_user/<int:id>', methods=['POST'])

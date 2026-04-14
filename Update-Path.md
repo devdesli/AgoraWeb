@@ -7,6 +7,7 @@ PLANNING
 TENANT INTEGRATION 
 OAUTH 
 
+Mogelijke koppeling met teams via onedrive etc en microsoft 365 
 
 
 Security

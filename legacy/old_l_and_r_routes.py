@@ -231,3 +231,102 @@ def register():
     """Redirect register attempts to Auth0 login for unified auth flow."""
     flash('Registration is handled by Auth0. Please sign in via Auth0.', 'info')
     return redirect(url_for('auth_login'))
+
+
+# potentially could be dangerous if not protected properly so currently removed
+@app.route('/admin/logs')
+@login_required
+def view_logs():
+    # Security: Only allow master or admin users to view logs
+    if not (current_user.is_master or current_user.is_admin):
+        flash('You are not authorized to this page.', 'error')
+        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to access logs without authorization.")
+        return redirect(url_for('index'))
+
+    log_type = request.args.get('log_type', 'app_log') # Default to app_log
+    filter_text = request.args.get('filter_text', '').strip()
+    num_lines_str = request.args.get('num_lines', '50') # Default to 50 lines
+    
+    try:
+        num_lines = int(num_lines_str) if num_lines_str else None
+        if num_lines is not None and num_lines <= 0:
+            num_lines = None # Treat non-positive as no limit
+    except ValueError:
+        num_lines = None # Invalid input, treat as no limit
+        flash("Invalid number of lines specified. Showing all/default.", 'warning')
+
+    log_file = None
+    log_name = ""
+
+    if log_type == 'app_log':
+        log_file = 'logs/app.log'
+        log_name = 'Application Log'
+    elif log_type == 'upload_log':
+        log_file = 'logs/upload.log'
+        log_name = 'Upload Log'
+    elif log_type == 'activity_log':
+        log_file = 'logs/activity.log'
+        log_name = 'Activity Log'
+    elif log_type == 'error_log':
+        log_file = 'logs/error.log'
+        log_name = 'Error Log'
+    else:
+        flash('Invalid log type specified.', 'error')
+        log_type = 'app_log' # Reset to default
+        log_file = 'logs/app.log'
+        log_name = 'Application Log'
+        
+    full_log_path = os.path.join(app.root_path, log_file)
+    
+    log_lines = get_log_content(full_log_path, num_lines)
+    
+    # Filter log lines
+    filtered_log_lines = []
+    if filter_text:
+        search_pattern = re.compile(re.escape(filter_text), re.IGNORECASE) # Case-insensitive search
+        for line in log_lines:
+            if search_pattern.search(line):
+                filtered_log_lines.append(line)
+    else:
+        filtered_log_lines = log_lines
+
+    # Log access for auditing
+    activity_logger.info(f"{current_user.username} (ID: {current_user.id}) accessed {log_name} with filter '{filter_text}' and lines '{num_lines_str}'.")
+
+    return render_template('admin_logs.html',
+        log_lines=filtered_log_lines,
+        log_name=log_name,
+        log_type=log_type,
+        filter_text=filter_text,
+        num_lines=num_lines_str,
+        all_log_types=['app_log', 'upload_log', 'activity_log', 'error_log'])
+
+@limiter.limit("5/minute")
+@app.route('/admin/logs/download/<log_file_name>')
+@login_required
+def download_log(log_file_name):
+    if not (current_user.is_master or current_user.is_admin):
+        flash('You are not authorized to download logs.', 'error')
+        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to download logs without authorization.")
+        return redirect(url_for('index'))
+
+    # Security: Ensure only valid log files can be downloaded
+    allowed_log_files = ['app.log', 'upload.log', 'activity.log', 'error.log']
+    if log_file_name not in allowed_log_files:
+        flash('Invalid log file specified for download.', 'error')
+        activity_logger.warning(f"{current_user.username} (ID: {current_user.id}) attempted to download invalid log file: {log_file_name}")
+        return redirect(url_for('view_logs'))
+
+    log_directory = os.path.join(app.root_path, 'logs')
+    
+    try:
+        activity_logger.info(f"{current_user.username} (ID: {current_user.id}) downloaded log file: {log_file_name}")
+        return send_from_directory(directory=log_directory, path=log_file_name, as_attachment=True)
+    except FileNotFoundError:
+        flash(f"Log file '{log_file_name}' not found.", 'error')
+        error_logger.error(f"Download request for non-existent log file: {log_file_name}")
+        return redirect(url_for('view_logs'))
+    except Exception as e:
+        flash(f"An error occurred during download: {str(e)}", 'error')
+        error_logger.critical(f"Error downloading log file {log_file_name}: {e}")
+        return redirect(url_for('view_logs'))

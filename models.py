@@ -28,6 +28,8 @@ class User(UserMixin, db.Model):
     oauth_provider = db.Column(db.String(50), nullable=True)  # 'microsoft', 'google', etc.
     oauth_id = db.Column(db.String(255), nullable=True)  # Unique ID from OAuth provider
     is_oauth_user = db.Column(db.Boolean, default=False)  # True if user logs in via OAuth 
+    access_token = db.Column(db.Text, nullable=True)  # Store Auth0 access token
+    token_expires_at = db.Column(db.DateTime(timezone=True), nullable=True)  # Token expiry time 
 
     def set_reset_token(self):
         self.reset_token = secrets.token_urlsafe(32)
