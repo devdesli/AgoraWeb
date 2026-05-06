@@ -27,14 +27,24 @@
   }
 </style>
 {% endblock %} {% block body %} 
+{% if current_user.is_authenticated and current_user.username == username %}
+<button>
+<a href="{{ url_for('account_settings') }}" class="module-button">
+  <p class="module-tekst">Account Settings</p>
+</a>
+</button>
+{% endif %}
 <div class="top-color position-fixed">
-  <h1>{{ username }}'s challenge's</h1>
+  <h1>{{ current_user.username }}'s challenge's</h1>
   <p>Total Likes: {{ likes|length }}</p>
   <p>Posted challenges: {{ challengesnumber|length }}</p>
   <p>Contributed challenges: {{ contributions|length }}</p>
   <div class="module-container">
     <a href="{{url_for('index')}}" class="module-button">
       <p class="module-tekst">Home</p>
+    </a>
+    <a href="{{url_for('account_settings')}}" class="module-button">
+      <p class="module-tekst">Profile Settings</p>
     </a>
   </div>
 </div>
@@ -50,11 +60,11 @@
     >
   </div>
   {% else %}
-  <p>{{ username }} heeft nog geen challenges geplaatst.</p>
+  <p>{{ current_user.username }} heeft nog geen challenges geplaatst.</p>
   {% endif %} {% endfor %} {% for task in contributed_challenges %} {% include
   'components/my_challlenge_card.html' %} {% else %}
   <div class="post">
-    <p>{{ username }} heeft nog geen contributed challenges.</p>
+    <p>{{ current_user.username }} heeft nog geen contributed challenges.</p>
   </div>
   {% endfor %}
 </div>

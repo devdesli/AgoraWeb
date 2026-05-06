@@ -255,6 +255,16 @@ async def account():
     if not user:
         return redirect(url_for('auth_login'))
     form = CSRFOnlyForm()
+    return render_template('account_profile.html', user=user, form=form)
+
+@app.route('/account/settings')
+async def account_settings():
+    """Protected route - shows user settings"""
+    user = await auth0.get_user(g.store_options)
+
+    if not user:
+        return redirect(url_for('auth_login'))
+    form = CSRFOnlyForm()
     return render_template('account.html', user=user, form=form)
 
 @app.route('/auth/logout')
@@ -320,7 +330,6 @@ def download_challenge_pdf(challenge_id):
         flash("PDF generation failed.", "error")
         return redirect(url_for('fullcard', id=challenge.id))
 
- 
 @app.route('/mychallenges')
 @login_required
 def my_challenges():
@@ -765,7 +774,6 @@ def upload():
     else:
         app.logger.warning(f"Form validation failed. Errors: {form.errors}")
     return render_template('uploadtoforum.html', form=form)
-
 
 @limiter.limit("5/minute")
 @app.route('/like/<int:id>', methods=['POST'])
