@@ -217,8 +217,12 @@ async def auth_callback():
                 user.is_oauth_user = True
             else:
                 # Create new user
-                base_username = email.split('@')[0]
-                username = base_username
+                try: 
+                    base_username = email.split('@')[0].replace(".", "") 
+                    username = base_username
+                except Exception as e:
+                    app.logger.error(f"Error occurred while creating username: {e}")
+                    return "An error occurred while processing your request.", 500
                 counter = 1
                 while User.query.filter_by(username=username).first():
                     username = f"{base_username}_{counter}"

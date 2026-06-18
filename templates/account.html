@@ -7,6 +7,11 @@
 {% endblock %} {% block body %}
 <div class="account-container">
   <h1>Account Settings</h1>
+   <div class="module-container">
+        <a href="{{url_for('index')}}" class="module-button">
+            <p class="module-tekst">Home</p>
+        </a>
+    </div>
   <div class="form-group">
     <label for="username" class="username">Username:</label>
     <p class="username">{{ current_user.username}}</p>
