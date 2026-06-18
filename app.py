@@ -227,15 +227,19 @@ async def auth_callback():
                 while User.query.filter_by(username=username).first():
                     username = f"{base_username}_{counter}"
                     counter += 1
-                user = User(
-                    email=email,
-                    real_name=name,
-                    oauth_id=oauth_id,
-                    is_oauth_user=True,
-                    username=username
-                )
-                db.session.add(user)
-        
+                try:
+                    user = User(
+                        email=email,
+                        real_name=name,
+                        oauth_id=oauth_id,
+                        is_oauth_user=True,
+                        username=username
+                    )
+                    db.session.add(user)
+                except Exception as e:
+                    app.logger.error(f"Error occurred while creating user: {e}")
+                    return "An error occurred while processing your request.", 500
+
         # Store the access token
         user.access_token = access_token
         if expires_in:
